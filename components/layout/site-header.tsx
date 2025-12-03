@@ -22,8 +22,8 @@ export function SiteHeader() {
                 {/* Right: nav + actions */}
                 <div className="ml-auto flex items-center gap-6">
                     <nav className="hidden items-center gap-6 text-xs font-medium text-midnight/75 sm:flex">
-                        <Link href="/playground" className="hover:text-midnight">
-                            Playground
+                        <Link href="#overview" className="hover:text-midnight">
+                            Overview
                         </Link>
                         <Link href="#product" className="hover:text-midnight">
                             Product
@@ -34,12 +34,6 @@ export function SiteHeader() {
                     </nav>
 
                     <div className="flex items-center gap-3">
-                        <Button
-                            variant="subtle"
-                            className="hidden sm:inline-flex text-xs font-medium"
-                        >
-                            Sign in
-                        </Button>
                         <Button className="text-xs font-medium">Join waitlist</Button>
                     </div>
                 </div>

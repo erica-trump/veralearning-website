@@ -43,90 +43,43 @@ body {
   background-image: url("/cognitive-mesh-light.png");
   background-size: 320px;
   background-repeat: repeat;
-  opacity: 0.04;
-  animation: hero-drift 75s linear infinite;
+  opacity: 0.075;
+  animation: hero-drift 100s linear infinite;
   z-index: 0;
 }
 
-.hero-pattern > * {
+.hero-pattern>* {
   position: relative;
   z-index: 1;
 }
 
 .mesh-card {
-  position: relative;
-  overflow: hidden;
+  border-radius: 1.25rem;
+  background: linear-gradient(
+      135deg,
+      rgba(10, 35, 66, 0.04),
+      rgba(255, 255, 255, 0.9)
+    ),
+    #ffffff;
   transition: transform 250ms ease, box-shadow 250ms ease;
 }
 
-.mesh-card::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background-image: url("/cognitive-mesh-light.png");
-  background-size: 280px;
-  opacity: 0.07;
-  transition: transform 800ms ease;
-  z-index: 0;
-}
-
 .mesh-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 15px 35px rgba(10, 35, 66, 0.15);
-}
-
-.mesh-card:hover::before {
-  transform: translate3d(-12px, -12px, 0);
-}
-
-.mesh-card > * {
-  position: relative;
-  z-index: 1;
+  transform: translateY(-2px);
+  box-shadow: 0 12px 25px rgba(10, 35, 66, 0.12);
 }
 
 .audience-card {
-  position: relative;
   border-radius: 1.25rem;
-  padding: 1.5rem;
-  background: rgba(255, 255, 255, 0.85);
-  box-shadow: 0 1px 3px rgba(10, 35, 66, 0.05);
-  overflow: hidden;
-  transition: transform 200ms cubic-bezier(0.22, 0.61, 0.36, 1),
-    box-shadow 200ms cubic-bezier(0.22, 0.61, 0.36, 1);
-}
-
-.audience-card::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background-image: url("/cognitive-mesh-light.png");
-  background-size: 240px;
-  opacity: 0.1;
-  transition: opacity 200ms ease, transform 200ms ease;
-  z-index: 0;
-}
-
-.audience-card:hover {
-  transform: translateY(-2px) scale(1.01);
-  box-shadow: 0 6px 16px rgba(10, 35, 66, 0.08);
-}
-
-.audience-card:hover::before {
-  opacity: 0.18;
-  transform: translate3d(-3px, -3px, 0);
-}
-
-.audience-card > * {
-  position: relative;
-  z-index: 1;
 }
 
 @keyframes hero-drift {
   from {
     background-position: 0 0;
   }
+
   to {
-    background-position: 320px 320px;
+    background-position: 320px -320px;
   }
 }
 

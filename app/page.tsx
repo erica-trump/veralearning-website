@@ -5,9 +5,9 @@ import { RevealOnScroll } from "@/components/motion/reveal-on-scroll";
 export default function HomePage() {
   return (
     <main className="min-h-screen bg-page-bg text-midnight">
-      <div className="mx-auto max-w-6xl px-4 pb-16 pt-10 space-y-16">
+      <div className="mx-auto max-w-6xl bg-page-bg px-4 pb-4 pt-10 space-y-16 md:pb-6">
         {/* HERO */}
-        <section className="hero-pattern rounded-3xl bg-white/90 px-6 py-10 shadow-sm ring-1 ring-midnight/5 md:px-10 md:py-12">
+        <section id="overview" className="hero-pattern rounded-3xl bg-white/90 px-8 py-14 shadow-sm ring-1 ring-midnight/5 md:px-16 md:py-20">
           <div className="grid gap-10 md:grid-cols-[1.2fr,1fr]">
             {/* Left: text */}
             <div className="space-y-6">
@@ -20,23 +20,23 @@ export default function HomePage() {
               </h1>
               <h2 className="text-lg font-medium text-midnight/85 md:text-xl">
                 AI-powered interviews that produce{" "}
-                <span className="underline decoration-synapse decoration-2 underline-offset-4">
+                <span className="italic font-semibold text-synapse" style={{ color: "#0F5F67" }}>
                   structured, defensible
                 </span>{" "}
                 evidence of mastery.
               </h2>
 
-              <p className="text-sm leading-relaxed text-midnight/80">
-                VeraLearning uses adaptive AI interviews to reveal how people actually think and solve problems. Instead of test scores, you get clear insight into judgment, decision-making, and applied skill that predicts real performance.
-                <br /><br />
-                Powered by the Learning Context Model (LCM), our structured mastery system that teaches AI what mastery looks like and how to evaluate it. LCM aligns with your existing skill maps and curricula so evaluation stays consistent, fair, and fully explainable.
-              </p>
+              <div className="space-y-4 text-sm leading-relaxed text-midnight/80 max-w-2xl">
+                <p>
+                  VeraLearning uses adaptive AI interviews to reveal how people think and solve problems in authentic workplace scenarios. Beyond test scores, you get clear insight into judgment, decision-making, and applied skills. These signals are what separate true job readiness from test-taking ability.
+                </p>
+                <p>
+                  Powered by the Learning Context Model (LCM), our mastery system provides AI with the structure it needs to recognize and evaluate mastery. LCM aligns with your existing skill maps and curricula so evaluation stays consistent, fair, and fully explainable.
+                </p>
+              </div>
 
-              <div className="flex flex-wrap items-center gap-4">
+              <div>
                 <Button size="lg">Join waitlist</Button>
-                <Button variant="subtle" size="lg">
-                  See how VeraLearning works
-                </Button>
               </div>
             </div>
           </div>
@@ -91,7 +91,7 @@ export default function HomePage() {
         <RevealOnScroll>
           <section
             id="product"
-            className="hero-pattern rounded-3xl bg-white/85 px-6 py-10 shadow-sm ring-1 ring-midnight/5 md:px-10 md:py-12 space-y-6"
+            className="hero-pattern rounded-3xl bg-white/85 px-6 py-10 shadow-sm ring-1 ring-midnight/5 md:px-6 md:py-12 space-y-6"
           >
             <p className="text-xs font-semibold tracking-[0.18em] text-midnight/55 uppercase">
               How VeraLearning works
@@ -100,70 +100,93 @@ export default function HomePage() {
               From course materials to competency-based evidence.
             </h2>
             <p className="max-w-2xl text-sm text-midnight/80">
-              VeraLearning doesn&apos;t just generate questions. It helps you design a
-              competency model, orchestrate adaptive interviews, and produce
-              transparent evidence of what learners can actually do.
+              VeraLearning doesn&apos;t just generate questions. It aligns with your course materials and skill maps, helping you clarify competencies, orchestrate adaptive interviews, and produce transparent evidence of what learners can actually do.
             </p>
 
-            <div className="grid gap-5 md:grid-cols-3">
+            <div className="grid gap-6 md:grid-cols-3">
               <RevealOnScroll delayMs={0} className="h-full">
-                <div className="mesh-card h-full rounded-2xl bg-gradient-to-br from-synapse/25 via-synapse-tint to-white p-4 shadow-md ring-1 ring-synapse/25">
-                  <div className="flex gap-4">
-                    <div className="w-1.5 rounded-full bg-synapse" />
-                    <div className="space-y-2">
-                      <p className="text-[11px] font-semibold tracking-wide text-midnight/60 uppercase">
-                        1 · Map the learning context
+                <div
+                  className="relative h-full rounded-2xl border border-midnight/8 p-4 shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-lg"
+                  style={{
+                    background:
+                      "linear-gradient(90deg, rgba(239,237,232,0.98), rgba(27,138,174,0.06))",
+                    boxShadow: "0 4px 12px rgba(10,35,66,0.05)",
+                  }}
+                >
+                  <span
+                    className="absolute left-3 top-4 bottom-4 w-[3px] rounded-full"
+                    style={{ backgroundColor: "rgba(27,138,174,0.7)" }}
+                  ></span>
+                  <div className="space-y-2 pl-8">
+                    <div>
+                      <p className="text-[11px] font-semibold tracking-[0.3em] text-midnight/50 uppercase">
+                        Step 1
                       </p>
-                      <p className="text-sm font-medium text-midnight">
-                        Upload syllabi, tasks, and assessments.
-                      </p>
-                      <p className="text-xs text-midnight/75">
-                        VeraLearning&apos;s Learning Context Model surfaces skills, cognitive
-                        demands, and assessment opportunities across your course or
-                        program.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </RevealOnScroll>
-
-              <RevealOnScroll delayMs={150} className="h-full">
-                <div className="mesh-card h-full rounded-2xl bg-gradient-to-br from-cerulean/25 via-cerulean-tint to-white p-4 shadow-md ring-1 ring-cerulean/25">
-                  <div className="flex gap-4">
-                    <div className="w-1.5 rounded-full bg-cerulean" />
-                    <div className="space-y-2">
-                      <p className="text-[11px] font-semibold tracking-wide text-midnight/60 uppercase">
-                        2 · Run adaptive interviews
-                      </p>
-                      <p className="text-sm font-medium text-midnight">
-                        AI-guided, evidence-seeking conversations.
-                      </p>
-                      <p className="text-xs text-midnight/75">
-                        Dynamic prompts probe reasoning patterns—not just recall—
-                        aligned to the competencies you care about.
+                      <p className="text-sm font-semibold text-midnight">
+                        Map your learning context
                       </p>
                     </div>
+                    <p className="text-xs text-midnight/75">
+                      VeraLearning ingests your course materials, job requirements, and skill frameworks to surface the key cognitive demands and performance expectations learners must meet.
+                    </p>
                   </div>
                 </div>
               </RevealOnScroll>
 
               <RevealOnScroll delayMs={300} className="h-full">
-                <div className="mesh-card h-full rounded-2xl bg-gradient-to-br from-midnight/20 via-cortex to-white p-4 shadow-md ring-1 ring-midnight/20">
-                  <div className="flex gap-4">
-                    <div className="w-1.5 rounded-full bg-midnight" />
-                    <div className="space-y-2">
-                      <p className="text-[11px] font-semibold tracking-wide text-midnight/60 uppercase">
-                        3 · Issue verifiable mastery
+                <div
+                  className="relative h-full rounded-2xl border border-midnight/8 p-4 shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-lg"
+                  style={{
+                    background:
+                      "linear-gradient(135deg, rgba(239,237,232,0.96), rgba(27,138,174,0.10))",
+                    boxShadow: "0 6px 16px rgba(10,35,66,0.07)",
+                  }}
+                >
+                  <span
+                    className="absolute left-3 top-4 bottom-4 w-[3px] rounded-full"
+                    style={{ backgroundColor: "rgba(27,138,174,0.8)" }}
+                  ></span>
+                  <div className="space-y-2 pl-8">
+                    <div>
+                      <p className="text-[11px] font-semibold tracking-[0.3em] text-midnight/50 uppercase">
+                        Step 2
                       </p>
-                      <p className="text-sm font-medium text-midnight">
-                        Clear, defensible credential decisions.
-                      </p>
-                      <p className="text-xs text-midnight/75">
-                        Rubrics, evidence trails, and digital credentials that make it
-                        easy to explain &quot;why this learner passed&quot; to
-                        faculty, employers, and learners themselves.
+                      <p className="text-sm font-semibold text-midnight">
+                        Run AI interviews
                       </p>
                     </div>
+                    <p className="text-xs text-midnight/75">
+                      VeraLearning conducts real-time interviews that seek evidence of mastery. Each turn of the conversation adjusts to the learner and stays aligned with the competencies and expectations that matter to you.
+                    </p>
+                  </div>
+                </div>
+              </RevealOnScroll>
+
+              <RevealOnScroll delayMs={600} className="h-full">
+                <div
+                  className="relative h-full rounded-2xl border border-midnight/8 p-4 shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-lg"
+                  style={{
+                    background:
+                      "linear-gradient(180deg, rgba(239,237,232,0.94), rgba(27,138,174,0.14))",
+                    boxShadow: "0 8px 20px rgba(10,35,66,0.09)",
+                  }}
+                >
+                  <span
+                    className="absolute left-3 top-4 bottom-4 w-[3px] rounded-full"
+                    style={{ backgroundColor: "rgba(27,138,174,0.9)" }}
+                  ></span>
+                  <div className="space-y-2 pl-8">
+                    <div>
+                      <p className="text-[11px] font-semibold tracking-[0.3em] text-midnight/50 uppercase">
+                        Step 3
+                      </p>
+                      <p className="text-sm font-semibold text-midnight">
+                        Issue verifiable credentials
+                      </p>
+                    </div>
+                    <p className="text-xs text-midnight/75">
+                      VeraLearning delivers clear, defensible mastery decisions. Rubrics, evidence trails, and verifiable digital credentials make it simple to show faculty, employers, and learners exactly why someone earned a passing decision.
+                    </p>
                   </div>
                 </div>
               </RevealOnScroll>
@@ -182,15 +205,18 @@ export default function HomePage() {
                 Who it&apos;s for
               </p>
               <h2 className="text-xl font-semibold text-midnight">
-                Built for people who care about real learning, not just content.
+                Anyone who needs to know{" "}
+                <span className="italic text-synapse" style={{ color: "#0F5F67" }}>
+                  with confidence
+                </span>{" "}
+                whether someone can perform.
               </h2>
-              <p className="text-sm text-midnight/75 max-w-2xl">
-                VeraLearning supports teams that hold the line on rigor—aligning
-                assessments to outcomes, defending credential decisions, and
-                giving learners transparent evidence of mastery.
-              </p>
-            </div>
-            <div className="grid gap-6 md:grid-cols-3">
+            <p className="text-sm text-midnight/75 max-w-2xl">
+              VeraLearning gives educators, training teams, and workforce partners a shared way to measure real skill, real reasoning, and real readiness.
+            </p>
+          </div>
+            <div className="mt-8 md:mt-10">
+              <div className="mt-1 grid gap-6 md:grid-cols-3">
               <RevealOnScroll
                 delayMs={0}
                 className="h-full"
@@ -198,13 +224,12 @@ export default function HomePage() {
                 hiddenClass="opacity-0 translate-y-[20px]"
                 visibleClass="opacity-100 translate-y-0"
               >
-                <div className="audience-card h-full">
-                  <p className="text-sm font-medium text-midnight">
-                    Instructors & course teams
+                <div className="audience-card h-full rounded-2xl border border-midnight/5 bg-white/90 backdrop-blur-sm p-3.5 pt-6 md:pt-8 transition-all duration-200 hover:-translate-y-1 hover:shadow-md" style={{ background: "linear-gradient(135deg, rgba(255,255,255,0.95), rgba(27,138,174,0.03))" }}>
+                  <p className="text-sm font-semibold text-midnight">
+                    Educators & Training Teams
                   </p>
                   <p className="mt-2 text-xs text-midnight/75 leading-relaxed">
-                    Design courses and assessments that align to clear outcomes,
-                    without turning everything into a multiple-choice test.
+                    Assess reasoning and problem-solving, not memorization. Build mastery-based programs that produce work-ready graduates.
                   </p>
                 </div>
               </RevealOnScroll>
@@ -215,13 +240,13 @@ export default function HomePage() {
                 hiddenClass="opacity-0 translate-y-[20px]"
                 visibleClass="opacity-100 translate-y-0"
               >
-                <div className="audience-card h-full">
-                  <p className="text-sm font-medium text-midnight">
-                    Centers for teaching & learning
+                <div className="audience-card h-full rounded-2xl border border-midnight/5 bg-white/90 backdrop-blur-sm p-3.5 pt-6 md:pt-8 transition-all duration-200 hover:-translate-y-1 hover:shadow-md" style={{ background: "linear-gradient(135deg, rgba(255,255,255,0.95), rgba(27,138,174,0.03))" }}>
+                  <p className="text-sm font-semibold text-midnight">
+                    Learning & Development Teams
                   </p>
                   <p className="mt-2 text-xs text-midnight/75 leading-relaxed">
-                    Give faculty a shared language for competencies, levels, and
-                    evidence—augmented by AI, not replaced by it.
+                    Measure applied skill in real workplace scenarios and accelerate employee development with targeted feedback.
+
                   </p>
                 </div>
               </RevealOnScroll>
@@ -232,16 +257,17 @@ export default function HomePage() {
                 hiddenClass="opacity-0 translate-y-[20px]"
                 visibleClass="opacity-100 translate-y-0"
               >
-                <div className="audience-card h-full">
-                  <p className="text-sm font-medium text-midnight">
-                    Workforce & employer programs
+                <div className="audience-card h-full rounded-2xl border border-midnight/5 bg-white/90 backdrop-blur-sm p-3.5 pt-6 md:pt-8 transition-all duration-200 hover:-translate-y-1 hover:shadow-md" style={{ background: "linear-gradient(135deg, rgba(255,255,255,0.95), rgba(27,138,174,0.03))" }}>
+                  <p className="text-sm font-semibold text-midnight">
+                    Employers & Workforce Initiatives
                   </p>
                   <p className="mt-2 text-xs text-midnight/75 leading-relaxed">
-                    Create job-relevant mastery checks that give employers
-                    confidence in who&apos;s truly ready for the next step.
+                    Identify people who can actually do the work. VeraLearning reveals judgment, decision-making, and job-ready thinking.
+
                   </p>
                 </div>
               </RevealOnScroll>
+              </div>
             </div>
           </section>
         </RevealOnScroll>
