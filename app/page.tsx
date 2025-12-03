@@ -30,7 +30,7 @@ export default function HomePage() {
                   VeraLearning uses adaptive AI interviews to reveal how people think and solve problems in authentic workplace scenarios. Beyond test scores, you get clear insight into judgment, decision-making, and applied skills. These signals are what separate true job readiness from test-taking ability.
                 </p>
                 <p>
-                  Powered by the Learning Context Model (LCM), our mastery system provides AI with the structure it needs to recognize and evaluate mastery. LCM aligns with your existing skill maps and curricula so evaluation stays consistent, fair, and fully explainable.
+                  Powered by the Learning Context Model (LCM), our mastery model that provides AI with the structure it needs to recognize and evaluate mastery. LCM aligns with your existing skill maps and curricula so evaluation stays consistent, fair, and fully explainable.
                 </p>
               </div>
 
@@ -51,7 +51,7 @@ export default function HomePage() {
           <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
             <div className="flex-1 space-y-4">
               <p className="text-xs font-semibold uppercase tracking-[0.18em] text-midnight/60">
-                CNC Safety · Mastery Check
+                CNC Safety · Example Mastery Check
               </p>
               <h3 className="text-xl font-semibold text-midnight">
                 Reasoning pattern snapshot
@@ -215,62 +215,62 @@ export default function HomePage() {
                 </span>{" "}
                 whether someone can perform.
               </h2>
-            <p className="text-sm text-midnight/75 max-w-2xl">
-              VeraLearning gives educators, training teams, and workforce partners a shared way to measure real skill, real reasoning, and real readiness.
-            </p>
-          </div>
+              <p className="text-sm text-midnight/75 max-w-2xl">
+                VeraLearning gives educators, training teams, and workforce partners a shared way to measure real skill, real reasoning, and real readiness.
+              </p>
+            </div>
             <div className="mt-8 md:mt-10">
               <div className="mt-1 grid gap-6 md:grid-cols-3">
-              <RevealOnScroll
-                delayMs={0}
-                className="h-full"
-                transitionClass="transition-all duration-[160ms] ease-[cubic-bezier(0.22,0.61,0.36,1)]"
-                hiddenClass="opacity-0 translate-y-[20px]"
-                visibleClass="opacity-100 translate-y-0"
-              >
-                <div className="audience-card h-full rounded-2xl border border-midnight/5 bg-white/90 backdrop-blur-sm p-3.5 pt-6 md:pt-8 transition-all duration-200 hover:-translate-y-1 hover:shadow-md" style={{ background: "linear-gradient(135deg, rgba(255,255,255,0.95), rgba(27,138,174,0.03))" }}>
-                  <p className="text-sm font-semibold text-midnight">
-                    Educators & Training Teams
-                  </p>
-                  <p className="mt-2 text-xs text-midnight/75 leading-relaxed">
-                    Assess reasoning and problem-solving, not memorization. Build mastery-based programs that produce work-ready graduates.
-                  </p>
-                </div>
-              </RevealOnScroll>
-              <RevealOnScroll
-                delayMs={80}
-                className="h-full"
-                transitionClass="transition-all duration-[160ms] ease-[cubic-bezier(0.22,0.61,0.36,1)]"
-                hiddenClass="opacity-0 translate-y-[20px]"
-                visibleClass="opacity-100 translate-y-0"
-              >
-                <div className="audience-card h-full rounded-2xl border border-midnight/5 bg-white/90 backdrop-blur-sm p-3.5 pt-6 md:pt-8 transition-all duration-200 hover:-translate-y-1 hover:shadow-md" style={{ background: "linear-gradient(135deg, rgba(255,255,255,0.95), rgba(27,138,174,0.03))" }}>
-                  <p className="text-sm font-semibold text-midnight">
-                    Learning & Development Teams
-                  </p>
-                  <p className="mt-2 text-xs text-midnight/75 leading-relaxed">
-                    Measure applied skill in real workplace scenarios and accelerate employee development with targeted feedback.
+                <RevealOnScroll
+                  delayMs={0}
+                  className="h-full"
+                  transitionClass="transition-all duration-[160ms] ease-[cubic-bezier(0.22,0.61,0.36,1)]"
+                  hiddenClass="opacity-0 translate-y-[20px]"
+                  visibleClass="opacity-100 translate-y-0"
+                >
+                  <div className="audience-card h-full rounded-2xl border border-midnight/5 bg-white/90 backdrop-blur-sm p-3.5 pt-6 md:pt-8 transition-all duration-200 hover:-translate-y-1 hover:shadow-md" style={{ background: "linear-gradient(135deg, rgba(255,255,255,0.95), rgba(27,138,174,0.03))" }}>
+                    <p className="text-sm font-semibold text-midnight">
+                      Educators & Training Teams
+                    </p>
+                    <p className="mt-2 text-xs text-midnight/75 leading-relaxed">
+                      Assess reasoning and problem-solving, not memorization. Build mastery-based programs that produce work-ready graduates.
+                    </p>
+                  </div>
+                </RevealOnScroll>
+                <RevealOnScroll
+                  delayMs={80}
+                  className="h-full"
+                  transitionClass="transition-all duration-[160ms] ease-[cubic-bezier(0.22,0.61,0.36,1)]"
+                  hiddenClass="opacity-0 translate-y-[20px]"
+                  visibleClass="opacity-100 translate-y-0"
+                >
+                  <div className="audience-card h-full rounded-2xl border border-midnight/5 bg-white/90 backdrop-blur-sm p-3.5 pt-6 md:pt-8 transition-all duration-200 hover:-translate-y-1 hover:shadow-md" style={{ background: "linear-gradient(135deg, rgba(255,255,255,0.95), rgba(27,138,174,0.03))" }}>
+                    <p className="text-sm font-semibold text-midnight">
+                      Learning & Development Teams
+                    </p>
+                    <p className="mt-2 text-xs text-midnight/75 leading-relaxed">
+                      Measure applied skill in real workplace scenarios and accelerate employee development with targeted feedback.
 
-                  </p>
-                </div>
-              </RevealOnScroll>
-              <RevealOnScroll
-                delayMs={160}
-                className="h-full"
-                transitionClass="transition-all duration-[160ms] ease-[cubic-bezier(0.22,0.61,0.36,1)]"
-                hiddenClass="opacity-0 translate-y-[20px]"
-                visibleClass="opacity-100 translate-y-0"
-              >
-                <div className="audience-card h-full rounded-2xl border border-midnight/5 bg-white/90 backdrop-blur-sm p-3.5 pt-6 md:pt-8 transition-all duration-200 hover:-translate-y-1 hover:shadow-md" style={{ background: "linear-gradient(135deg, rgba(255,255,255,0.95), rgba(27,138,174,0.03))" }}>
-                  <p className="text-sm font-semibold text-midnight">
-                    Employers & Workforce Initiatives
-                  </p>
-                  <p className="mt-2 text-xs text-midnight/75 leading-relaxed">
-                    Identify people who can actually do the work. VeraLearning reveals judgment, decision-making, and job-ready thinking.
+                    </p>
+                  </div>
+                </RevealOnScroll>
+                <RevealOnScroll
+                  delayMs={160}
+                  className="h-full"
+                  transitionClass="transition-all duration-[160ms] ease-[cubic-bezier(0.22,0.61,0.36,1)]"
+                  hiddenClass="opacity-0 translate-y-[20px]"
+                  visibleClass="opacity-100 translate-y-0"
+                >
+                  <div className="audience-card h-full rounded-2xl border border-midnight/5 bg-white/90 backdrop-blur-sm p-3.5 pt-6 md:pt-8 transition-all duration-200 hover:-translate-y-1 hover:shadow-md" style={{ background: "linear-gradient(135deg, rgba(255,255,255,0.95), rgba(27,138,174,0.03))" }}>
+                    <p className="text-sm font-semibold text-midnight">
+                      Employers & Workforce Initiatives
+                    </p>
+                    <p className="mt-2 text-xs text-midnight/75 leading-relaxed">
+                      Identify people who can actually do the work. VeraLearning reveals judgment, decision-making, and job-ready thinking.
 
-                  </p>
-                </div>
-              </RevealOnScroll>
+                    </p>
+                  </div>
+                </RevealOnScroll>
               </div>
             </div>
           </section>
