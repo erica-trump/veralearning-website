@@ -1,7 +1,6 @@
 // components/layout/site-header.tsx
 import Link from "next/link";
 import Image from "next/image";
-import { Button } from "@/components/ui/button";
 
 export function SiteHeader() {
     return (
@@ -34,7 +33,12 @@ export function SiteHeader() {
                     </nav>
 
                     <div className="flex items-center gap-3">
-                        <Button className="text-xs font-medium">Join waitlist</Button>
+                        <a
+                            href="mailto:erica@veralearning.com"
+                            className="inline-flex items-center justify-center rounded-full bg-synapse px-4 py-2 text-xs font-medium text-white shadow-sm transition hover:bg-synapse/90"
+                        >
+                            Join the waitlist
+                        </a>
                     </div>
                 </div>
             </div>

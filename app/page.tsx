@@ -1,5 +1,4 @@
 // app/page.tsx
-import { Button } from "@/components/ui/button";
 import { RevealOnScroll } from "@/components/motion/reveal-on-scroll";
 
 export default function HomePage() {
@@ -36,7 +35,12 @@ export default function HomePage() {
               </div>
 
               <div>
-                <Button size="lg">Join waitlist</Button>
+                <a
+                  href="mailto:erica@veralearning.com"
+                  className="inline-flex items-center justify-center rounded-full bg-synapse px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-synapse/90"
+                >
+                  Join the waitlist
+                </a>
               </div>
             </div>
           </div>
