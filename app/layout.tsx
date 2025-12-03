@@ -15,8 +15,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Vera Learning",
-  description: "AI-native tools for serious, cognitively-informed course design.",
+  title: "VeraLearning",
+  description: "AI-native assessments that reveal who is truly job-ready.",
   icons: {
     icon: "/logo-vera-circle.svg",
   },
