@@ -130,8 +130,7 @@ export default function HomePage() {
                   separate true job readiness from test-taking ability.
                 </p>
                 <p>
-                  Powered by the Learning Context Model (LCM), our mastery model
-                  that provides AI with the structure it needs to recognize and
+                  Our Learning Context Model&trade; (LCM) provides AI with the structure it needs to recognize and
                   evaluate mastery. LCM aligns with your existing skill maps and
                   curricula so evaluation stays valid, consistent, and fully
                   explainable.
