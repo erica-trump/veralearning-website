@@ -356,7 +356,7 @@ export default function HomePage() {
                     </p>
                     <p className="mt-2 text-sm leading-relaxed">
                       Learners who meet the Assisted Readiness bar receive a
-                      shareable digital badge that makes verification effortless for
+                      shareable digital credential that makes verification effortless for
                       employers.
                     </p>
                   </div>
