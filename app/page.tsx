@@ -99,7 +99,7 @@ export default function HomePage() {
         {/* Overview */}
         <section
           id="overview"
-          className="hero-pattern rounded-3xl bg-white/90 px-8 py-14 shadow-sm ring-1 ring-midnight/5 md:px-16 md:py-20"
+          className="hero-pattern scroll-mt-32 rounded-3xl bg-white/90 px-8 py-14 shadow-sm ring-1 ring-midnight/5 md:px-16 md:py-20"
         >
           <div className="grid gap-10 md:grid-cols-[1.2fr,1fr]">
             <div className="space-y-6">
@@ -154,7 +154,7 @@ export default function HomePage() {
         <RevealOnScroll>
           <section
             id="who"
-            className="hero-pattern rounded-[32px] bg-white/85 px-6 py-10 shadow-sm ring-1 ring-midnight/5 md:px-10 md:py-12"
+            className="hero-pattern scroll-mt-32 rounded-[32px] bg-white/85 px-6 py-10 shadow-sm ring-1 ring-midnight/5 md:px-10 md:py-12"
           >
             <div className="space-y-3">
               <p className="text-xs font-semibold uppercase tracking-[0.18em] text-midnight/55">
@@ -201,7 +201,7 @@ export default function HomePage() {
         <RevealOnScroll>
           <section
             id="what-teams-get"
-            className="hero-pattern rounded-[32px] bg-white/88 px-6 py-10 shadow-sm ring-1 ring-midnight/5 md:px-10 md:py-12"
+            className="hero-pattern scroll-mt-32 rounded-[32px] bg-white/88 px-6 py-10 shadow-sm ring-1 ring-midnight/5 md:px-10 md:py-12"
           >
             <div className="space-y-4 text-sm text-midnight/80 max-w-2xl">
               <p className="text-xs font-semibold uppercase tracking-[0.22em] text-midnight/55">
@@ -239,7 +239,7 @@ export default function HomePage() {
         <RevealOnScroll>
           <section
             id="product"
-            className="hero-pattern rounded-3xl bg-white/85 px-6 py-10 shadow-sm ring-1 ring-midnight/5 md:px-6 md:py-12 space-y-6"
+            className="hero-pattern scroll-mt-32 rounded-3xl bg-white/85 px-6 py-10 shadow-sm ring-1 ring-midnight/5 md:px-6 md:py-12 space-y-6"
           >
             <p className="text-xs font-semibold tracking-[0.18em] text-midnight/55 uppercase">
               How VeraLearning works
