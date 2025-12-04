@@ -95,7 +95,7 @@ const cncStats: CncStat[] = [
 export default function HomePage() {
   return (
     <main className="bg-page-bg text-midnight">
-      <div className="mx-auto max-w-6xl space-y-16 px-4 pb-16 pt-10 md:space-y-20 md:pb-20 md:pt-14">
+      <div className="mx-auto max-w-6xl space-y-16 px-4 pb-10 pt-10 md:space-y-20 md:pb-14 md:pt-14">
         {/* Overview */}
         <section
           id="overview"
@@ -302,7 +302,7 @@ export default function HomePage() {
             <div className="grid items-start gap-10 md:grid-cols-2 xl:grid-cols-[1.25fr,0.85fr]">
               <div className="space-y-4">
                 <p className="text-xs font-semibold uppercase tracking-[0.18em] text-midnight/55">
-                  CNC Safety · Example evidence snapshot
+                  Example evidence snapshot · CNC Safety
                 </p>
                 <h3 className="text-xl font-semibold text-midnight">
                   How the learner reasoned through the task

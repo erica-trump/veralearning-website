@@ -3,7 +3,7 @@ export function SiteFooter() {
 
   return (
     <footer className="bg-page-bg text-midnight/70">
-      <div className="mx-auto max-w-6xl px-4 pt-16">
+      <div className="mx-auto max-w-6xl px-4 pt-6">
         <div className="border-t border-midnight/15" />
         <div className="py-6 text-center text-xs sm:text-sm">
           <p>© {year} VeraLearning. All rights reserved.</p>
