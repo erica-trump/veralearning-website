@@ -43,7 +43,7 @@ body {
   background-image: url("/cognitive-mesh-light.png");
   background-size: 320px;
   background-repeat: repeat;
-  opacity: 0.075;
+  opacity: 0.16; /* slightly stronger mesh visibility */
   animation: hero-drift 100s linear infinite;
   z-index: 0;
 }
