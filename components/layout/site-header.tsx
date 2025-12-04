@@ -24,11 +24,14 @@ export function SiteHeader() {
                         <Link href="#overview" className="hover:text-midnight">
                             Overview
                         </Link>
-                        <Link href="#product" className="hover:text-midnight">
-                            Product
-                        </Link>
                         <Link href="#who" className="hover:text-midnight">
                             Who it&apos;s for
+                        </Link>
+                        <Link href="#what-teams-get" className="hover:text-midnight">
+                            What teams get
+                        </Link>
+                        <Link href="#product" className="hover:text-midnight">
+                            Product
                         </Link>
                     </nav>
 
