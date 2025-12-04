@@ -132,7 +132,7 @@ export default function HomePage() {
                 <p>
                   Our Learning Context Model&trade; (LCM) provides AI with the structure it needs to recognize and
                   evaluate mastery. LCM aligns with your existing skill maps and
-                  curricula so evaluation stays valid, consistent, and fully
+                  curricula and ensures that evaluation stays valid, consistent, and fully
                   explainable.
                 </p>
               </div>
