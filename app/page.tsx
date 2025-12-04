@@ -61,7 +61,7 @@ const steps: StepCard[] = [
   },
   {
     step: "Step 2",
-    title: "Run AI interviews",
+    title: "Run AI-powered interviews",
     description:
       "VeraLearning conducts real-time interviews that seek evidence of mastery. Each turn of the conversation adjusts to the learner and stays aligned with the competencies and expectations that matter to you.",
     delay: 300,
@@ -88,7 +88,7 @@ const steps: StepCard[] = [
 const cncStats: CncStat[] = [
   { label: "Competency level", value: "Ready with support", pill: true },
   { label: "Evidence coverage", value: "4 of 5 critical themes" },
-  { label: "Interview length", value: "11 minutes" },
+  { label: "Interview length", value: "16 minutes" },
   { label: "Export", value: "Shareable rubric report →", highlight: true },
 ];
 
@@ -133,7 +133,7 @@ export default function HomePage() {
                   Powered by the Learning Context Model (LCM), our mastery model
                   that provides AI with the structure it needs to recognize and
                   evaluate mastery. LCM aligns with your existing skill maps and
-                  curricula so evaluation stays consistent, fair, and fully
+                  curricula so evaluation stays valid, consistent, and fully
                   explainable.
                 </p>
               </div>
@@ -302,10 +302,10 @@ export default function HomePage() {
             <div className="grid items-start gap-10 md:grid-cols-2 xl:grid-cols-[1.25fr,0.85fr]">
               <div className="space-y-4">
                 <p className="text-xs font-semibold uppercase tracking-[0.18em] text-midnight/55">
-                  Example evidence snapshot · CNC Safety
+                  Example · CNC Safety Assessment
                 </p>
                 <h3 className="text-xl font-semibold text-midnight">
-                  How the learner reasoned through the task
+                  How the learner reasoned through CNC operation tasks
                 </h3>
                 <p className="text-sm leading-relaxed text-midnight/80">
                   The learner understands the purpose behind safety steps and follows the primary sequence well. Their gaps occur in consistency — occasional missed confirmations, incomplete workspace checks, and rushed verification. With oversight or a checklist, they can operate safely, but they’re not yet ready to run machines independently.
@@ -338,7 +338,7 @@ export default function HomePage() {
                   ))}
                 </dl>
                 <p className="mt-5 text-xs leading-relaxed text-midnight/70">
-                  Vera’s LCM/LCP engine structures the interview, scores reasoning
+                  VeraLearning’s LCM-based engine structures the interview, scores reasoning
                   patterns, and outputs a defensible decision trail you can share
                   directly with faculty and employers.
                 </p>
@@ -356,8 +356,8 @@ export default function HomePage() {
                     </p>
                     <p className="mt-2 text-sm leading-relaxed">
                       Learners who meet the Assisted Readiness bar receive a
-                      shareable credential that makes verification effortless for
-                      employers and training partners.
+                      shareable digital badge that makes verification effortless for
+                      employers.
                     </p>
                   </div>
                 </div>
