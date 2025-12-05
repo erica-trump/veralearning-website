@@ -219,7 +219,7 @@ export default function HomePage() {
                     Signals mapped to your needs
                   </span>
                   <br />
-                  LCM ensures every question, probe, and score ties directly to the competencies and indicators you already use, keeping evaluation consistent and explainable.
+                  LCM&trade; ensures every question, probe, and score ties directly to the competencies and indicators you already use, keeping evaluation consistent and explainable.
                 </li>
                 <li>
                   <span className="font-semibold text-midnight">
@@ -337,7 +337,7 @@ export default function HomePage() {
                   ))}
                 </dl>
                 <p className="mt-5 text-xs leading-relaxed text-midnight/70">
-                  VeraLearning’s LCM-based engine structures the interview, scores reasoning
+                  VeraLearning’s LCM&trade;-based engine structures the interview, scores reasoning
                   patterns, and outputs a defensible decision trail you can share
                   directly with faculty and employers.
                 </p>

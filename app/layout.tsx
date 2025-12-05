@@ -19,6 +19,7 @@ export const metadata: Metadata = {
   description: "AI-native assessments that reveal who is truly job-ready.",
   icons: {
     icon: "/logo-vera-circle.svg",
+    apple: "/apple-touch-icon.png",
   },
 };
 
