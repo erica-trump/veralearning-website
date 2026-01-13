@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Modal from "@/components/ui/modal";
+import Turnstile from "react-turnstile";
 
 type Props = {
     open: boolean;
@@ -19,8 +20,27 @@ export default function WaitlistModal({
     );
     const [error, setError] = useState("");
 
+    // Turnstile token (must be included in POST + verified server-side)
+    const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+
+    // If modal closes/reopens, make sure we reset state
+    useEffect(() => {
+        if (!open) {
+            setStatus("idle");
+            setError("");
+            setTurnstileToken(null);
+        }
+    }, [open]);
+
     async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
+
+        // Require captcha before sending
+        if (!turnstileToken) {
+            setStatus("error");
+            setError("Please complete the captcha.");
+            return;
+        }
 
         const formEl = e.currentTarget; // ✅ capture immediately
         setStatus("loading");
@@ -41,7 +61,12 @@ export default function WaitlistModal({
         const res = await fetch("/api/contact", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ ...payload, ...utm, source }),
+            body: JSON.stringify({
+                ...payload,
+                ...utm,
+                source,
+                turnstileToken,
+            }),
         });
 
         const data = await res.json();
@@ -49,20 +74,20 @@ export default function WaitlistModal({
         if (data.ok) {
             setStatus("success");
             formEl.reset(); // ✅ safe now
+            setTurnstileToken(null); // Turnstile tokens are single-use
         } else {
             setStatus("error");
             setError(data.error || "Something went wrong.");
+            // Force user to re-verify (common if token expired)
+            setTurnstileToken(null);
         }
     }
-
 
     return (
         <Modal open={open} onClose={onClose} title="Contact VeraLearning">
             {status === "success" ? (
                 <div className="space-y-3">
-                    <p className="text-sm text-midnight">
-                        Thanks — we’ll reach out shortly.
-                    </p>
+                    <p className="text-sm text-midnight">Thanks — we’ll reach out shortly.</p>
                     <button
                         onClick={onClose}
                         className="rounded-full bg-synapse px-4 py-2 text-xs font-medium text-white shadow-sm transition hover:bg-synapse/90"
@@ -114,11 +139,29 @@ export default function WaitlistModal({
                         className="w-full rounded-md border border-midnight/15 bg-white p-3 text-sm outline-none focus:border-midnight/30"
                     />
 
+                    {/* Turnstile */}
+                    <div className="pt-1">
+                        <Turnstile
+                            sitekey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY!}
+                            onVerify={(token) => {
+                                setTurnstileToken(token);
+                                if (status === "error") setStatus("idle"); // clear error state once verified
+                            }}
+                            onExpire={() => setTurnstileToken(null)}
+                            onError={() => setTurnstileToken(null)}
+                        // options={{ appearance: "always" }} // uncomment if you want it to always visibly render state
+                        />
+                        <p className="mt-2 text-xs text-midnight/55">
+                            Protected by Cloudflare to prevent spam.
+                        </p>
+                    </div>
+
                     <div className="flex items-center gap-3">
                         <button
                             type="submit"
-                            disabled={status === "loading"}
+                            disabled={status === "loading" || !turnstileToken}
                             className="inline-flex items-center justify-center rounded-full bg-synapse px-4 py-2 text-xs font-medium text-white shadow-sm transition hover:bg-synapse/90 disabled:opacity-60"
+                            title={!turnstileToken ? "Complete the captcha to submit" : undefined}
                         >
                             {status === "loading" ? "Sending..." : "Submit request"}
                         </button>
