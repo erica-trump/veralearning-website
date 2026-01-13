@@ -1,50 +1,60 @@
-// components/layout/site-header.tsx
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
+import { useState } from "react";
+import WaitlistModal from "@/components/waitlist/waitlist-modal";
 
 export function SiteHeader() {
+    const [open, setOpen] = useState(false);
+
     return (
-        <header className="sticky top-0 z-50 border-b border-midnight/5 bg-white/70 backdrop-blur-md supports-[backdrop-filter]:bg-white/50">
-            <div className="mx-auto flex max-w-6xl items-center px-4 py-2.5">
-                {/* Left: logo */}
-                <Link href="/" className="flex items-center" aria-label="Vera Learning">
-                    <Image
-                        src="/logo-vera-full.svg"
-                        alt="Vera Learning logo"
-                        width={140}
-                        height={40}
-                        className="h-8 w-auto"
-                        priority
-                    />
-                </Link>
+        <>
+            <header className="sticky top-0 z-50 border-b border-midnight/5 bg-white/70 backdrop-blur-md supports-[backdrop-filter]:bg-white/50">
+                <div className="mx-auto flex max-w-6xl items-center px-4 py-2.5">
+                    {/* Left: logo */}
+                    <Link href="/" className="flex items-center" aria-label="Vera Learning">
+                        <Image
+                            src="/logo-vera-full.svg"
+                            alt="Vera Learning logo"
+                            width={140}
+                            height={40}
+                            className="h-8 w-auto"
+                            priority
+                        />
+                    </Link>
 
-                {/* Right: nav + actions */}
-                <div className="ml-auto flex items-center gap-6">
-                    <nav className="hidden items-center gap-6 text-xs font-medium text-midnight/75 sm:flex">
-                        <Link href="#overview" className="hover:text-midnight">
-                            Overview
-                        </Link>
-                        <Link href="#who" className="hover:text-midnight">
-                            Who it&apos;s for
-                        </Link>
-                        <Link href="#what-teams-get" className="hover:text-midnight">
-                            What teams get
-                        </Link>
-                        <Link href="#product" className="hover:text-midnight">
-                            Product
-                        </Link>
-                    </nav>
+                    {/* Right: nav + actions */}
+                    <div className="ml-auto flex items-center gap-6">
+                        <nav className="hidden items-center gap-6 text-xs font-medium text-midnight/75 sm:flex">
+                            <Link href="#overview" className="hover:text-midnight">
+                                Overview
+                            </Link>
+                            <Link href="#who" className="hover:text-midnight">
+                                Who it&apos;s for
+                            </Link>
+                            <Link href="#what-teams-get" className="hover:text-midnight">
+                                What teams get
+                            </Link>
+                            <Link href="#product" className="hover:text-midnight">
+                                Product
+                            </Link>
+                        </nav>
 
-                    <div className="flex items-center gap-3">
-                        <a
-                            href="mailto:erica@veralearning.com"
-                            className="inline-flex items-center justify-center rounded-full bg-synapse px-4 py-2 text-xs font-medium text-white shadow-sm transition hover:bg-synapse/90"
-                        >
-                            Join the waitlist
-                        </a>
+                        <div className="flex items-center gap-3">
+                            <button
+                                type="button"
+                                onClick={() => setOpen(true)}
+                                className="inline-flex items-center justify-center rounded-full bg-synapse px-4 py-2 text-xs font-medium text-white shadow-sm transition hover:bg-synapse/90"
+                            >
+                                Get in touch
+                            </button>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </header>
+            </header>
+
+            <WaitlistModal open={open} onClose={() => setOpen(false)} source="header_cta" />
+        </>
     );
 }

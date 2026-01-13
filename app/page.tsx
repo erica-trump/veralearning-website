@@ -1,5 +1,7 @@
 import Image from "next/image";
 import { RevealOnScroll } from "@/components/motion/reveal-on-scroll";
+import ContactCTA from "@/components/cta/contact-cta";
+
 
 type AudienceCard = {
   title: string;
@@ -87,9 +89,9 @@ const steps: StepCard[] = [
 
 const cncStats: CncStat[] = [
   { label: "Competency level", value: "Ready with support", pill: true },
-  { label: "Evidence coverage", value: "4 of 5 critical themes" },
+  { label: "Mastery evidence", value: "4 of 5 critical themes" },
   { label: "Interview length", value: "16 minutes" },
-  { label: "Export", value: "Shareable rubric report →", highlight: true },
+  { label: "Export", value: "Structured evidence report", highlight: true },
 ];
 
 export default function HomePage() {
@@ -138,12 +140,7 @@ export default function HomePage() {
               </div>
 
               <div>
-                <a
-                  href="mailto:erica@veralearning.com"
-                  className="inline-flex items-center justify-center rounded-full bg-synapse px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-synapse/90"
-                >
-                  Join the waitlist
-                </a>
+                <ContactCTA />
               </div>
             </div>
           </div>
@@ -301,14 +298,40 @@ export default function HomePage() {
             <div className="grid items-start gap-10 md:grid-cols-2 xl:grid-cols-[1.25fr,0.85fr]">
               <div className="space-y-4">
                 <p className="text-xs font-semibold uppercase tracking-[0.18em] text-midnight/55">
-                  Example · CNC Safety Assessment
+                  Example · Applied SKills Assessment
                 </p>
                 <h3 className="text-xl font-semibold text-midnight">
                   How the learner reasoned through CNC operation tasks
                 </h3>
-                <p className="text-sm leading-relaxed text-midnight/80">
-                  The learner understands the purpose behind safety steps and follows the primary sequence well. Their gaps occur in consistency — occasional missed confirmations, incomplete workspace checks, and rushed verification. With oversight or a checklist, they can operate safely, but they’re not yet ready to run machines independently.
-                </p>
+                <div className="space-y-4 text-sm leading-relaxed text-midnight/80">
+                  <p>
+                    VeraLearning conducts applied skills assessments that capture how learners
+                    perform and reason through real workplace tasks. In technical domains such as
+                    CNC (Computer Numerical Control) machine operation, these assessments provide
+                    structured evidence that supplements test scores by showing how safety
+                    checks, task order, and decision-making are applied in practice.
+                  </p>
+
+                  <p>
+                    In this assessment, the learner demonstrates a clear understanding of the
+                    purpose behind required safety steps and follows the primary operational
+                    sequence correctly. Gaps appear in consistency, including occasional missed
+                    confirmations, incomplete workspace checks, and rushed verification. With
+                    oversight or a structured checklist, the learner can operate safely;
+                    however, the evidence indicates they are not yet ready to run machines
+                    independently.
+                  </p>
+
+                  <p>
+                    Based on this assessment, the learner receives a verifiable digital
+                    credential aligned with W3C standards. The credential links to a structured
+                    evidence record that documents demonstrated competencies, coverage across
+                    defined themes, and specific areas for improvement. Employers and training
+                    programs can review this evidence directly to support decisions about
+                    readiness, supervision, and next steps.
+                  </p>
+                </div>
+
               </div>
 
               <div className="mt-4 rounded-[28px] bg-white/90 p-6 shadow-inner ring-1 ring-midnight/10 md:mt-8 lg:mt-10">
@@ -320,13 +343,13 @@ export default function HomePage() {
                       </dt>
                       <dd className="mt-2 text-sm font-medium text-midnight">
                         {stat.pill ? (
-                          <span className="inline-flex rounded-full bg-cortex px-3 py-1 text-xs font-semibold text-synapse">
+                          <span className="inline-flex rounded-full bg-synapse px-3 py-1 text-xs font-semibold text-cortex">
                             {stat.value}
                           </span>
                         ) : (
                           <span
                             className={
-                              stat.highlight ? "text-cerulean font-semibold" : ""
+                              stat.highlight ? "text-synapse font-semibold" : ""
                             }
                           >
                             {stat.value}
