@@ -22,8 +22,10 @@ type StepCard = {
 
 type CncStat = {
   label: string;
-  value: string;
+  value: string | string[];
   pill?: boolean;
+  pillBg?: string;
+  pillTextColor?: string;
   highlight?: boolean;
 };
 
@@ -92,6 +94,19 @@ const cncStats: CncStat[] = [
   { label: "Mastery evidence", value: "4 of 5 critical themes" },
   { label: "Interview length", value: "16 minutes" },
   { label: "Export", value: "Structured evidence report", highlight: true },
+];
+
+const cncStatsExampleTwo: CncStat[] = [
+  {
+    label: "Acuity signal",
+    value: "Urgency flagged",
+    pill: true,
+    pillBg: "#D97706",
+    pillTextColor: "#FFFFFF",
+  },
+  { label: "Chief concern", value: "Chest pain (~45 min)" },
+  { label: "Red flags", value: ["Crushing-like pain", "Radiation to left arm"] },
+  { label: "Export", value: "Structured intake report", highlight: true },
 ];
 
 export default function HomePage() {
@@ -343,9 +358,35 @@ export default function HomePage() {
                       </dt>
                       <dd className="mt-2 text-sm font-medium text-midnight">
                         {stat.pill ? (
-                          <span className="inline-flex rounded-full bg-synapse px-3 py-1 text-xs font-semibold text-cortex">
-                            {stat.value}
+                          <span
+                            className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold text-cortex ${stat.pillBg ? "" : "bg-synapse"
+                              }`}
+                            style={
+                              stat.pillBg || stat.pillTextColor
+                                ? {
+                                    ...(stat.pillBg
+                                      ? { backgroundColor: stat.pillBg }
+                                      : {}),
+                                    ...(stat.pillTextColor
+                                      ? { color: stat.pillTextColor }
+                                      : {}),
+                                  }
+                                : undefined
+                            }
+                          >
+                            {Array.isArray(stat.value)
+                              ? stat.value.join(", ")
+                              : stat.value}
                           </span>
+                        ) : Array.isArray(stat.value) ? (
+                          <ul
+                            className={`list-disc space-y-1 pl-5 ${stat.highlight ? "text-synapse font-semibold" : ""
+                              }`}
+                          >
+                            {stat.value.map((item) => (
+                              <li key={item}>{item}</li>
+                            ))}
+                          </ul>
                         ) : (
                           <span
                             className={
@@ -380,6 +421,124 @@ export default function HomePage() {
                       Learners who meet the Assisted Readiness bar receive a
                       shareable digital credential that makes verification effortless for
                       employers.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </RevealOnScroll>
+
+        {/* CNC safety example (duplicate) */}
+        <RevealOnScroll>
+          <section
+            id="cnc-safety-example-2"
+            className="hero-pattern rounded-[32px] bg-white/85 px-6 py-10 shadow-sm ring-1 ring-midnight/5 md:px-10 md:py-12"
+          >
+            <div className="grid items-start gap-10 md:grid-cols-2 xl:grid-cols-[1.25fr,0.85fr]">
+              <div className="space-y-4">
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-midnight/55">
+                  Extended Example · Medical Intake
+                </p>
+                <h3 className="text-xl font-semibold text-midnight">
+                  How Vera’s AI models structure reasoning in real-world contexts
+                </h3>
+                <div className="space-y-4 text-sm leading-relaxed text-midnight/80">
+                  <p>
+                    Vera applies the same structured reasoning framework used in applied skills
+                    assessment to high-stakes, real-world conversations. Rather than treating AI
+                    as a generic text processor, Vera’s models are designed to capture, organize,
+                    and evaluate information against explicit domain context as interactions unfold.
+
+                  </p>
+
+                  <p>
+                    In medical intake, this means structuring patient-reported information using the
+                    Vera Medical Context Model (MCM™), which defines what information matters, how
+                    elements relate, and which patterns signal risk or urgency. The system adapts
+                    dynamically—filling gaps when needed, preserving uncertainty when information
+                    annot be confirmed, and surfacing clinically relevant signals in real time.
+                  </p>
+
+                  <p>
+                    This approach enables Vera to operate flexibly across engagement modes. The same
+                    models can listen to clinician-led encounters, assist with real-time prompts, or
+                    conduct an intake interview directly—while producing consistent, structured outputs.
+                    The result is a FHIR-compliant intake report that makes urgency visible early and
+                    supports reliable triage, handoff, and downstream action when front-door systems
+                    are under pressure.
+                  </p>
+                </div>
+              </div>
+
+              <div className="mt-4 rounded-[28px] bg-white/90 p-6 shadow-inner ring-1 ring-midnight/10 md:mt-8 lg:mt-10">
+                <dl className="grid grid-cols-2 gap-4 text-[12px] text-midnight/75">
+                  {cncStatsExampleTwo.map((stat) => (
+                    <div key={stat.label}>
+                      <dt className="text-xs font-semibold uppercase tracking-wide text-midnight/60">
+                        {stat.label}
+                      </dt>
+                      <dd className="mt-2 text-sm font-medium text-midnight">
+                        {stat.pill ? (
+                          <span
+                            className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold text-cortex ${stat.pillBg ? "" : "bg-synapse"
+                              }`}
+                            style={
+                              stat.pillBg || stat.pillTextColor
+                                ? {
+                                    ...(stat.pillBg
+                                      ? { backgroundColor: stat.pillBg }
+                                      : {}),
+                                    ...(stat.pillTextColor
+                                      ? { color: stat.pillTextColor }
+                                      : {}),
+                                  }
+                                : undefined
+                            }
+                          >
+                            {Array.isArray(stat.value)
+                              ? stat.value.join(", ")
+                              : stat.value}
+                          </span>
+                        ) : Array.isArray(stat.value) ? (
+                          <ul
+                            className={`list-disc space-y-1 pl-5 ${stat.highlight ? "text-synapse font-semibold" : ""
+                              }`}
+                          >
+                            {stat.value.map((item) => (
+                              <li key={item}>{item}</li>
+                            ))}
+                          </ul>
+                        ) : (
+                          <span
+                            className={
+                              stat.highlight ? "text-synapse font-semibold" : ""
+                            }
+                          >
+                            {stat.value}
+                          </span>
+                        )}
+                      </dd>
+                    </div>
+                  ))}
+                </dl>
+                <p className="mt-5 text-xs leading-relaxed text-midnight/70">
+                  For medical intake, Vera uses its Medical Context Model (MCM™)—a domain-specific framework that defines what information matters, how elements relate, and which patterns signal clinical risk or urgency.
+                </p>
+                <div className="mt-6 flex items-center gap-4 rounded-2xl border border-midnight/10 bg-white/80 p-4">
+                  <Image
+                    src="/example-intake3.png"
+                    alt="CNC Safety badge"
+                    width={120}
+                    height={140}
+                    className="h-auto w-24 md:w-28"
+                  />
+                  <div className="text-sm text-midnight/80">
+                    <p className="text-xs font-semibold uppercase tracking-[0.2em] text-midnight/55">
+                      Intake report
+                    </p>
+                    <p className="mt-2 text-sm leading-relaxed">
+                      Vera Intake delivers a structured clinical summary that accelerates triage and downstream action.
                     </p>
                   </div>
                 </div>
