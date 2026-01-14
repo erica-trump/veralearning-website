@@ -338,10 +338,10 @@ export default function HomePage() {
                   </p>
 
                   <p>
-                    Based on this assessment, the learner receives a verifiable digital
-                    credential aligned with W3C standards. The credential links to a structured
-                    evidence record that documents demonstrated competencies, coverage across
-                    defined themes, and specific areas for improvement. Employers and training
+                    Based on this assessment, the learner receives a shareable, verifiable digital credential issued
+                    as an Open Badge 3.0 and aligned with W3C Verifiable Credentials.
+                    The credential is portable across platforms and links directly to a structured evidence record
+                    that documents demonstrated competencies, coverage across defined themes, and specific areas for improvement. Employers and training
                     programs can review this evidence directly to support decisions about
                     readiness, supervision, and next steps.
                   </p>
