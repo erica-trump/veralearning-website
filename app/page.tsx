@@ -446,7 +446,7 @@ export default function HomePage() {
                 <div className="space-y-4 text-sm leading-relaxed text-midnight/80">
                   <p>
                     Vera applies the same reasoning framework used in applied skills
-                    assessment to high-stakes, real-world conversations. Domain logic is encoded
+                    assessment accross high-stakes, real-world conversations. Domain logic is encoded
                     explicitly in system design, while AI is used to interpret and shape
                     language—enabling information to be captured, organized, and evaluated against
                     domain context as interactions unfold.
