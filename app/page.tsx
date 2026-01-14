@@ -446,9 +446,10 @@ export default function HomePage() {
                 <div className="space-y-4 text-sm leading-relaxed text-midnight/80">
                   <p>
                     Vera applies the same structured reasoning framework used in applied skills
-                    assessment to high-stakes, real-world conversations. Rather than treating AI
-                    as a generic text processor, Vera’s models are designed to capture, organize,
-                    and evaluate information against explicit domain context as interactions unfold.
+                    assessment to high-stakes, real-world conversations. Domain reasoning is encoded
+                    explicitly in system structure, while AI is used to interpret and structure
+                    language—enabling information to be captured, organized, and evaluated against
+                    domain context as interactions unfold.
 
                   </p>
 
