@@ -364,13 +364,13 @@ export default function HomePage() {
                             style={
                               stat.pillBg || stat.pillTextColor
                                 ? {
-                                    ...(stat.pillBg
-                                      ? { backgroundColor: stat.pillBg }
-                                      : {}),
-                                    ...(stat.pillTextColor
-                                      ? { color: stat.pillTextColor }
-                                      : {}),
-                                  }
+                                  ...(stat.pillBg
+                                    ? { backgroundColor: stat.pillBg }
+                                    : {}),
+                                  ...(stat.pillTextColor
+                                    ? { color: stat.pillTextColor }
+                                    : {}),
+                                }
                                 : undefined
                             }
                           >
@@ -457,7 +457,7 @@ export default function HomePage() {
                     Vera Medical Context Model (MCM™), which defines what information matters, how
                     elements relate, and which patterns signal risk or urgency. The system adapts
                     dynamically—filling gaps when needed, preserving uncertainty when information
-                    annot be confirmed, and surfacing clinically relevant signals in real time.
+                    cannot be confirmed, and surfacing clinically relevant signals in real time.
                   </p>
 
                   <p>
@@ -486,13 +486,13 @@ export default function HomePage() {
                             style={
                               stat.pillBg || stat.pillTextColor
                                 ? {
-                                    ...(stat.pillBg
-                                      ? { backgroundColor: stat.pillBg }
-                                      : {}),
-                                    ...(stat.pillTextColor
-                                      ? { color: stat.pillTextColor }
-                                      : {}),
-                                  }
+                                  ...(stat.pillBg
+                                    ? { backgroundColor: stat.pillBg }
+                                    : {}),
+                                  ...(stat.pillTextColor
+                                    ? { color: stat.pillTextColor }
+                                    : {}),
+                                }
                                 : undefined
                             }
                           >
