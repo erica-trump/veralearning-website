@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Modal from "@/components/ui/modal";
 import Turnstile from "react-turnstile";
 
@@ -23,14 +23,12 @@ export default function WaitlistModal({
     // Turnstile token (must be included in POST + verified server-side)
     const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
 
-    // If modal closes/reopens, make sure we reset state
-    useEffect(() => {
-        if (!open) {
-            setStatus("idle");
-            setError("");
-            setTurnstileToken(null);
-        }
-    }, [open]);
+    function handleClose() {
+        setStatus("idle");
+        setError("");
+        setTurnstileToken(null);
+        onClose();
+    }
 
     async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
@@ -84,12 +82,12 @@ export default function WaitlistModal({
     }
 
     return (
-        <Modal open={open} onClose={onClose} title="Contact VeraLearning">
+        <Modal open={open} onClose={handleClose} title="Contact VeraLearning">
             {status === "success" ? (
                 <div className="space-y-3">
                     <p className="text-sm text-midnight">Thanks — we’ll reach out shortly.</p>
                     <button
-                        onClick={onClose}
+                        onClick={handleClose}
                         className="rounded-full bg-synapse px-4 py-2 text-xs font-medium text-white shadow-sm transition hover:bg-synapse/90"
                     >
                         Close
@@ -168,7 +166,7 @@ export default function WaitlistModal({
 
                         <button
                             type="button"
-                            onClick={onClose}
+                            onClick={handleClose}
                             className="rounded-full px-4 py-2 text-xs font-medium text-midnight/70 hover:bg-midnight/5"
                         >
                             Cancel

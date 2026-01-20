@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { RevealOnScroll } from "@/components/motion/reveal-on-scroll";
 import ContactCTA from "@/components/cta/contact-cta";
+import LCMLink from "@/components/lcm/lcm-link";
 
 
 type AudienceCard = {
@@ -77,10 +78,22 @@ const steps: StepCard[] = [
   },
   {
     step: "Step 3",
+    title: "Evaluate learner mastery",
+    description:
+      "VeraLearning analyzes learner responses against defined competencies and performance criteria. Evidence is scored, traced to standards, and synthesized into a clear picture of what the learner can reliably do.",
+    delay: 600,
+    accentOpacity: 0.85,
+    gradient:
+      "linear-gradient(160deg, rgba(239,237,232,0.95), rgba(27,138,174,0.12))",
+    shadow: "0 7px 18px rgba(10,35,66,0.08)",
+    hoverClass: "hover:-translate-y-1",
+  },
+  {
+    step: "Step 4",
     title: "Issue verifiable credentials",
     description:
       "VeraLearning produces defensible decisions, evidence trails, and sharable mastery reports so every stakeholder understands why it’s a yes.",
-    delay: 600,
+    delay: 900,
     accentOpacity: 0.9,
     gradient:
       "linear-gradient(180deg, rgba(239,237,232,0.94), rgba(27,138,174,0.14))",
@@ -147,7 +160,7 @@ export default function HomePage() {
                   separate true job readiness from test-taking ability.
                 </p>
                 <p>
-                  Our Learning Context Model&trade; (LCM) provides AI with the structure it needs to recognize and
+                  Our <LCMLink /> provides AI with the structure it needs to recognize and
                   evaluate mastery. LCM aligns with your existing skill maps and
                   curricula, and it ensures that evaluation stays valid, consistent, and fully
                   explainable.
@@ -264,7 +277,7 @@ export default function HomePage() {
               adaptive interviews, and produces transparent evidence of what learners
               can actually do.
             </p>
-            <div className="grid gap-6 md:grid-cols-3">
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
               {steps.map((step) => (
                 <RevealOnScroll
                   key={step.step}
@@ -272,7 +285,7 @@ export default function HomePage() {
                   className="h-full"
                 >
                   <div
-                    className={`relative h-full rounded-2xl border border-midnight/8 p-4 shadow-sm transition-all duration-200 ${step.hoverClass}`}
+                    className={`relative flex h-full flex-col rounded-2xl border border-midnight/8 p-4 shadow-sm transition-all duration-200 lg:min-h-[220px] ${step.hoverClass}`}
                     style={{
                       background: step.gradient,
                       boxShadow: step.shadow,
@@ -293,7 +306,7 @@ export default function HomePage() {
                           {step.title}
                         </p>
                       </div>
-                      <p className="text-xs text-midnight/75">
+                      <p className="text-xs text-midnight/75 lg:text-[11px] lg:leading-snug">
                         {step.description}
                       </p>
                     </div>
@@ -301,6 +314,19 @@ export default function HomePage() {
                 </RevealOnScroll>
               ))}
             </div>
+
+            <RevealOnScroll delayMs={900} className="h-full">
+              <div className="mx-auto overflow-hidden rounded-2xl border border-midnight/10 bg-white/90 shadow-sm lg:w-[90%] xl:w-[85%]">
+                <Image
+                  src="/Credentialing-Diagram4.webp"
+                  alt="Credentialing workflow diagram"
+                  width={1920}
+                  height={1080}
+                  sizes="(min-width: 1024px) 960px, (min-width: 768px) 90vw, 100vw"
+                  className="h-auto w-full"
+                />
+              </div>
+            </RevealOnScroll>
           </section>
         </RevealOnScroll>
 

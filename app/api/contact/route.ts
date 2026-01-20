@@ -84,9 +84,11 @@ export async function POST(req: Request) {
     `;
 
         return NextResponse.json({ ok: true, inserted: rows[0] });
-    } catch (e: any) {
+    } catch (e: unknown) {
+        const message =
+            e instanceof Error ? e.message : "Insert failed";
         return NextResponse.json(
-            { ok: false, error: e?.message ?? "Insert failed" },
+            { ok: false, error: message },
             { status: 500 }
         );
     }

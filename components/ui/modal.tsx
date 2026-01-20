@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { createPortal } from "react-dom";
 
 type ModalProps = {
@@ -11,9 +11,7 @@ type ModalProps = {
 };
 
 export default function Modal({ open, onClose, title, children }: ModalProps) {
-    const [mounted, setMounted] = useState(false);
-
-    useEffect(() => setMounted(true), []);
+    const portalTarget = typeof document === "undefined" ? null : document.body;
 
     // Close on Escape + lock body scroll
     useEffect(() => {
@@ -34,7 +32,7 @@ export default function Modal({ open, onClose, title, children }: ModalProps) {
         };
     }, [open, onClose]);
 
-    if (!open || !mounted) return null;
+    if (!open || !portalTarget) return null;
 
     return createPortal(
         <div className="fixed inset-0 z-[100]">
@@ -48,7 +46,7 @@ export default function Modal({ open, onClose, title, children }: ModalProps) {
             {/* Wrapper */}
             <div className="absolute inset-0 flex items-start justify-center p-4 pt-10 sm:items-center">
                 {/* Panel */}
-                <div className="w-full max-w-2xl overflow-hidden rounded-2xl border border-midnight/10 bg-white shadow-xl max-h-[85vh]">
+                <div className="flex w-full max-w-2xl flex-col overflow-hidden rounded-2xl border border-midnight/10 bg-white shadow-xl max-h-[85vh]">
                     <div className="flex items-center justify-between border-b border-midnight/10 px-5 py-4">
                         {title ? (
                             <h2 className="text-lg font-semibold text-midnight">{title}</h2>
@@ -65,10 +63,10 @@ export default function Modal({ open, onClose, title, children }: ModalProps) {
                         </button>
                     </div>
 
-                    <div className="overflow-y-auto px-5 py-5">{children}</div>
+                    <div className="flex-1 overflow-y-auto px-5 py-5">{children}</div>
                 </div>
             </div>
         </div>,
-        document.body
+        portalTarget
     );
 }
