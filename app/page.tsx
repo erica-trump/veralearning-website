@@ -303,10 +303,10 @@ export default function HomePage() {
               From course materials to competency-based evidence.
             </h2>
             <p className="max-w-2xl text-sm text-midnight/80">
-              VeraLearning doesn&apos;t just generate questions. It aligns with your
-              course materials and skill maps, clarifies competencies, orchestrates
-              adaptive interviews, and produces transparent evidence of what learners
-              can actually do.
+              VeraLearning aligns with your course materials and skill maps, operationalizes
+              competencies, orchestrates adaptive interviews, and evaluates mastery to
+              produce transparent evidence and verifiable credentials that reflect what
+              learners can actually do.
             </p>
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
               {steps.map((step) => (
