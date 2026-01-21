@@ -370,7 +370,7 @@ export default function HomePage() {
             <div className="grid items-start gap-10 md:grid-cols-2 xl:grid-cols-[1.25fr,0.85fr]">
               <div className="space-y-4">
                 <p className="text-xs font-semibold uppercase tracking-[0.18em] text-midnight/55">
-                  Example · Applied Skills Assessment
+                  Use case · Applied Skills Assessment
                 </p>
                 <h3 className="text-xl font-semibold text-midnight">
                   How the learner reasoned through CNC operation tasks
@@ -498,7 +498,7 @@ export default function HomePage() {
             <div className="grid items-start gap-10 md:grid-cols-2 xl:grid-cols-[1.25fr,0.85fr]">
               <div className="space-y-4">
                 <p className="text-xs font-semibold uppercase tracking-[0.18em] text-midnight/55">
-                  Extended Example · Medical Intake
+                  Use case · Clinical Intake
                 </p>
                 <h3 className="text-xl font-semibold text-midnight">
                   How Vera’s AI models structure reasoning in real-world contexts
