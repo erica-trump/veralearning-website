@@ -3,10 +3,13 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
+import { usePathname } from "next/navigation";
 import WaitlistModal from "@/components/waitlist/waitlist-modal";
 
 export function SiteHeader() {
     const [open, setOpen] = useState(false);
+    const pathname = usePathname();
+    const hashLink = (hash: string) => (pathname === "/" ? hash : `/${hash}`);
 
     return (
         <>
@@ -27,17 +30,17 @@ export function SiteHeader() {
                     {/* Right: nav + actions */}
                     <div className="ml-auto flex items-center gap-6">
                         <nav className="hidden items-center gap-6 text-xs font-medium text-midnight/75 sm:flex">
-                            <Link href="#overview" className="hover:text-midnight">
+                            <Link href={hashLink("#overview")} className="hover:text-midnight">
                                 Overview
                             </Link>
-                            <Link href="#who" className="hover:text-midnight">
-                                Who it&apos;s for
+                            <Link href={hashLink("#product")} className="hover:text-midnight">
+                                How it works
                             </Link>
-                            <Link href="#what-teams-get" className="hover:text-midnight">
-                                What teams get
+                            <Link href="/lcm" className="hover:text-midnight">
+                                Learning Context Model
                             </Link>
-                            <Link href="#product" className="hover:text-midnight">
-                                Product
+                            <Link href={hashLink("#cnc-safety")} className="hover:text-midnight">
+                                Use cases
                             </Link>
                         </nav>
 

@@ -1,14 +1,8 @@
 import Image from "next/image";
+import Link from "next/link";
 import { RevealOnScroll } from "@/components/motion/reveal-on-scroll";
 import ContactCTA from "@/components/cta/contact-cta";
-import LCMLink from "@/components/lcm/lcm-link";
 
-
-type AudienceCard = {
-  title: string;
-  description: string;
-  delay: number;
-};
 
 type StepCard = {
   step: string;
@@ -29,27 +23,6 @@ type CncStat = {
   pillTextColor?: string;
   highlight?: boolean;
 };
-
-const audiences: AudienceCard[] = [
-  {
-    title: "Educators & Training Teams",
-    description:
-      "Assess reasoning and problem-solving, not memorization. Build mastery-based programs that produce work-ready graduates.",
-    delay: 0,
-  },
-  {
-    title: "Learning & Development Teams",
-    description:
-      "Measure applied skill in real workplace scenarios and accelerate employee development with targeted feedback.",
-    delay: 120,
-  },
-  {
-    title: "Employers & Workforce Initiatives",
-    description:
-      "Identify people who can actually do the work. VeraLearning reveals judgment, decision-making, and job-ready thinking.",
-    delay: 240,
-  },
-];
 
 const steps: StepCard[] = [
   {
@@ -138,7 +111,7 @@ export default function HomePage() {
               </p>
 
               <h1 className="text-3xl font-semibold leading-tight text-midnight md:text-4xl">
-                Know who&apos;s truly job-ready.
+                Know who&apos;s truly ready.
               </h1>
               <h2 className="text-lg font-medium text-midnight/85 md:text-xl">
                 AI-powered interviews that produce{" "}
@@ -153,18 +126,52 @@ export default function HomePage() {
 
               <div className="space-y-4 text-sm leading-relaxed text-midnight/80 max-w-2xl">
                 <p>
-                  VeraLearning uses adaptive AI interviews to reveal how people
-                  think and solve problems in authentic workplace scenarios.
-                  Beyond test scores, you get clear insight into judgment,
-                  decision-making, and applied skills. These signals are what
-                  separate true job readiness from test-taking ability.
+                  VeraLearning uses adaptive AI interviews to reveal how people think and 
+                  solve problems in authentic, real-world contexts. Beyond test scores, 
+                  you gain clear insight into judgment, decision-making, and applied skills. 
+                  These signals distinguish genuine readiness and understanding from test-taking ability.
                 </p>
-                <p>
-                  Our <LCMLink /> provides AI with the structure it needs to recognize and
-                  evaluate mastery. LCM aligns with your existing skill maps and
-                  curricula, and it ensures that evaluation stays valid, consistent, and fully
-                  explainable.
-                </p>
+                <div className="space-y-3">
+                  <p>
+                    VeraLearning leverages its{" "}
+                    <Link
+                      href="/lcm"
+                      className="font-semibold text-synapse underline decoration-synapse/30 underline-offset-2 transition hover:decoration-synapse/70"
+                    >
+                      Learning Context Model™ (LCM)
+                    </Link>{" "}
+                    to give AI the foundation it
+                    needs to recognize and evaluate mastery by:
+                  </p>
+
+                  <div className="space-y-2">
+                    {[
+                      "Translating course materials and competencies into adaptive, dialog-based interviews",
+                      "Probing reasoning and testing understanding through targeted questioning",
+                      "Evaluating performance against defined criteria to build a structured evidence trail",
+                    ].map((text) => (
+                      <div key={text} className="flex items-start gap-2">
+                        <div className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-cerulean-tint ring-1 ring-midnight/10">
+                          <svg
+                            viewBox="0 0 20 20"
+                            aria-hidden="true"
+                            className="h-3.5 w-3.5 text-synapse"
+                            fill="currentColor"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              d="M16.704 5.29a1 1 0 0 1 .006 1.414l-7.25 7.3a1 1 0 0 1-1.42.003L3.29 9.3a1 1 0 1 1 1.42-1.4l3.04 3.08 6.54-6.58a1 1 0 0 1 1.414-.01Z"
+                              clipRule="evenodd"
+                            />
+                          </svg>
+                        </div>
+                        <p>{text}</p>
+                      </div>
+                    ))}
+                  </div>
+
+                </div>
+
               </div>
 
               <div>
@@ -174,50 +181,74 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* Who it's for */}
         <RevealOnScroll>
           <section
-            id="who"
-            className="hero-pattern scroll-mt-32 rounded-[32px] bg-white/85 px-6 py-10 shadow-sm ring-1 ring-midnight/5 md:px-10 md:py-12"
+            id="flexible"
+            className="hero-pattern scroll-mt-32 rounded-[32px] bg-white/88 px-6 py-10 shadow-sm ring-1 ring-midnight/5 md:px-10 md:py-12"
           >
-            <div className="space-y-3">
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-midnight/55">
-                Who it&apos;s for
+            <div className="space-y-4 text-sm text-midnight/80 max-w-3xl">
+              <p className="text-xs font-semibold uppercase tracking-[0.22em] text-midnight/55">
+                Flexible by design
               </p>
               <h2 className="text-xl font-semibold text-midnight">
-                Built for anyone who needs to know{" "}
-                <span
-                  className="italic font-semibold"
-                  style={{ color: "#0F5F67" }}
-                >
-                  with confidence
-                </span>{" "}
-                that someone can perform.
+                Built to fit your programs and standards.
               </h2>
-              <p className="max-w-2xl text-sm text-midnight/75">
-                VeraLearning provides a shared, rigorous way to understand how learners think and perform. It helps educators and workforce teams measure applied reasoning, communicate readiness clearly, and give decision-makers transparent, defensible evidence.
-              </p>
-            </div>
-            <div className="mt-10 grid gap-5 md:grid-cols-3">
-              {audiences.map((audience) => (
-                <RevealOnScroll
-                  key={audience.title}
-                  delayMs={audience.delay}
-                  transitionClass="transition-all duration-[180ms] ease-[cubic-bezier(0.22,0.61,0.36,1)]"
-                  hiddenClass="opacity-0 translate-y-6"
-                  visibleClass="opacity-100 translate-y-0"
-                  className="h-full"
-                >
-                  <div className="audience-card h-full rounded-2xl border border-midnight/10 bg-white/95 p-4 pt-6 shadow-[0_1px_2px_rgba(10,35,66,0.04)] transition-all duration-200 hover:-translate-y-1">
-                    <p className="text-sm font-semibold text-midnight">
-                      {audience.title}
-                    </p>
-                    <p className="mt-2 text-xs leading-relaxed text-midnight/75">
-                      {audience.description}
-                    </p>
-                  </div>
-                </RevealOnScroll>
-              ))}
+
+              <div className="space-y-3 leading-relaxed">
+                <p>
+                  VeraLearning can be white-labeled and customized to fit your programs,
+                  standards, and learners. Our{" "}
+                  <Link
+                    href="/lcm"
+                    className="font-semibold text-synapse underline decoration-synapse/30 underline-offset-2 transition hover:decoration-synapse/70"
+                  >
+                    Learning Context Model™ (LCM)
+                  </Link>{" "}
+                  aligns with existing curricula
+                  and skill frameworks to ensure evaluation remains valid, consistent, and
+                  explainable.
+                </p>
+
+                <p className="font-medium text-midnight/85">Designed to support contexts such as:</p>
+
+                <div className="space-y-2">
+                  {[
+                    {
+                      lead: "Universities and academic programs",
+                      rest: "assessing reasoning and understanding beyond static exams",
+                    },
+                    {
+                      lead: "Vocational and technical institutions",
+                      rest: "validating job-ready skills",
+                    },
+                    {
+                      lead: "Workforce and employer-led programs",
+                      rest: "assessing real-world readiness",
+                    },
+                  ].map((item) => (
+                    <div key={item.lead} className="flex items-start gap-2">
+                      <div className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-cerulean-tint ring-1 ring-midnight/10">
+                        <svg
+                          viewBox="0 0 20 20"
+                          aria-hidden="true"
+                          className="h-3.5 w-3.5 text-synapse"
+                          fill="currentColor"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M16.704 5.29a1 1 0 0 1 .006 1.414l-7.25 7.3a1 1 0 0 1-1.42.003L3.29 9.3a1 1 0 1 1 1.42-1.4l3.04 3.08 6.54-6.58a1 1 0 0 1 1.414-.01Z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                      </div>
+                      <p>
+                        <span className="font-semibold text-midnight">{item.lead}</span>{" "}
+                        {item.rest}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           </section>
         </RevealOnScroll>
@@ -331,15 +362,15 @@ export default function HomePage() {
         </RevealOnScroll>
 
         {/* CNC safety example */}
-        <RevealOnScroll>
-          <section
-            id="cnc-safety"
-            className="hero-pattern rounded-[32px] bg-white/85 px-6 py-10 shadow-sm ring-1 ring-midnight/5 md:px-10 md:py-12"
-          >
+	        <RevealOnScroll>
+	          <section
+	            id="cnc-safety"
+	            className="hero-pattern scroll-mt-32 rounded-[32px] bg-white/85 px-6 py-10 shadow-sm ring-1 ring-midnight/5 md:px-10 md:py-12"
+	          >
             <div className="grid items-start gap-10 md:grid-cols-2 xl:grid-cols-[1.25fr,0.85fr]">
               <div className="space-y-4">
                 <p className="text-xs font-semibold uppercase tracking-[0.18em] text-midnight/55">
-                  Example · Applied SKills Assessment
+                  Example · Applied Skills Assessment
                 </p>
                 <h3 className="text-xl font-semibold text-midnight">
                   How the learner reasoned through CNC operation tasks
@@ -354,7 +385,7 @@ export default function HomePage() {
                   </p>
 
                   <p>
-                    In this assessment, the learner demonstrates a clear understanding of the
+                    In the assessment snapshot shown, the learner demonstrates a clear understanding of the
                     purpose behind required safety steps and follows the primary operational
                     sequence correctly. Gaps appear in consistency, including occasional missed
                     confirmations, incomplete workspace checks, and rushed verification. With
@@ -376,6 +407,9 @@ export default function HomePage() {
               </div>
 
               <div className="mt-4 rounded-[28px] bg-white/90 p-6 shadow-inner ring-1 ring-midnight/10 md:mt-8 lg:mt-10">
+                <p className="mb-4 text-[16px] font-semibold leading-[1.35] text-synapse">
+                  Assessment Snapshot
+                </p>
                 <dl className="grid grid-cols-2 gap-4 text-[12px] text-midnight/75">
                   {cncStats.map((stat) => (
                     <div key={stat.label}>
@@ -499,6 +533,9 @@ export default function HomePage() {
               </div>
 
               <div className="mt-4 rounded-[28px] bg-white/90 p-6 shadow-inner ring-1 ring-midnight/10 md:mt-8 lg:mt-10">
+                <p className="mb-4 text-[16px] font-semibold leading-[1.35] text-synapse">
+                  Intake Snapshot
+                </p>
                 <dl className="grid grid-cols-2 gap-4 text-[12px] text-midnight/75">
                   {cncStatsExampleTwo.map((stat) => (
                     <div key={stat.label}>
