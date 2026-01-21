@@ -59,17 +59,17 @@ function XBadge({ size = "sm" }: { size?: "sm" | "md" }) {
 
 export default function LCMPageContent() {
     return (
-        <div className="space-y-5 text-sm leading-relaxed text-midnight/80 md:space-y-6">
-            <section className="space-y-4 py-2 md:py-4">
+        <div className="text-sm leading-relaxed text-midnight/80">
+            <section className="hero-pattern rounded-3xl bg-white/85 p-6 shadow-sm ring-1 ring-midnight/5 md:p-8">
                 <p className="text-xs font-semibold uppercase tracking-[0.18em] text-midnight/55">
                     Without vs with LCM
                 </p>
 
-                <div className="rounded-3xl bg-midnight/3 p-1 ring-1 ring-midnight/10">
+                <div className="mt-5 rounded-3xl bg-midnight/3 p-1 ring-1 ring-midnight/10">
                     <div className="grid gap-1 md:grid-cols-2 md:divide-x md:divide-midnight/20">
                         <div className="rounded-[22px] bg-white/80 p-5 md:rounded-[22px_0_0_22px] md:p-6">
                             <p className="text-base font-semibold text-midnight">
-                                Without a Learning Context Model
+                                Without the Learning Context Model
                             </p>
                             <div className="mt-4 space-y-2">
                                 {[
@@ -104,76 +104,73 @@ export default function LCMPageContent() {
                         </div>
                     </div>
                 </div>
-            </section>
 
-            <section className="hero-pattern rounded-3xl bg-midnight/5 p-10 text-center ring-1 ring-midnight/15 shadow-sm md:p-12">
-                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-midnight/55">
-                    In short
-                </p>
-                <p className="mt-4 text-3xl font-semibold leading-snug text-midnight md:text-4xl">
-                    Without context, AI guesses.
-                    <br />
-                    With LCM, AI reasons.
-                </p>
-            </section>
-
-            <hr className="border-midnight/10" />
-
-            <section className="rounded-2xl bg-cerulean-tint p-5 md:p-6">
-                <div className="space-y-2">
+                <div className="mt-8 rounded-2xl bg-midnight/5 p-8 text-center ring-1 ring-midnight/15 shadow-sm md:p-10">
                     <p className="text-xs font-semibold uppercase tracking-[0.18em] text-midnight/55">
-                        What this enables
+                        In short
                     </p>
-                    <p className="text-base font-semibold leading-snug text-midnight">
-                        With LCM in place, VeraLearning can:
+                    <p className="mt-4 text-3xl font-semibold leading-snug text-midnight md:text-4xl">
+                        Without context, AI guesses.
+                        <br />
+                        With LCM, AI reasons.
                     </p>
-                </div>
-
-                <div className="mt-4 grid gap-3 md:grid-cols-2">
-                    {[
-                        "conduct adaptive, competency-aligned interviews",
-                        "evaluate mastery using consistent, explicit criteria",
-                        "generate evidence suitable for review and validation",
-                        "support pilots and early adoption without sacrificing rigor",
-                    ].map((text) => (
-                        <div key={text} className="flex items-start gap-3">
-                            <CheckBadge size="md" />
-                            <p className="text-midnight/80">{text}</p>
-                        </div>
-                    ))}
                 </div>
             </section>
 
-            <section className="rounded-2xl bg-cerulean-tint p-5 md:p-6">
-                <div className="space-y-2">
-                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-midnight/55">
-                        What this produces
-                    </p>
-                    <p className="text-base font-semibold leading-snug text-midnight">
-                        Clear, decision-ready artifacts you can review and share.
-                    </p>
-                    <p className="text-sm leading-relaxed text-midnight/75">
-                        These artifacts are generated directly from LCM-guided evaluation.
-                    </p>
-                </div>
+            <div className="mt-16 space-y-16 md:mt-20 md:space-y-20">
+                <section className="hero-pattern rounded-3xl bg-white/85 p-6 shadow-sm ring-1 ring-midnight/5 md:p-8">
+                    <div className="space-y-2">
+                        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-midnight/55">
+                            What LCM Enables and Produces
+                        </p>
+                    </div>
 
-                <div className="mt-4 grid gap-2 md:grid-cols-2">
-                    {[
-                        "Structured assessment snapshots",
-                        "Explainable mastery decisions",
-                        "Shareable evidence trails",
-                        "Verifiable credentials (when applicable)",
-                    ].map((text) => (
-                        <div key={text} className="flex items-start gap-2">
-                            <CheckBadge />
-                            <p className="text-midnight/80">{text}</p>
+                    <div className="mt-6 grid gap-4 md:grid-cols-2">
+                        <div className="rounded-2xl bg-cerulean-tint p-5 md:p-6">
+                            <p className="text-base font-semibold leading-snug text-midnight">
+                                With LCM in place, VeraCredentials can:
+                            </p>
+
+                            <div className="mt-4 space-y-3">
+                                {[
+                                    "conduct adaptive, competency-aligned interviews",
+                                    "evaluate mastery using consistent, explicit criteria",
+                                    "generate evidence suitable for review and validation",
+                                    "support pilots and early adoption without sacrificing rigor",
+                                ].map((text) => (
+                                    <div key={text} className="flex items-start gap-3">
+                                        <CheckBadge size="md" />
+                                        <p className="text-midnight/80">{text}</p>
+                                    </div>
+                                ))}
+                            </div>
                         </div>
-                    ))}
-                </div>
-            </section>
 
-            <section className="mt-8 py-6 md:mt-10 md:py-10">
-                <div className="hero-pattern rounded-3xl border border-midnight/10 bg-cerulean-tint p-6 shadow-sm md:p-8">
+                        <div className="rounded-2xl bg-cerulean-tint p-5 md:p-6">
+                            <div className="space-y-2">
+                                <p className="text-base font-semibold leading-snug text-midnight">
+                                    LCM-guided evaluation produces clear, decision-ready artifacts:
+                                </p>
+                            </div>
+
+                            <div className="mt-4 space-y-3">
+                                {[
+                                    "Structured assessment snapshots",
+                                    "Explainable mastery decisions",
+                                    "Shareable evidence trails",
+                                    "Verifiable credentials (when applicable)",
+                                ].map((text) => (
+                                    <div key={text} className="flex items-start gap-2">
+                                        <CheckBadge />
+                                        <p className="text-midnight/80">{text}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section className="hero-pattern rounded-3xl bg-white/85 p-6 shadow-sm ring-1 ring-midnight/5 md:p-8">
                     <div className="space-y-2">
                         <p className="text-xs font-semibold uppercase tracking-[0.18em] text-midnight/55">
                             How LCM is different
@@ -208,7 +205,7 @@ export default function LCMPageContent() {
                         ].map((item) => (
                             <div
                                 key={item.title}
-                                className="h-full rounded-2xl border border-midnight/10 bg-white/90 p-5 shadow-[0_1px_2px_rgba(10,35,66,0.05)] md:p-6"
+                                className="h-full rounded-2xl border border-midnight/10 bg-cerulean-tint p-5 shadow-[0_1px_2px_rgba(10,35,66,0.05)] md:p-6"
                             >
                                 <div className="flex gap-3">
                                     <CheckBadge size="md" />
@@ -224,8 +221,8 @@ export default function LCMPageContent() {
                             </div>
                         ))}
                     </div>
-                </div>
-            </section>
+                </section>
+            </div>
         </div>
     );
 }

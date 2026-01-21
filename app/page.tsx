@@ -29,7 +29,7 @@ const steps: StepCard[] = [
     step: "Step 1",
     title: "Map your learning context",
     description:
-      "VeraLearning ingests course materials, job requirements, and skill frameworks to expose the cognitive demands and expectations that matter.",
+      "VeraCredentials ingests course materials, job requirements, and skill frameworks to expose the cognitive demands and expectations that matter.",
     delay: 0,
     accentOpacity: 0.7,
     gradient:
@@ -41,7 +41,7 @@ const steps: StepCard[] = [
     step: "Step 2",
     title: "Run AI-powered interviews",
     description:
-      "VeraLearning conducts real-time interviews that seek evidence of mastery. Each turn of the conversation adjusts to the learner and stays aligned with the competencies and expectations that matter to you.",
+      "VeraCredentials conducts real-time interviews that seek evidence of mastery. Each turn of the conversation adjusts to the learner and stays aligned with the competencies and expectations that matter to you.",
     delay: 300,
     accentOpacity: 0.8,
     gradient:
@@ -53,7 +53,7 @@ const steps: StepCard[] = [
     step: "Step 3",
     title: "Evaluate learner mastery",
     description:
-      "VeraLearning analyzes learner responses against defined competencies and performance criteria. Evidence is scored, traced to standards, and synthesized into a clear picture of what the learner can reliably do.",
+      "VeraCredentials analyzes learner responses against defined competencies and performance criteria. Evidence is scored, traced to standards, and synthesized into a clear picture of what the learner can reliably do.",
     delay: 600,
     accentOpacity: 0.85,
     gradient:
@@ -65,7 +65,7 @@ const steps: StepCard[] = [
     step: "Step 4",
     title: "Issue verifiable credentials",
     description:
-      "VeraLearning produces defensible decisions, evidence trails, and sharable mastery reports so every stakeholder understands why it’s a yes.",
+      "VeraCredentials produces defensible decisions, evidence trails, and sharable mastery reports so every stakeholder understands why it’s a yes.",
     delay: 900,
     accentOpacity: 0.9,
     gradient:
@@ -99,6 +99,7 @@ export default function HomePage() {
   return (
     <main className="bg-page-bg text-midnight">
       <div className="mx-auto max-w-6xl space-y-16 px-4 pb-10 pt-10 md:space-y-20 md:pb-14 md:pt-14">
+        <div className="space-y-10 md:space-y-12">
         {/* Overview */}
         <section
           id="overview"
@@ -126,22 +127,22 @@ export default function HomePage() {
 
               <div className="space-y-4 text-sm leading-relaxed text-midnight/80 max-w-2xl">
                 <p>
-                  VeraLearning uses adaptive AI interviews to reveal how people think and 
-                  solve problems in authentic, real-world contexts. Beyond test scores, 
-                  you gain clear insight into judgment, decision-making, and applied skills. 
-                  These signals distinguish genuine readiness and understanding from test-taking ability.
+                  VeraCredentials, built by VeraLearning, uses adaptive AI interviews to reveal
+                  how people think and solve problems in authentic, real-world contexts. Beyond
+                  test scores, you gain clear insight into judgment, decision-making, and applied
+                  skills. These signals distinguish genuine readiness and understanding from
+                  test-taking ability.
                 </p>
                 <div className="space-y-3">
                   <p>
-                    VeraLearning leverages its{" "}
+                    VeraCredentials leverages VeraLearning&apos;s{" "}
                     <Link
                       href="/lcm"
                       className="font-semibold text-synapse underline decoration-synapse/30 underline-offset-2 transition hover:decoration-synapse/70"
                     >
                       Learning Context Model™ (LCM)
                     </Link>{" "}
-                    to give AI the foundation it
-                    needs to recognize and evaluate mastery by:
+                    to give AI the foundation it needs to recognize and evaluate mastery by:
                   </p>
 
                   <div className="space-y-2">
@@ -196,7 +197,7 @@ export default function HomePage() {
 
               <div className="space-y-3 leading-relaxed">
                 <p>
-                  VeraLearning can be white-labeled and customized to fit your programs,
+                  VeraCredentials can be white-labeled and customized to fit your programs,
                   standards, and learners. Our{" "}
                   <Link
                     href="/lcm"
@@ -290,20 +291,22 @@ export default function HomePage() {
           </section>
         </RevealOnScroll>
 
-        {/* How VeraLearning works */}
+        </div>
+
+        {/* How VeraCredentials works */}
         <RevealOnScroll>
           <section
             id="product"
             className="hero-pattern scroll-mt-32 rounded-3xl bg-white/85 px-6 py-10 shadow-sm ring-1 ring-midnight/5 md:px-6 md:py-12 space-y-6"
           >
             <p className="text-xs font-semibold tracking-[0.18em] text-midnight/55 uppercase">
-              How VeraLearning works
+              How VeraCredentials works
             </p>
             <h2 className="text-xl font-semibold text-midnight">
               From course materials to competency-based evidence.
             </h2>
             <p className="max-w-2xl text-sm text-midnight/80">
-              VeraLearning aligns with your course materials and skill maps, operationalizes
+              VeraCredentials aligns with your course materials and skill maps, operationalizes
               competencies, orchestrates adaptive interviews, and evaluates mastery to
               produce transparent evidence and verifiable credentials that reflect what
               learners can actually do.
@@ -359,25 +362,26 @@ export default function HomePage() {
               </div>
             </RevealOnScroll>
           </section>
-        </RevealOnScroll>
+	        </RevealOnScroll>
 
-        {/* CNC safety example */}
+	        <div className="space-y-10 md:space-y-12">
+	        {/* CNC safety example */}
 	        <RevealOnScroll>
 	          <section
 	            id="cnc-safety"
 	            className="hero-pattern scroll-mt-32 rounded-[32px] bg-white/85 px-6 py-10 shadow-sm ring-1 ring-midnight/5 md:px-10 md:py-12"
 	          >
-            <div className="grid items-start gap-10 md:grid-cols-2 xl:grid-cols-[1.25fr,0.85fr]">
-              <div className="space-y-4">
-                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-midnight/55">
-                  Use case · Applied Skills Assessment
-                </p>
+	            <div className="grid items-start gap-10 md:grid-cols-2 xl:grid-cols-[1.25fr,0.85fr]">
+	              <div className="space-y-4">
+	                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-midnight/55">
+	                  Use case · Applied Skills Assessment
+	                </p>
                 <h3 className="text-xl font-semibold text-midnight">
                   How the learner reasoned through CNC operation tasks
                 </h3>
                 <div className="space-y-4 text-sm leading-relaxed text-midnight/80">
                   <p>
-                    VeraLearning conducts applied skills assessments that capture how learners
+                    VeraCredentials conducts applied skills assessments that capture how learners
                     perform and reason through real workplace tasks. In technical domains such as
                     CNC (Computer Numerical Control) machine operation, these assessments provide
                     structured evidence that supplements test scores by showing how safety
@@ -396,7 +400,7 @@ export default function HomePage() {
 
                   <p>
                     Based on this assessment, the learner receives a shareable, verifiable digital credential issued
-                    as an Open Badge 3.0 and aligned with W3C Verifiable Credentials.
+                    as an <b>Open Badge 3.0</b> and aligned with <b>W3C Verifiable Credentials</b>.
                     The credential is portable across platforms and links directly to a structured evidence record
                     that documents demonstrated competencies, coverage across defined themes, and specific areas for improvement. Employers and training
                     programs can review this evidence directly to support decisions about
@@ -485,12 +489,12 @@ export default function HomePage() {
                   </div>
                 </div>
               </div>
-            </div>
-          </section>
-        </RevealOnScroll>
+	            </div>
+	          </section>
+	        </RevealOnScroll>
 
-        {/* CNC safety example (duplicate) */}
-        <RevealOnScroll>
+	        {/* CNC safety example (duplicate) */}
+	        <RevealOnScroll>
           <section
             id="cnc-safety-example-2"
             className="hero-pattern rounded-[32px] bg-white/85 px-6 py-10 shadow-sm ring-1 ring-midnight/5 md:px-10 md:py-12"
@@ -505,7 +509,8 @@ export default function HomePage() {
                 </h3>
                 <div className="space-y-4 text-sm leading-relaxed text-midnight/80">
                   <p>
-                    Vera applies the same reasoning framework used in applied skills
+                    <strong>VeraIntake</strong>, VeraLearning’s clinical intake product, 
+                    applies the same reasoning framework used in applied skills
                     assessment accross high-stakes, real-world conversations. Domain logic is encoded
                     explicitly in system design, while AI is used to interpret and shape
                     language—enabling information to be captured, organized, and evaluated against
@@ -514,15 +519,15 @@ export default function HomePage() {
                   </p>
 
                   <p>
-                    In medical intake, this means structuring patient-reported information using the
-                    Vera Medical Context Model (MCM™), which defines what information matters, how
-                    elements relate, and which patterns signal risk or urgency. The system adapts
+                    In medical intake, this means structuring patient-reported information using
+	                    VeraLearning&apos;s <strong>Medical Context Model (MCM™)</strong>, which defines what information matters, how
+	                    elements relate, and which patterns signal risk or urgency. The system adapts
                     dynamically—filling gaps when needed, preserving uncertainty when information
                     cannot be confirmed, and surfacing clinically relevant signals in real time.
                   </p>
 
                   <p>
-                    This approach enables Vera to operate flexibly across engagement modes. The same
+                    This approach enables VeraIntake to operate flexibly across engagement modes. The same
                     models can listen to clinician-led encounters, assist with real-time prompts, or
                     conduct an intake interview directly—while producing consistent, structured outputs.
                     The result is a FHIR-compliant intake report that makes urgency visible early and
@@ -587,7 +592,7 @@ export default function HomePage() {
                   ))}
                 </dl>
                 <p className="mt-5 text-xs leading-relaxed text-midnight/70">
-                  For medical intake, Vera uses its Medical Context Model (MCM™)—a domain-specific framework that defines what information matters, how elements relate, and which patterns signal clinical risk or urgency.
+                  VeraIntake uses its Medical Context Model (MCM™)—a domain-specific framework that defines what information matters, how elements relate, and which patterns signal clinical risk or urgency.
                 </p>
                 <div className="mt-6 flex items-center gap-4 rounded-2xl border border-midnight/10 bg-white/80 p-4">
                   <Image
@@ -602,15 +607,16 @@ export default function HomePage() {
                       Intake report
                     </p>
                     <p className="mt-2 text-sm leading-relaxed">
-                      Vera Intake delivers a structured clinical summary that accelerates triage and downstream action.
+                      VeraIntake delivers a structured clinical summary that accelerates triage and downstream action.
                     </p>
                   </div>
                 </div>
               </div>
-            </div>
-          </section>
-        </RevealOnScroll>
-      </div>
-    </main>
-  );
-}
+	            </div>
+	          </section>
+	        </RevealOnScroll>
+	        </div>
+	      </div>
+	    </main>
+	  );
+	}
