@@ -124,7 +124,7 @@ export default function LCMContent() {
                 <p className="text-xs font-semibold uppercase tracking-[0.18em] text-midnight/55">
                     What this enables
                 </p>
-                <p>With LCM in place, VeraLearning can:</p>
+                <p>With LCM in place, VeraCredentials:</p>
                 <div className="space-y-2">
                     {[
                         "conduct adaptive, competency-aligned interviews",

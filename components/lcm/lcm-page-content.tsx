@@ -1,5 +1,7 @@
 "use client";
 
+import { RevealOnScroll } from "@/components/motion/reveal-on-scroll";
+
 function CheckBadge({
     size = "sm",
     tone = "neutral",
@@ -60,117 +62,150 @@ function XBadge({ size = "sm" }: { size?: "sm" | "md" }) {
 export default function LCMPageContent() {
     return (
         <div className="text-sm leading-relaxed text-midnight/80">
-            <section className="hero-pattern rounded-3xl bg-white/85 p-6 shadow-sm ring-1 ring-midnight/5 md:p-8">
-                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-midnight/55">
-                    Without vs with LCM
-                </p>
+            <RevealOnScroll>
+                <section className="hero-pattern rounded-3xl bg-white/85 p-6 shadow-sm ring-1 ring-midnight/5 md:p-8">
+                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-midnight/55">
+                        Without vs with LCM
+                    </p>
 
-                <div className="mt-5 rounded-3xl bg-midnight/3 p-1 ring-1 ring-midnight/10">
-                    <div className="grid gap-1 md:grid-cols-2 md:divide-x md:divide-midnight/20">
-                        <div className="rounded-[22px] bg-white/80 p-5 md:rounded-[22px_0_0_22px] md:p-6">
-                            <p className="text-base font-semibold text-midnight">
-                                Without the Learning Context Model
-                            </p>
-                            <div className="mt-4 space-y-2">
-                                {[
-                                    "AI relies on prompts and retrieved text",
-                                    "Evaluation varies by interaction",
-                                    "Decisions are difficult to explain or audit",
-                                    "Evidence is fragmented",
-                                ].map((text) => (
-                                    <div key={text} className="flex items-start gap-2">
-                                        <XBadge />
-                                        <p className="text-midnight/75">{text}</p>
-                                    </div>
-                                ))}
+                    <div className="mt-5 rounded-3xl bg-midnight/3 p-1 ring-1 ring-midnight/10">
+                        <div className="grid gap-1 md:grid-cols-2 md:divide-x md:divide-midnight/20">
+                            <div className="rounded-[22px] bg-white/80 p-5 md:rounded-[22px_0_0_22px] md:p-6">
+                                <p className="text-base font-semibold text-midnight">
+                                    Without the Learning Context Model
+                                </p>
+                                <div className="mt-4 space-y-2">
+                                    {[
+                                        "AI relies on prompts and retrieved text",
+                                        "Evaluation varies by interaction",
+                                        "Decisions are difficult to explain or audit",
+                                        "Evidence is fragmented",
+                                    ].map((text) => (
+                                        <div key={text} className="flex items-start gap-2">
+                                            <XBadge />
+                                            <p className="text-midnight/75">{text}</p>
+                                        </div>
+                                    ))}
+                                </div>
                             </div>
-                        </div>
 
-                        <div className="rounded-[22px] bg-cerulean-tint p-5 md:rounded-[0_22px_22px_0] md:p-6">
-                            <p className="text-base font-semibold text-midnight">With LCM</p>
-                            <div className="mt-4 space-y-2">
-                                {[
-                                    "AI reasons within defined expectations",
-                                    "Evaluation is consistent across learners",
-                                    "Decisions trace back to criteria",
-                                    "Evidence accumulates coherently",
-                                ].map((text) => (
-                                    <div key={text} className="flex items-start gap-2">
-                                        <CheckBadge tone="teal" />
-                                        <p className="text-midnight/80">{text}</p>
-                                    </div>
-                                ))}
+                            <div className="rounded-[22px] bg-cerulean-tint p-5 md:rounded-[0_22px_22px_0] md:p-6">
+                                <p className="text-base font-semibold text-midnight">
+                                    With LCM
+                                </p>
+                                <div className="mt-4 space-y-2">
+                                    {[
+                                        "AI reasons within defined expectations",
+                                        "Evaluation is consistent across learners",
+                                        "Decisions trace back to criteria",
+                                        "Evidence accumulates coherently",
+                                    ].map((text) => (
+                                        <div key={text} className="flex items-start gap-2">
+                                            <CheckBadge tone="teal" />
+                                            <p className="text-midnight/80">{text}</p>
+                                        </div>
+                                    ))}
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <div className="mt-8 rounded-2xl bg-midnight/5 p-8 text-center ring-1 ring-midnight/15 shadow-sm md:p-10">
-                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-midnight/55">
-                        In short
-                    </p>
-                    <p className="mt-4 text-3xl font-semibold leading-snug text-midnight md:text-4xl">
-                        Without context, AI guesses.
-                        <br />
-                        With LCM, AI reasons.
-                    </p>
-                </div>
-            </section>
+                    <div className="mt-8 rounded-2xl bg-midnight/5 p-8 text-center ring-1 ring-midnight/15 shadow-sm md:p-10">
+                        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-midnight/55">
+                            In short
+                        </p>
+                        <p className="mt-4 text-3xl font-semibold leading-snug text-midnight md:text-4xl">
+                            Without context, AI guesses.
+                            <br />
+                            With LCM, AI reasons.
+                        </p>
+                    </div>
+                </section>
+            </RevealOnScroll>
 
             <div className="mt-16 space-y-16 md:mt-20 md:space-y-20">
-                <section className="hero-pattern rounded-3xl bg-white/85 p-6 shadow-sm ring-1 ring-midnight/5 md:p-8">
+                <RevealOnScroll delayMs={120}>
+                    <section className="hero-pattern rounded-3xl bg-white/85 p-6 shadow-sm ring-1 ring-midnight/5 md:p-8">
                     <div className="space-y-2">
                         <p className="text-xs font-semibold uppercase tracking-[0.18em] text-midnight/55">
                             What LCM Enables and Produces
                         </p>
                     </div>
 
-                    <div className="mt-6 grid gap-4 md:grid-cols-2">
-                        <div className="rounded-2xl bg-cerulean-tint p-5 md:p-6">
-                            <p className="text-base font-semibold leading-snug text-midnight">
-                                With LCM in place, VeraCredentials can:
-                            </p>
+	                    <div className="mt-6 grid gap-4 md:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] md:items-start md:gap-5">
+	                        <div className="rounded-2xl bg-cerulean-tint p-4 md:p-5">
+	                            <p className="text-base font-semibold leading-snug text-midnight">
+	                                With LCM in place, VeraCredentials:
+	                            </p>
 
-                            <div className="mt-4 space-y-3">
-                                {[
-                                    "conduct adaptive, competency-aligned interviews",
-                                    "evaluate mastery using consistent, explicit criteria",
-                                    "generate evidence suitable for review and validation",
-                                    "support pilots and early adoption without sacrificing rigor",
-                                ].map((text) => (
-                                    <div key={text} className="flex items-start gap-3">
-                                        <CheckBadge size="md" />
-                                        <p className="text-midnight/80">{text}</p>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
+	                            <div className="mt-3 space-y-3">
+	                                {[
+	                                    "conduct adaptive, competency-aligned interviews",
+	                                    "evaluate mastery using consistent, explicit criteria",
+	                                    "generate evidence suitable for review and validation",
+	                                    "support pilots and early adoption without sacrificing rigor",
+	                                ].map((text) => (
+	                                    <div key={text} className="flex items-start gap-3">
+	                                        <CheckBadge size="md" />
+	                                        <p className="text-midnight/80 leading-relaxed">{text}</p>
+	                                    </div>
+	                                ))}
+	                            </div>
+	                        </div>
 
-                        <div className="rounded-2xl bg-cerulean-tint p-5 md:p-6">
-                            <div className="space-y-2">
-                                <p className="text-base font-semibold leading-snug text-midnight">
-                                    LCM-guided evaluation produces clear, decision-ready artifacts:
-                                </p>
-                            </div>
+	                        <div className="flex items-center justify-center gap-2 py-1 text-sm font-semibold text-midnight/55 md:pt-2">
+	                            <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-midnight/5 ring-1 ring-midnight/10">
+	                                <svg
+	                                    viewBox="0 0 20 20"
+	                                    fill="none"
+	                                    aria-hidden="true"
+	                                    className="h-4 w-4 rotate-90 text-midnight/60 md:rotate-0"
+	                                >
+	                                    <path
+	                                        d="M3.5 10H15"
+	                                        stroke="currentColor"
+	                                        strokeWidth="1.6"
+	                                        strokeLinecap="round"
+	                                    />
+	                                    <path
+	                                        d="M11 6L15 10L11 14"
+	                                        stroke="currentColor"
+	                                        strokeWidth="1.6"
+	                                        strokeLinecap="round"
+	                                        strokeLinejoin="round"
+	                                    />
+	                                </svg>
+	                            </span>
+	                            <span className="tracking-wide">Produces</span>
+	                        </div>
 
-                            <div className="mt-4 space-y-3">
-                                {[
-                                    "Structured assessment snapshots",
-                                    "Explainable mastery decisions",
-                                    "Shareable evidence trails",
-                                    "Verifiable credentials (when applicable)",
-                                ].map((text) => (
-                                    <div key={text} className="flex items-start gap-2">
-                                        <CheckBadge />
-                                        <p className="text-midnight/80">{text}</p>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
+	                        <div className="rounded-2xl bg-cerulean-tint p-4 md:p-5">
+	                            <div className="space-y-2">
+	                                <p className="text-base font-semibold leading-snug text-midnight">
+	                                    Decision-ready artifacts you can review and share:
+	                                </p>
+	                            </div>
+
+	                            <div className="mt-3 space-y-3">
+	                                {[
+	                                    "Structured assessment snapshots",
+	                                    "Explainable mastery decisions",
+	                                    "Shareable evidence trails",
+	                                    "Verifiable credentials (when applicable)",
+	                                ].map((text) => (
+	                                    <div key={text} className="flex items-start gap-3">
+	                                        <CheckBadge size="md" />
+	                                        <p className="text-midnight/80 leading-relaxed">{text}</p>
+	                                    </div>
+	                                ))}
+	                            </div>
+	                        </div>
                     </div>
-                </section>
+                    </section>
+                </RevealOnScroll>
 
-                <section className="hero-pattern rounded-3xl bg-white/85 p-6 shadow-sm ring-1 ring-midnight/5 md:p-8">
+                <RevealOnScroll delayMs={240}>
+                    <section className="hero-pattern rounded-3xl bg-white/85 p-6 shadow-sm ring-1 ring-midnight/5 md:p-8">
                     <div className="space-y-2">
                         <p className="text-xs font-semibold uppercase tracking-[0.18em] text-midnight/55">
                             How LCM is different
@@ -221,7 +256,8 @@ export default function LCMPageContent() {
                             </div>
                         ))}
                     </div>
-                </section>
+                    </section>
+                </RevealOnScroll>
             </div>
         </div>
     );
