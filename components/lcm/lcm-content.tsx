@@ -127,10 +127,10 @@ export default function LCMContent() {
                 <p>With LCM in place, VeraCredentials:</p>
                 <div className="space-y-2">
                     {[
-                        "conduct adaptive, competency-aligned interviews",
-                        "evaluate mastery using consistent, explicit criteria",
-                        "generate evidence suitable for review and validation",
-                        "support pilots and early adoption without sacrificing rigor",
+                        "conducts adaptive, competency-aligned interviews",
+                        "evaluates mastery using consistent, explicit criteria",
+                        "generates evidence suitable for review and validation",
+                        "supports pilots and early adoption without sacrificing rigor",
                     ].map((text) => (
                         <div key={text} className="flex items-start gap-2">
                             <div className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-cerulean-tint ring-1 ring-midnight/10">

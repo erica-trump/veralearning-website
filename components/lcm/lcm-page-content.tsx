@@ -140,10 +140,10 @@ export default function LCMPageContent() {
 
 	                            <div className="mt-3 space-y-3">
 	                                {[
-	                                    "conduct adaptive, competency-aligned interviews",
-	                                    "evaluate mastery using consistent, explicit criteria",
-	                                    "generate evidence suitable for review and validation",
-	                                    "support pilots and early adoption without sacrificing rigor",
+	                                    "conducts adaptive, competency-aligned interviews",
+	                                    "evaluates mastery using consistent, explicit criteria",
+	                                    "generates evidence suitable for review and validation",
+	                                    "supports pilots and early adoption without sacrificing rigor",
 	                                ].map((text) => (
 	                                    <div key={text} className="flex items-start gap-3">
 	                                        <CheckBadge size="md" />
@@ -176,7 +176,7 @@ export default function LCMPageContent() {
 	                                    />
 	                                </svg>
 	                            </span>
-	                            <span className="tracking-wide">Produces</span>
+	                            <span className="tracking-wide">This produces</span>
 	                        </div>
 
 	                        <div className="rounded-2xl bg-cerulean-tint p-4 md:p-5">
