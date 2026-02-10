@@ -2,6 +2,14 @@ import { NextResponse } from "next/server";
 import postgres from "postgres";
 
 const sql = postgres(process.env.DATABASE_URL!, { ssl: "require" });
+const ALLOWED_CONTACT_REASONS = new Set([
+    "Piloting or integrating VeraCredentials",
+    "AI systems design & architecture",
+    "AI governance, safety, or risk",
+    "Credentialing & assessment strategy",
+    "Learning solution design or evaluation",
+    "Something else (describe below)",
+]);
 
 function isValidEmail(email: string) {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -69,6 +77,11 @@ export async function POST(req: Request) {
         const role = (body.role ?? "").toString().trim();
         const message = (body.message ?? "").toString().trim();
         const source = (body.source ?? "local").toString().trim();
+        const contactReasons = Array.isArray(body.contact_reasons)
+            ? body.contact_reasons
+                .map((value) => value?.toString().trim())
+                .filter((value): value is string => Boolean(value))
+            : [];
 
         if (!email || !isValidEmail(email)) {
             return NextResponse.json(
@@ -76,10 +89,32 @@ export async function POST(req: Request) {
                 { status: 400 }
             );
         }
+        if (!name) {
+            return NextResponse.json(
+                { ok: false, error: "Name is required" },
+                { status: 400 }
+            );
+        }
+        if (!company) {
+            return NextResponse.json(
+                { ok: false, error: "Company or Institution is required" },
+                { status: 400 }
+            );
+        }
+
+        const hasInvalidReason = contactReasons.some(
+            (reason) => !ALLOWED_CONTACT_REASONS.has(reason)
+        );
+        if (hasInvalidReason) {
+            return NextResponse.json(
+                { ok: false, error: "Invalid contact reason selected" },
+                { status: 400 }
+            );
+        }
 
         const rows = await sql`
-      insert into contact_submissions (email, name, company, role, message, source)
-      values (${email}, ${name}, ${company}, ${role}, ${message}, ${source})
+      insert into contact_submissions (email, name, company, role, message, source, contact_reasons)
+      values (${email}, ${name}, ${company}, ${role}, ${message}, ${source}, ${contactReasons})
       returning id, created_at
     `;
 

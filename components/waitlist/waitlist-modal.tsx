@@ -4,6 +4,22 @@ import { useState } from "react";
 import Modal from "@/components/ui/modal";
 import Turnstile from "react-turnstile";
 
+const CONTACT_REASON_OPTIONS = [
+    "Piloting or integrating VeraCredentials",
+    "AI systems design & architecture",
+    "AI governance, safety, or risk",
+    "Credentialing & assessment strategy",
+    "Learning solution design or evaluation",
+    "Something else (describe below)",
+] as const;
+const PILOTING_OPTION = "Piloting or integrating VeraCredentials";
+const SOMETHING_ELSE_OPTION = "Something else (describe below)";
+const DEFAULT_MESSAGE_PLACEHOLDER =
+    "What are you hoping to learn more about? Share any context that might be helpful.";
+const PILOTING_MESSAGE_PLACEHOLDER =
+    "Tell us a bit more about your context or use case.";
+const SOMETHING_ELSE_MESSAGE_PLACEHOLDER = "Please describe what you have in mind.";
+
 type Props = {
     open: boolean;
     onClose: () => void;
@@ -19,6 +35,7 @@ export default function WaitlistModal({
         "idle"
     );
     const [error, setError] = useState("");
+    const [selectedContactReasons, setSelectedContactReasons] = useState<string[]>([]);
 
     // Turnstile token (must be included in POST + verified server-side)
     const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
@@ -26,6 +43,7 @@ export default function WaitlistModal({
     function handleClose() {
         setStatus("idle");
         setError("");
+        setSelectedContactReasons([]);
         setTurnstileToken(null);
         onClose();
     }
@@ -45,7 +63,17 @@ export default function WaitlistModal({
         setError("");
 
         const form = new FormData(formEl);
-        const payload = Object.fromEntries(form.entries());
+        const payload = {
+            website: (form.get("website") ?? "").toString(),
+            name: (form.get("name") ?? "").toString(),
+            email: (form.get("email") ?? "").toString(),
+            company: (form.get("company") ?? "").toString(),
+            role: (form.get("role") ?? "").toString(),
+            message: (form.get("message") ?? "").toString(),
+            contact_reasons: form
+                .getAll("contact_reasons")
+                .map((value) => value.toString()),
+        };
 
         const params = new URLSearchParams(window.location.search);
         const utm = {
@@ -72,6 +100,7 @@ export default function WaitlistModal({
         if (data.ok) {
             setStatus("success");
             formEl.reset(); // ✅ safe now
+            setSelectedContactReasons([]);
             setTurnstileToken(null); // Turnstile tokens are single-use
         } else {
             setStatus("error");
@@ -80,6 +109,12 @@ export default function WaitlistModal({
             setTurnstileToken(null);
         }
     }
+
+    const messagePlaceholder = selectedContactReasons.includes(PILOTING_OPTION)
+        ? PILOTING_MESSAGE_PLACEHOLDER
+        : selectedContactReasons.includes(SOMETHING_ELSE_OPTION)
+            ? SOMETHING_ELSE_MESSAGE_PLACEHOLDER
+            : DEFAULT_MESSAGE_PLACEHOLDER;
 
     return (
         <Modal open={open} onClose={handleClose} title="Contact VeraLearning">
@@ -106,7 +141,8 @@ export default function WaitlistModal({
                     <div className="grid gap-3 sm:grid-cols-2">
                         <input
                             name="name"
-                            placeholder="Name"
+                            placeholder="Name *"
+                            required
                             className="w-full rounded-md border border-midnight/15 bg-white p-3 text-sm outline-none focus:border-midnight/30"
                         />
                         <input
@@ -120,7 +156,8 @@ export default function WaitlistModal({
                     <div className="grid gap-3 sm:grid-cols-2">
                         <input
                             name="company"
-                            placeholder="Company"
+                            placeholder="Company or Institution *"
+                            required
                             className="w-full rounded-md border border-midnight/15 bg-white p-3 text-sm outline-none focus:border-midnight/30"
                         />
                         <input
@@ -130,9 +167,42 @@ export default function WaitlistModal({
                         />
                     </div>
 
+                    <fieldset className="rounded-md border border-midnight/15 bg-white p-3">
+                        <legend className="px-1 text-sm font-medium text-midnight">
+                            What challenge or opportunity are you thinking about?
+                        </legend>
+                        <p className="text-xs text-midnight/65">
+                            Choose anything that feels relevant.
+                        </p>
+                        <div className="mt-3 space-y-2">
+                            {CONTACT_REASON_OPTIONS.map((option) => (
+                                <label
+                                    key={option}
+                                    className="flex items-start gap-2 text-sm text-midnight/85"
+                                >
+                                    <input
+                                        type="checkbox"
+                                        name="contact_reasons"
+                                        value={option}
+                                        onChange={(e) => {
+                                            setSelectedContactReasons((current) => {
+                                                if (e.target.checked) {
+                                                    return [...current, option];
+                                                }
+                                                return current.filter((item) => item !== option);
+                                            });
+                                        }}
+                                        className="mt-0.5 h-4 w-4 rounded border-midnight/30 text-synapse focus:ring-synapse/30"
+                                    />
+                                    <span>{option}</span>
+                                </label>
+                            ))}
+                        </div>
+                    </fieldset>
+
                     <textarea
                         name="message"
-                        placeholder="What are you hoping to learn more about?"
+                        placeholder={messagePlaceholder}
                         rows={4}
                         className="w-full rounded-md border border-midnight/15 bg-white p-3 text-sm outline-none focus:border-midnight/30"
                     />
