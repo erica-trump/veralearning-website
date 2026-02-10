@@ -77,11 +77,12 @@ export async function POST(req: Request) {
         const role = (body.role ?? "").toString().trim();
         const message = (body.message ?? "").toString().trim();
         const source = (body.source ?? "local").toString().trim();
-        const contactReasons = Array.isArray(body.contact_reasons)
+        const contactReasonsInput: unknown[] = Array.isArray(body.contact_reasons)
             ? body.contact_reasons
-                .map((value) => value?.toString().trim())
-                .filter((value): value is string => Boolean(value))
             : [];
+        const contactReasons = contactReasonsInput
+            .map((value: unknown): string => String(value ?? "").trim())
+            .filter((value: string): boolean => value.length > 0);
 
         if (!email || !isValidEmail(email)) {
             return NextResponse.json(
