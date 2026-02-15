@@ -505,7 +505,7 @@ export default function HomePage() {
                   Use case · Clinical Intake
                 </p>
                 <h3 className="text-xl font-semibold text-midnight">
-                  How Vera’s AI models structure reasoning in real-world contexts
+                  How VeraLearning’s AI models structure reasoning in real-world contexts
                 </h3>
                 <div className="space-y-4 text-sm leading-relaxed text-midnight/80">
                   <p>
