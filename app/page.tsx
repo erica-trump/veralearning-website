@@ -471,7 +471,7 @@ export default function HomePage() {
                 </p>
                 <div className="mt-6 flex items-center gap-4 rounded-2xl border border-midnight/10 bg-white/80 p-4">
                   <Image
-                    src="/example-badge.png"
+                    src="/1Ready%20with%20support.webp"
                     alt="CNC Safety badge"
                     width={120}
                     height={140}
