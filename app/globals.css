@@ -83,6 +83,17 @@ body {
   }
 }
 
+@keyframes credential-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
 @layer utilities {
   .bg-synapse-tint {
     background-color: rgba(15, 95, 103, 0.05);

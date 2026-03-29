@@ -9,7 +9,9 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@clerk/nextjs": "^6.34.0",
     "next": "^16.0.10",
+    "png-chunks-extract": "^1.0.0",
     "postgres": "^3.4.8",
     "react": "19.2.0",
     "react-dom": "19.2.0",
