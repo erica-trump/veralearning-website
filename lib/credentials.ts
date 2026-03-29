@@ -89,6 +89,14 @@ function getString(value: unknown) {
     : null;
 }
 
+function normalizeIssuerName(value: string | null) {
+  if (!value) {
+    return DEFAULT_ISSUER_NAME;
+  }
+
+  return value === "Vera Learning" ? "VeraLearning" : value;
+}
+
 function formatDisplayDate(value: string | Date | null | undefined) {
   if (!value) {
     return null;
@@ -286,8 +294,7 @@ export async function getCredentialPageData(
     getString(credential.credentialSubject?.achievement?.name) ??
     getString(credential.name) ??
     "Credential unavailable";
-  const issuerName =
-    getString(credential.issuer?.name) ?? DEFAULT_ISSUER_NAME;
+  const issuerName = normalizeIssuerName(getString(credential.issuer?.name));
   const issueDateSource = row?.created_at ?? getString(credential.validFrom);
   const expiresDateSource = row?.expires_at ?? getString(credential.validUntil);
   const issueDateLabel = formatDisplayDate(issueDateSource) ?? "Unavailable";

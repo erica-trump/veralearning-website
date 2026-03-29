@@ -94,7 +94,127 @@ body {
   }
 }
 
+@keyframes credential-enter {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes credential-badge-enter {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
 @layer utilities {
+  .credential-enter {
+    opacity: 0;
+    animation: credential-enter 360ms ease-out forwards;
+    will-change: transform, opacity;
+  }
+
+  .credential-badge-enter {
+    opacity: 0;
+    animation: credential-badge-enter 340ms ease-out forwards;
+    will-change: transform, opacity;
+  }
+
+  .credential-card {
+    transition:
+      transform 220ms ease-out,
+      box-shadow 220ms ease-out,
+      background-color 220ms ease-out;
+    will-change: transform, box-shadow;
+  }
+
+  .credential-card:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 16px 36px rgba(13, 43, 69, 0.09);
+  }
+
+  .credential-chip {
+    transition:
+      background-color 180ms ease-out,
+      box-shadow 180ms ease-out,
+      color 180ms ease-out;
+  }
+
+  .credential-chip:hover {
+    box-shadow: inset 0 0 0 1px rgba(61, 143, 143, 0.12);
+  }
+
+  .credential-button {
+    transition:
+      transform 180ms ease-out,
+      box-shadow 180ms ease-out,
+      background-color 180ms ease-out,
+      color 180ms ease-out;
+    will-change: transform, box-shadow;
+  }
+
+  .credential-button:active {
+    transform: scale(0.98);
+  }
+
+  .credential-button:focus-visible,
+  .credential-link:focus-visible,
+  .credential-chip:focus-visible {
+    outline: none;
+    box-shadow:
+      0 0 0 3px rgba(61, 143, 143, 0.18),
+      inset 0 0 0 1px rgba(61, 143, 143, 0.12);
+  }
+
+  .credential-link {
+    transition:
+      color 180ms ease-out,
+      text-decoration-color 180ms ease-out;
+    text-decoration-color: transparent;
+  }
+
+  .credential-link:hover {
+    color: #2e7070;
+    text-decoration: underline;
+    text-decoration-color: rgba(46, 112, 112, 0.35);
+    text-underline-offset: 0.18em;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .credential-enter,
+    .credential-badge-enter {
+      opacity: 1;
+      animation: none;
+    }
+
+    .credential-card,
+    .credential-chip,
+    .credential-button,
+    .credential-link {
+      transition: none;
+    }
+
+    .credential-card:hover {
+      transform: none;
+      box-shadow: 0 12px 32px rgba(13, 43, 69, 0.06);
+    }
+
+    .credential-button:active {
+      transform: none;
+    }
+  }
+
   .bg-synapse-tint {
     background-color: rgba(15, 95, 103, 0.05);
   }

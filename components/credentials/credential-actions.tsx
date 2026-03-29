@@ -11,7 +11,7 @@ function ActionButton({
 }) {
   return (
     <button
-      className={`flex items-center justify-center gap-2 rounded-[12px] px-5 py-3.5 text-[14px] font-semibold transition-all ${className}`}
+      className={`credential-button flex min-h-[48px] items-center justify-center gap-2 rounded-[14px] px-5 py-3 text-[14px] font-semibold ${className}`}
       {...props}
     >
       {children}
@@ -28,7 +28,7 @@ function ActionLink({
 }) {
   return (
     <a
-      className={`flex items-center justify-center gap-2 rounded-[12px] px-5 py-3.5 text-[14px] font-semibold transition-all ${className}`}
+      className={`credential-button flex min-h-[48px] items-center justify-center gap-2 rounded-[14px] px-5 py-3 text-[14px] font-semibold ${className}`}
       {...props}
     >
       {children}
@@ -69,19 +69,19 @@ export function CredentialActions({
   }
 
   return (
-    <div className="rounded-[20px] bg-white p-5 shadow-[0_1px_4px_rgba(0,0,0,0.06),0_4px_16px_rgba(0,0,0,0.04)]">
+    <div className="credential-card rounded-[22px] bg-[#FCFBF8] p-6 shadow-[0_12px_32px_rgba(13,43,69,0.06)] credential-enter [animation-delay:300ms]">
       <div className="mb-4 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#7A8A96]">
         Share &amp; Save
       </div>
 
-      <div className="flex flex-col gap-2.5">
+      <div className="flex flex-col gap-3">
         {isVerifiedRecipient && (
           <>
             <ActionLink
               href={linkedInUrl}
               target="_blank"
               rel="noreferrer"
-              className="bg-[#0A66C2] text-white hover:-translate-y-px hover:bg-[#0958a8] hover:shadow-[0_4px_16px_rgba(10,102,194,0.25)]"
+              className="bg-[#0A66C2] text-white shadow-[0_10px_24px_rgba(10,102,194,0.16)] hover:bg-[#0958a8] focus-visible:shadow-[0_0_0_3px_rgba(10,102,194,0.18),0_12px_28px_rgba(10,102,194,0.2)]"
             >
               Add to LinkedIn
             </ActionLink>
@@ -91,25 +91,25 @@ export function CredentialActions({
               target="_blank"
               rel="noreferrer"
               download
-              className="bg-[#3D8F8F] text-white hover:-translate-y-px hover:bg-[#2E7070]"
+              className="bg-[#3D8F8F] text-white shadow-[0_10px_24px_rgba(61,143,143,0.18)] hover:bg-[#357C7C]"
             >
               Download Badge PNG
             </ActionLink>
 
             <ActionLink
               href={evidenceUrl}
-              className="border border-[#B8933A]/20 bg-[#FDF6E8] text-[#B8933A] hover:-translate-y-px hover:bg-[#FAEFD4]"
+              className="bg-[#F4EEE0] text-[#8D6A22] shadow-[0_8px_20px_rgba(184,147,58,0.08)] hover:bg-[#F0E7D3]"
             >
               View Evidence Report
             </ActionLink>
           </>
         )}
 
-        <div className="grid grid-cols-2 gap-2.5">
+        <div className="grid grid-cols-2 gap-3">
           <ActionButton
             type="button"
             onClick={handleCopyLink}
-            className="border border-[#E2E0DB] bg-[#F7F6F3] text-[#3D5166] hover:-translate-y-px hover:bg-[#E2E0DB]"
+            className="bg-white text-[#3D5166] shadow-[inset_0_0_0_1px_rgba(13,43,69,0.06)] hover:bg-[#F8FBFB]"
           >
             {copied ? "Copied" : "Copy Link"}
           </ActionButton>
@@ -117,14 +117,14 @@ export function CredentialActions({
           <ActionButton
             type="button"
             onClick={handleVerify}
-            className="border border-[#E2E0DB] bg-[#F7F6F3] text-[#3D5166] hover:-translate-y-px hover:bg-[#E2E0DB]"
+            className="bg-white text-[#3D5166] shadow-[inset_0_0_0_1px_rgba(13,43,69,0.06)] hover:bg-[#F8FBFB]"
           >
             Verify
           </ActionButton>
         </div>
 
         {!isVerifiedRecipient && (
-          <div className="rounded-[8px] border border-[#E2E0DB] bg-[#F7F6F3] px-3.5 py-2.5 text-[12px] text-[#7A8A96]">
+          <div className="rounded-[14px] bg-white px-4 py-3 text-[12px] text-[#6B7F8E] shadow-[inset_0_0_0_1px_rgba(13,43,69,0.05)]">
             {isSignedIn
               ? "You're signed in, but recipient-only features are only available to the email this credential was issued to."
               : "LinkedIn, Download and Evidence are only visible to the verified recipient."}

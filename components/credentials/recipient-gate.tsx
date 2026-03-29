@@ -44,9 +44,9 @@ function RecipientGateContent({
 }: RecipientGateContentProps) {
   return (
     <>
-      <div className="relative mt-5 overflow-hidden rounded-[12px]">
+      <div className="credential-card credential-enter relative overflow-hidden rounded-[22px] bg-[#F7F4ED] p-6 shadow-[0_14px_34px_rgba(13,43,69,0.07)] [animation-delay:220ms]">
         <div className={isVerifiedRecipient ? "" : "pointer-events-none select-none blur-[4px]"}>
-          <div className="flex items-center justify-between rounded-[10px] border border-[#E2E0DB] bg-[#F7F6F3] px-4 py-4">
+          <div className="flex items-center justify-between rounded-[16px] bg-white px-5 py-4 shadow-[inset_0_0_0_1px_rgba(13,43,69,0.05)]">
             <div className="text-[11px] font-semibold uppercase tracking-[0.1em] text-[#7A8A96]">
               Performance Score
             </div>
@@ -56,26 +56,26 @@ function RecipientGateContent({
             </div>
           </div>
 
-          <div className="mt-3 rounded-[10px] border border-[#3D8F8F]/15 bg-[#EBF5F5] px-4 py-3.5 text-[13px] italic leading-6 text-[#3D5166]">
+          <div className="mt-4 rounded-[16px] bg-[#F4F8F7] px-5 py-4 text-[13px] italic leading-6 text-[#3D5166] shadow-[inset_0_0_0_1px_rgba(61,143,143,0.08)]">
             {summary}
           </div>
         </div>
 
         {!isVerifiedRecipient && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 rounded-[12px] border border-dashed border-[#E2E0DB] bg-white/75 px-4 text-center">
-            <div className="flex h-9 w-9 items-center justify-center rounded-full border border-[#E2E0DB] bg-[#F7F6F3] text-[#3D5166]">
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 rounded-[22px] bg-[rgba(247,244,237,0.84)] px-6 text-center backdrop-blur-[2px]">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-[#3D5166] shadow-[inset_0_0_0_1px_rgba(13,43,69,0.06)]">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <rect x="3" y="11" width="18" height="11" rx="2" />
                 <path d="M7 11V7a5 5 0 0110 0v4" />
               </svg>
             </div>
-            <div className="text-[13px] font-medium text-[#3D5166]">
-              Score &amp; assessment details are private
+            <div className="text-[15px] font-semibold text-[#0D2B45]">
+              Detailed Assessment Insights
             </div>
-            <div className="max-w-[260px] text-[12px] text-[#7A8A96]">
+            <div className="max-w-[320px] text-[13px] leading-5 text-[#6B7F8E]">
               {showMismatchState
                 ? "Recipient-only access is limited to the email this credential was issued to."
-                : "Sign in to access your full report."}
+                : "Sign in to unlock your full report, detailed score, and assessment summary."}
             </div>
 
             {showSignedOutState && authEnabled && (
@@ -86,23 +86,23 @@ function RecipientGateContent({
               >
                 <button
                   type="button"
-                  className="mt-1 inline-flex items-center gap-2 rounded-[8px] bg-[#3D8F8F] px-4 py-2 text-[13px] font-semibold text-white"
+                  className="credential-button mt-1 inline-flex items-center gap-2 rounded-[12px] bg-[#3D8F8F] px-5 py-3 text-[14px] font-semibold text-white shadow-[0_10px_24px_rgba(61,143,143,0.18)] hover:bg-[#357C7C]"
                 >
-                  Sign in with email
+                  Sign in to view full report
                 </button>
               </SignInButton>
             )}
 
             {showSignedOutState && !authEnabled && (
-              <div className="mt-1 rounded-[8px] bg-[#3D8F8F] px-4 py-2 text-[13px] font-semibold text-white/80">
-                Sign-in unavailable
+              <div className="mt-1 rounded-[12px] bg-[#3D8F8F] px-5 py-3 text-[14px] font-semibold text-white shadow-[0_10px_24px_rgba(61,143,143,0.18)]">
+                Sign in to view full report
               </div>
             )}
           </div>
         )}
       </div>
 
-      <div className="mt-4">
+      <div className="mt-6">
         <CredentialActions
           canonicalUrl={canonicalUrl}
           badgeUrl={badgeUrl}
@@ -114,8 +114,8 @@ function RecipientGateContent({
       </div>
 
       {showSignedOutState && (
-        <div className="mt-4 rounded-[20px] border border-dashed border-[#E2E0DB] bg-white px-6 py-6 text-center shadow-[0_1px_4px_rgba(0,0,0,0.06),0_4px_16px_rgba(0,0,0,0.04)]">
-          <div className="mx-auto mb-3 flex h-11 w-11 items-center justify-center rounded-full bg-[#EBF5F5] text-[#3D8F8F]">
+        <div className="credential-card credential-enter mt-6 rounded-[22px] bg-[#FCFBF8] px-6 py-6 text-center shadow-[0_12px_32px_rgba(13,43,69,0.06)] [animation-delay:380ms]">
+          <div className="mx-auto mb-3 flex h-11 w-11 items-center justify-center rounded-full bg-white text-[#3D8F8F] shadow-[inset_0_0_0_1px_rgba(61,143,143,0.12)]">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
               <circle cx="12" cy="7" r="4" />
@@ -136,21 +136,21 @@ function RecipientGateContent({
             >
               <button
                 type="button"
-                className="inline-flex items-center gap-2 rounded-[10px] bg-[#0D2B45] px-6 py-3 text-[14px] font-semibold text-white transition hover:-translate-y-px hover:bg-[#1A4060]"
+                className="credential-button inline-flex items-center gap-2 rounded-[12px] bg-[#3D8F8F] px-6 py-3 text-[14px] font-semibold text-white shadow-[0_10px_24px_rgba(61,143,143,0.18)] hover:bg-[#357C7C]"
               >
-                Send me a magic link
+                Sign in to access your credential
               </button>
             </SignInButton>
           ) : (
-            <div className="inline-flex rounded-[10px] bg-[#0D2B45] px-6 py-3 text-[14px] font-semibold text-white/80">
-              Clerk is not configured yet
+            <div className="inline-flex rounded-[12px] bg-[#3D8F8F] px-6 py-3 text-[14px] font-semibold text-white shadow-[0_10px_24px_rgba(61,143,143,0.18)]">
+              Sign in to access your credential
             </div>
           )}
         </div>
       )}
 
       {showMismatchState && (
-        <div className="mt-4 rounded-[20px] border border-[#E2E0DB] bg-white px-6 py-5 text-center shadow-[0_1px_4px_rgba(0,0,0,0.06),0_4px_16px_rgba(0,0,0,0.04)]">
+        <div className="credential-card credential-enter mt-6 rounded-[22px] bg-[#FCFBF8] px-6 py-5 text-center shadow-[0_12px_32px_rgba(13,43,69,0.06)] [animation-delay:380ms]">
           <div className="text-[15px] font-semibold text-[#0D2B45]">
             Recipient-only features are still locked
           </div>
