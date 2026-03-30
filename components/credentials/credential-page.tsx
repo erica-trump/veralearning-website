@@ -1,6 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
 import { RecipientGate } from "@/components/credentials/recipient-gate";
+import {
+  OpenVerificationDetailsButton,
+  VerificationDetailsModal,
+} from "@/components/credentials/verification-details-modal";
 import type { CredentialPageData, ReadyCredentialPageData } from "@/lib/credentials";
 
 function ErrorCard({
@@ -37,7 +41,7 @@ function ReadyCredentialPage({ data }: { data: ReadyCredentialPageData }) {
       <div className="credential-enter overflow-hidden rounded-[20px] bg-white shadow-[0_2px_8px_rgba(0,0,0,0.08),0_12px_32px_rgba(0,0,0,0.06)]">
         <div className="border-b border-[#EAE6DE] bg-white px-7 pb-10 pt-9 text-center">
           <div className="credential-enter relative text-[11px] font-semibold uppercase tracking-[0.14em] text-[#3D8F8F] [animation-delay:40ms]">
-            Verified Credential
+            Verifiable Credential
           </div>
 
           <div className="credential-badge-enter relative mt-5 flex justify-center [animation-delay:100ms]">
@@ -51,7 +55,7 @@ function ReadyCredentialPage({ data }: { data: ReadyCredentialPageData }) {
             />
           </div>
 
-          <h1 className="credential-enter relative mt-7 font-[family:var(--font-credential-serif)] text-[35px] leading-[1.08] text-[#0D2B45] [animation-delay:160ms] md:text-[42px]">
+          <h1 className="credential-enter relative mt-7 font-[family:var(--font-credential-serif)] text-[30px] leading-[1.08] text-[#0D2B45] [animation-delay:160ms] md:text-[36px]">
             {data.title}
           </h1>
 
@@ -74,15 +78,16 @@ function ReadyCredentialPage({ data }: { data: ReadyCredentialPageData }) {
             </div>
           </div>
 
-          <p className="credential-enter relative mt-4 text-[14px] tracking-[0.01em] text-[#6B7F8E] [animation-delay:260ms] md:text-[15px]">
-            Applied Skills Assessment · {data.issuerName}
-          </p>
-
-          <div className="credential-enter relative mt-4 flex items-center justify-center gap-1.5 text-[12px] font-medium tracking-[0.02em] text-[#2D7A4F] [animation-delay:300ms]">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.25">
-              <path d="M20 6L9 17l-5-5" />
-            </svg>
-            Cryptographically verified · Open Badge 3.0
+          <div className="credential-enter relative mt-4 flex items-center justify-center [animation-delay:300ms]">
+            <VerificationDetailsModal
+              pageId={data.id}
+              credentialId={data.credentialId}
+              issuerName={data.issuerName}
+              proofLabel={data.proofLabel}
+              proofTags={data.proofTags}
+              issueDateLabel={data.issueDateLabel}
+              validUntilLabel={data.validUntilLabel}
+            />
           </div>
         </div>
 
@@ -197,10 +202,10 @@ function ReadyCredentialPage({ data }: { data: ReadyCredentialPageData }) {
 
       <div
         id="credential-verification"
-        className="credential-card credential-enter mt-6 rounded-[22px] bg-[#FCFBF8] p-6 shadow-[0_12px_32px_rgba(13,43,69,0.06)] [animation-delay:460ms]"
+        className="credential-card credential-enter mt-6 rounded-[22px] bg-[#FCFBF8] p-5 shadow-[0_10px_24px_rgba(13,43,69,0.05)] [animation-delay:460ms]"
       >
-        <div className="mb-4 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#7A8A96]">
-          Verification
+        <div className="mb-4 text-[10px] font-medium uppercase tracking-[0.12em] text-[#90A0AA]">
+          Proof of authenticity
         </div>
 
         <div className="flex items-start gap-3">
@@ -215,8 +220,17 @@ function ReadyCredentialPage({ data }: { data: ReadyCredentialPageData }) {
             <div className="text-[14px] font-semibold text-[#0D2B45]">
               Signed by {data.issuerName}
             </div>
-            <div className="mt-1 text-[13px] leading-5 text-[#6B7F8E]">
-              {data.verificationSummary}
+            <div className="mt-1 text-[13px] leading-5 text-[#6C7E89]">
+              This credential is cryptographically signed by {data.issuerName}.
+            </div>
+            <div className="mt-2 text-[12px] leading-5 text-[#8B99A3]">
+              The embedded proof allows anyone to independently verify its authenticity.
+            </div>
+            <div className="mt-3">
+              <OpenVerificationDetailsButton
+                label="Check verification"
+                className="credential-link text-[12px] font-medium text-[#2E7070]"
+              />
             </div>
             <div className="mt-3 flex flex-wrap gap-1.5">
               {data.proofTags.map((tag) => (

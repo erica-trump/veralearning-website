@@ -1,0 +1,562 @@
+"use client";
+
+import { useEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
+import type { VerificationUiResult } from "@/lib/verify-credential";
+
+const OPEN_VERIFICATION_EVENT = "credential:open-verification-details";
+export const VERIFICATION_REQUEST_STATE_EVENT =
+  "credential:verification-request-state";
+
+interface VerificationDetailsModalProps {
+  pageId: string;
+  credentialId: string;
+  issuerName: string;
+  proofLabel: string;
+  proofTags: string[];
+  issueDateLabel: string;
+  validUntilLabel: string | null;
+}
+
+interface OpenVerificationDetailsButtonProps {
+  label: string;
+  className: string;
+}
+
+function getSignatureLabel(proofLabel: string) {
+  if (/eddsa|ed25519/i.test(proofLabel)) {
+    return "EdDSA / Ed25519";
+  }
+
+  return proofLabel;
+}
+
+function getSuiteLabel(proofLabel: string, proofTags: string[]) {
+  const suiteTag = proofTags.find((tag) => /rdfc|2022|data integrity/i.test(tag));
+
+  if (suiteTag) {
+    return suiteTag;
+  }
+
+  if (/eddsa|ed25519/i.test(proofLabel)) {
+    return "eddsa-rdfc-2022";
+  }
+
+  return "Data Integrity Proof";
+}
+
+export function openVerificationDetails() {
+  if (typeof window !== "undefined") {
+    window.dispatchEvent(new CustomEvent(OPEN_VERIFICATION_EVENT));
+  }
+}
+
+export function OpenVerificationDetailsButton({
+  label,
+  className,
+}: OpenVerificationDetailsButtonProps) {
+  return (
+    <button
+      type="button"
+      onClick={() => openVerificationDetails()}
+      className={className}
+    >
+      {label}
+    </button>
+  );
+}
+
+export function VerificationDetailsModal({
+  pageId,
+  credentialId,
+  issuerName,
+  proofLabel,
+  proofTags,
+  issueDateLabel,
+  validUntilLabel,
+}: VerificationDetailsModalProps) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [result, setResult] = useState<VerificationUiResult | null>(null);
+  const [isVerifying, setIsVerifying] = useState(false);
+  const closeButtonRef = useRef<HTMLButtonElement | null>(null);
+  const previousFocusRef = useRef<HTMLElement | null>(null);
+
+  const signatureLabel = useMemo(() => getSignatureLabel(proofLabel), [proofLabel]);
+  const suiteLabel = useMemo(
+    () => getSuiteLabel(proofLabel, proofTags),
+    [proofLabel, proofTags],
+  );
+
+  useEffect(() => {
+    function handleOpen() {
+      previousFocusRef.current = document.activeElement as HTMLElement | null;
+      setIsOpen(true);
+    }
+
+    window.addEventListener(OPEN_VERIFICATION_EVENT, handleOpen);
+
+    return () => {
+      window.removeEventListener(OPEN_VERIFICATION_EVENT, handleOpen);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!isOpen) {
+      return;
+    }
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        setIsOpen(false);
+      }
+    }
+
+    window.addEventListener("keydown", handleKeyDown);
+    window.setTimeout(() => closeButtonRef.current?.focus(), 0);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", handleKeyDown);
+      previousFocusRef.current?.focus();
+    };
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (!isOpen) {
+      return;
+    }
+
+    let cancelled = false;
+    const controller = new AbortController();
+
+    async function runVerification() {
+      setIsVerifying(true);
+      window.dispatchEvent(
+        new CustomEvent(VERIFICATION_REQUEST_STATE_EVENT, {
+          detail: { state: "verifying" },
+        }),
+      );
+
+      try {
+        const response = await fetch(`/api/credentials/${pageId}/verify`, {
+          method: "GET",
+          cache: "no-store",
+          signal: controller.signal,
+        });
+        const payload = (await response.json()) as VerificationUiResult | {
+          error?: { code?: string; message?: string };
+        };
+
+        if (cancelled) {
+          return;
+        }
+
+        if ("verified" in payload) {
+          setResult(payload);
+          return;
+        }
+
+        setResult({
+          verified: false,
+          status: "unverifiable",
+          checks: {
+            issuerResolved: false,
+            controllerResolved: false,
+            assertionMethodAuthorized: false,
+            integrityValid: false,
+            signatureValid: false,
+            proofFormatSupported: false,
+          },
+          credentialSummary: {
+            issuerName,
+            standard: "Open Badges 3.0",
+            proofType: proofLabel,
+            cryptosuite: null,
+            verificationMethod: null,
+            issued: issueDateLabel,
+            validUntil: validUntilLabel,
+          },
+          error: {
+            code: payload.error?.code ?? "verification_request_failed",
+            message:
+              payload.error?.message ??
+              "The verification request could not be completed.",
+          },
+        });
+      } catch (error) {
+        if (cancelled || (error instanceof Error && error.name === "AbortError")) {
+          return;
+        }
+
+        setResult({
+          verified: false,
+          status: "unverifiable",
+          checks: {
+            issuerResolved: false,
+            controllerResolved: false,
+            assertionMethodAuthorized: false,
+            integrityValid: false,
+            signatureValid: false,
+            proofFormatSupported: false,
+          },
+          credentialSummary: {
+            issuerName,
+            standard: "Open Badges 3.0",
+            proofType: proofLabel,
+            cryptosuite: null,
+            verificationMethod: null,
+            issued: issueDateLabel,
+            validUntil: validUntilLabel,
+          },
+          error: {
+            code: "verification_request_failed",
+            message:
+              error instanceof Error
+                ? error.message
+                : "The verification request could not be completed.",
+          },
+        });
+      } finally {
+        if (!cancelled) {
+          setIsVerifying(false);
+          window.dispatchEvent(
+            new CustomEvent(VERIFICATION_REQUEST_STATE_EVENT, {
+              detail: { state: "idle" },
+            }),
+          );
+        }
+      }
+    }
+
+    void runVerification();
+
+    return () => {
+      cancelled = true;
+      controller.abort();
+      window.dispatchEvent(
+        new CustomEvent(VERIFICATION_REQUEST_STATE_EVENT, {
+          detail: { state: "idle" },
+        }),
+      );
+    };
+  }, [
+    isOpen,
+    issueDateLabel,
+    issuerName,
+    pageId,
+    proofLabel,
+    validUntilLabel,
+  ]);
+
+  const activeSummary = result?.credentialSummary ?? {
+    issuerName,
+    standard: "Open Badges 3.0",
+    proofType: proofLabel,
+    cryptosuite: null,
+    verificationMethod: null,
+    issued: issueDateLabel,
+    validUntil: validUntilLabel,
+  };
+  const verdictTitle = isVerifying
+    ? "Verifying Credential"
+    : result?.status === "verified"
+      ? "Verified Credential"
+      : result?.status === "failed"
+        ? "Verification failed"
+        : result?.status === "unverifiable"
+          ? "Unable to verify"
+          : "Verification Details";
+  const verdictSummary = isVerifying
+    ? "Checking the credential proof, issuer record, and verification method."
+    : result?.status === "verified"
+      ? "This credential is verified and has not been altered since issuance."
+      : result?.status === "failed"
+        ? "Verification was attempted, but this credential's cryptographic proof did not validate."
+        : result?.status === "unverifiable"
+          ? "Unable to verify — required issuer or verification material could not be resolved."
+          : "Open the verifier to inspect this credential's proof record.";
+  const verdictSupport = isVerifying
+    ? "Verification runs server-side using the credential's embedded proof."
+    : result?.status === "verified"
+      ? "Verified using open standards and cryptographic proof."
+      : result?.status === "failed"
+        ? "The proof was processed, but signature or authorization checks did not pass."
+      : result?.status === "unverifiable"
+          ? "This usually means required issuer, key, context, or proof material was unavailable or unsupported."
+          : result?.error?.message ?? "Verification results will appear here once the proof has been checked.";
+  const integrityState = !result || isVerifying
+    ? "unknown"
+    : result.status === "unverifiable"
+      ? "unknown"
+      : result.checks.integrityValid
+        ? "success"
+        : "failure";
+  const signatureState = !result || isVerifying
+    ? "unknown"
+    : result.status === "unverifiable"
+      ? "unknown"
+      : result.checks.signatureValid && result.checks.assertionMethodAuthorized
+        ? "success"
+        : "failure";
+  const issuerState = !result || isVerifying
+    ? "unknown"
+    : result.checks.issuerResolved && result.checks.controllerResolved
+      ? "success"
+      : "unknown";
+  const checklistItems = [
+    {
+      successLabel: "Issuer verified",
+      failureLabel: "Issuer unresolved",
+      unknownLabel: "Issuer unresolved",
+      state: issuerState,
+    },
+    {
+      successLabel: "Integrity confirmed",
+      failureLabel: "Integrity failed",
+      unknownLabel: "Integrity not evaluated",
+      state: integrityState,
+    },
+    {
+      successLabel: "Signature valid",
+      failureLabel: "Signature invalid",
+      unknownLabel: "Signature not evaluated",
+      state: signatureState,
+    },
+  ];
+
+  const trigger = (
+    <button
+      type="button"
+      onClick={() => {
+        previousFocusRef.current = document.activeElement as HTMLElement | null;
+        setIsOpen(true);
+      }}
+      className="credential-button credential-link inline-flex items-center justify-center gap-1.5 text-[12px] font-medium tracking-[0.02em] text-[#2D7A4F]"
+    >
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+      </svg>
+      Cryptographically signed · Independently verifiable
+    </button>
+  );
+
+  if (!isOpen || typeof document === "undefined") {
+    return trigger;
+  }
+
+  const modal = (
+    <div
+      className="fixed inset-0 z-[1000] flex items-center justify-center bg-[rgba(13,43,69,0.42)] p-4 backdrop-blur-[2px]"
+      onClick={() => setIsOpen(false)}
+      role="presentation"
+    >
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="verification-details-title"
+        className="credential-enter flex max-h-[90vh] w-full max-w-[900px] flex-col overflow-hidden rounded-[26px] bg-[#FCFBF8] text-left shadow-[0_28px_70px_rgba(13,43,69,0.18)]"
+        onClick={(event) => event.stopPropagation()}
+      >
+        <div className="sticky top-0 z-10 flex items-start justify-between gap-4 border-b border-[#E8E4DC] bg-[#FCFBF8]/96 px-6 pb-5 pt-6 backdrop-blur md:px-7 md:pt-7">
+          <div>
+            <h2
+              id="verification-details-title"
+              className="font-[family:var(--font-credential-serif)] text-[30px] leading-[1.06] text-[#0D2B45]"
+            >
+              {verdictTitle}
+            </h2>
+            <p className="mt-2.5 max-w-[560px] text-[15px] font-medium leading-6 text-[#30475C]">
+              {verdictSummary}
+            </p>
+            <p className="mt-1 max-w-[560px] text-[13px] leading-6 text-[#667A8A]">
+              {verdictSupport}
+            </p>
+          </div>
+
+          <button
+            ref={closeButtonRef}
+            type="button"
+            onClick={() => setIsOpen(false)}
+            className="credential-button inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white text-[#3D5166] shadow-[inset_0_0_0_1px_rgba(13,43,69,0.08)] hover:bg-[#F7FAF8]"
+            aria-label="Close verification details"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M18 6L6 18" />
+              <path d="M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        <div className="overflow-y-auto px-6 pb-6 pt-5 md:px-7 md:pb-7">
+        <div className="grid gap-3 md:grid-cols-3">
+          {checklistItems.map((item) => (
+            <div
+              key={item.successLabel}
+              className="rounded-[18px] bg-white px-3.5 py-3 shadow-[inset_0_0_0_1px_rgba(61,143,143,0.12)]"
+            >
+              <div className="flex items-start gap-2">
+                <div
+                  className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full ${
+                    item.state === "unknown"
+                      ? "bg-[#EEF1F3] text-[#7A8A96]"
+                      : item.state === "success"
+                        ? "bg-[#DDEFE6] text-[#206A41]"
+                        : "bg-[#F7E5E3] text-[#A04336]"
+                  }`}
+                >
+                  {item.state === "unknown" ? (
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                      <path d="M12 8v4" />
+                      <path d="M12 16h.01" />
+                    </svg>
+                  ) : item.state === "success" ? (
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                      <path d="M20 6L9 17l-5-5" />
+                    </svg>
+                  ) : (
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                      <path d="M18 6L6 18" />
+                      <path d="M6 6l12 12" />
+                    </svg>
+                  )}
+                </div>
+                <div className="text-[13px] font-medium leading-5 text-[#30475C]">
+                  {item.state === "unknown"
+                    ? item.unknownLabel
+                    : item.state === "success"
+                      ? item.successLabel
+                      : item.failureLabel}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-7">
+          <h3 className="text-[13px] font-medium text-[#365068]">Verification breakdown</h3>
+          <div className="mt-4 grid gap-3 md:grid-cols-2">
+            <div className="rounded-[18px] bg-white px-5 py-3 shadow-[inset_0_0_0_1px_rgba(13,43,69,0.06)]">
+              <div className="text-[13px] font-semibold text-[#0D2B45]">Issuer identity</div>
+              <p className="mt-2 text-[13px] leading-6 text-[#5D7182]">
+                {result?.checks.issuerResolved
+                  ? `Issued by ${activeSummary.issuerName ?? issuerName}, a verified organization.`
+                  : "The issuer record could not be fully resolved during verification."}
+              </p>
+              <p className="mt-2 text-[12px] leading-5 text-[#7A8A96]">
+                {result?.checks.issuerResolved
+                  ? "The issuer identity has been validated as part of the verification process."
+                  : "Without the issuer record, the verifier cannot establish trusted signing authority."}
+              </p>
+            </div>
+
+            <div className="rounded-[18px] bg-white px-5 py-3 shadow-[inset_0_0_0_1px_rgba(13,43,69,0.06)]">
+              <div className="text-[13px] font-semibold text-[#0D2B45]">Credential integrity</div>
+              <p className="mt-2 text-[13px] leading-6 text-[#5D7182]">
+                {result?.checks.integrityValid
+                  ? "The credential data matches the original issued version."
+                  : "The verifier could not confirm that the credential data matches the originally issued version."}
+              </p>
+              <p className="mt-2 text-[12px] leading-5 text-[#7A8A96]">
+                {result?.checks.integrityValid
+                  ? "Any modification would invalidate the proof and be detected immediately."
+                  : "Altered payloads or unresolved proof material will cause integrity verification to fail."}
+              </p>
+            </div>
+
+            <div className="rounded-[18px] bg-white px-5 py-3 shadow-[inset_0_0_0_1px_rgba(13,43,69,0.06)]">
+              <div className="text-[13px] font-semibold text-[#0D2B45]">Cryptographic signature</div>
+              <p className="mt-2 text-[13px] leading-6 text-[#5D7182]">
+                {result?.checks.signatureValid
+                  ? "A digital signature confirms that this credential is authentic."
+                  : "The cryptographic signature could not be validated for this credential."}
+              </p>
+              <p className="mt-2 text-[12px] leading-5 text-[#7A8A96]">
+                {result?.checks.signatureValid
+                  ? "This signature ensures the credential cannot be forged or modified."
+                  : "This can happen if the proof is invalid, unsupported, or the verification material cannot be resolved."}
+              </p>
+              <div className="mt-3 flex flex-wrap gap-1.5">
+                <span className="rounded-full bg-[#F6FBFB] px-3 py-[0.3rem] text-[10px] font-medium text-[#2E7070] shadow-[inset_0_0_0_1px_rgba(61,143,143,0.1)]">
+                  Signature type: {activeSummary.proofType ?? signatureLabel}
+                </span>
+                <span className="rounded-full bg-[#F6FBFB] px-3 py-[0.3rem] text-[10px] font-medium text-[#2E7070] shadow-[inset_0_0_0_1px_rgba(61,143,143,0.1)]">
+                  Suite: {activeSummary.cryptosuite ?? suiteLabel}
+                </span>
+              </div>
+            </div>
+
+            <div className="rounded-[18px] bg-white px-5 py-3 shadow-[inset_0_0_0_1px_rgba(13,43,69,0.06)]">
+              <div className="text-[13px] font-semibold text-[#0D2B45]">Embedded credential data</div>
+              <p className="mt-2 text-[13px] leading-6 text-[#5D7182]">
+                The badge image contains the credential data needed for independent validation.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-7 rounded-[20px] bg-[#F7FAF8] px-5 py-5 shadow-[inset_0_0_0_1px_rgba(61,143,143,0.08)]">
+          <h3 className="text-[14px] font-semibold text-[#0D2B45]">What this means</h3>
+          <p className="mt-3 max-w-[620px] text-[13px] leading-6 text-[#566B7C]">
+            This credential follows the Open Badges 3.0 standard and includes cryptographic proof of authenticity.
+            Unlike a traditional certificate or PDF, this credential can be independently verified by anyone and
+            cannot be altered without detection.
+          </p>
+          <p className="mt-3 max-w-[620px] text-[13px] leading-6 text-[#566B7C]">
+            This allows employers, schools, and other organizations to trust it without relying on VeraLearning
+            directly.
+          </p>
+          <a
+            href="https://www.w3.org/TR/vc-data-model-2.0/"
+            target="_blank"
+            rel="noreferrer"
+            className="credential-link mt-4 inline-flex text-[12px] font-medium text-[#2E7070]"
+          >
+            Learn more about verifiable credentials
+          </a>
+        </div>
+
+        <details className="mt-7 rounded-[18px] bg-white px-5 py-4 shadow-[inset_0_0_0_1px_rgba(13,43,69,0.06)]">
+          <summary className="cursor-pointer list-none text-[13px] font-semibold text-[#0D2B45]">
+            <span className="inline-flex items-center gap-2">
+              View technical details
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M6 9l6 6 6-6" />
+              </svg>
+            </span>
+          </summary>
+          <div className="mt-4 space-y-3">
+            {[
+              ["Credential ID", credentialId],
+              ["Standard", activeSummary.standard ?? "Open Badges 3.0"],
+              ["Proof type", activeSummary.proofType ?? proofLabel],
+              ["Signature suite", activeSummary.cryptosuite ?? suiteLabel],
+              ["Verification method", activeSummary.verificationMethod ?? "Unavailable"],
+              ["Issued date", activeSummary.issued ?? issueDateLabel],
+              ["Valid until", activeSummary.validUntil ?? "Not specified"],
+              ["Issuer name", activeSummary.issuerName ?? issuerName],
+            ].map(([label, value]) => (
+              <div
+                key={label}
+                className="flex items-start justify-between gap-4 border-b border-[#E2E0DB]/22 py-[1.1rem] last:border-b-0 last:pb-0"
+              >
+                <div className="text-[12px] font-medium text-[#7A8A96]">{label}</div>
+                <div className="max-w-[60%] text-right text-[12px] leading-5 text-[#30475C]">{value}</div>
+              </div>
+            ))}
+          </div>
+        </details>
+        </div>
+      </div>
+    </div>
+  );
+
+  return (
+    <>
+      {trigger}
+      {createPortal(modal, document.body)}
+    </>
+  );
+}

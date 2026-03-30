@@ -1,6 +1,6 @@
 import { extractCredentialFromPng, type ExtractedOpenBadgeCredential } from "@/lib/extract-credential";
 import { getIssuedCredentialRow } from "@/lib/neon";
-import { getRecipientInitials } from "@/lib/recipient";
+import { getRecipientInitialsFromIdentity } from "@/lib/recipient";
 
 const DEFAULT_ISSUER_NAME = "VeraLearning";
 const DEFAULT_SCORE = 87;
@@ -19,6 +19,7 @@ interface CredentialAchievement {
 }
 
 interface CredentialSubject {
+  name?: unknown;
   achievement?: CredentialAchievement;
 }
 
@@ -302,12 +303,18 @@ export async function getCredentialPageData(
   const issueDateParts = getYearAndMonth(issueDateSource);
   const credentialEvidence = credential.evidence?.[0];
   const recipientEmail = row?.learner_email ?? null;
-  const recipientInitials = getRecipientInitials(recipientEmail);
-  const recipientLabel = row?.learner_id
-    ? row.learner_id
-    : recipientEmail
-      ? "Credential recipient"
-      : "Public credential";
+  const recipientName = getString(credential.credentialSubject?.name);
+  const recipientInitials = getRecipientInitialsFromIdentity({
+    name: recipientName,
+    email: recipientEmail,
+  });
+  const recipientLabel = recipientName
+    ? recipientName
+    : row?.learner_id
+      ? row.learner_id
+      : recipientEmail
+        ? "Credential recipient"
+        : "Public credential";
   const evidenceDescription =
     getString(credentialEvidence?.description) ??
     getString(credentialEvidence?.narrative) ??
@@ -315,7 +322,7 @@ export async function getCredentialPageData(
   const skills = extractEmbeddedSkills(credential);
   const proofLabel = normalizeProofLabel(row?.proof_type ?? null, credential);
   const proofTags = [
-    "OBv3",
+    "Open Badges 3.0",
     "W3C VC 2.0",
     proofLabel.toLowerCase().includes("eddsa") ? "eddsa-rdfc-2022" : proofLabel,
     "Tamper-evident",

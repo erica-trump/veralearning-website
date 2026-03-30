@@ -15,10 +15,6 @@ export function CredentialNav() {
             priority
           />
         </Link>
-
-        <div className="rounded-full border border-[#3D8F8F]/20 bg-[#EBF5F5] px-3 py-1 text-[11px] font-medium uppercase tracking-[0.045em] text-[#3D8F8F]">
-          Open Badge 3.0
-        </div>
       </div>
     </nav>
   );

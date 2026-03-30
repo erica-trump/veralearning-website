@@ -1,3 +1,16 @@
+function getInitialsFromName(name: string) {
+  const parts = name
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean);
+
+  if (parts.length >= 2) {
+    return `${parts[0][0] ?? ""}${parts[parts.length - 1][0] ?? ""}`.toUpperCase();
+  }
+
+  return parts[0]?.slice(0, 2).toUpperCase() || "VL";
+}
+
 export function getRecipientInitials(email: string | null | undefined) {
   if (!email) {
     return "VL";
@@ -19,6 +32,20 @@ export function getRecipientInitials(email: string | null | undefined) {
   }
 
   return localPart.slice(0, 2).toUpperCase();
+}
+
+export function getRecipientInitialsFromIdentity({
+  name,
+  email,
+}: {
+  name?: string | null;
+  email?: string | null;
+}) {
+  if (name?.trim()) {
+    return getInitialsFromName(name);
+  }
+
+  return getRecipientInitials(email);
 }
 
 export function emailsMatch(

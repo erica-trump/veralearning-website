@@ -1,6 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import {
+  openVerificationDetails,
+  VERIFICATION_REQUEST_STATE_EVENT,
+} from "@/components/credentials/verification-details-modal";
 
 function ActionButton({
   children,
@@ -11,7 +15,7 @@ function ActionButton({
 }) {
   return (
     <button
-      className={`credential-button flex min-h-[48px] items-center justify-center gap-2 rounded-[14px] px-5 py-3 text-[14px] font-semibold ${className}`}
+      className={`credential-button flex min-h-[48px] items-center justify-center gap-2 rounded-[14px] px-5 py-3 text-[14px] font-semibold disabled:cursor-not-allowed disabled:opacity-75 ${className}`}
       {...props}
     >
       {children}
@@ -42,7 +46,6 @@ interface CredentialActionsProps {
   evidenceUrl: string;
   linkedInUrl: string;
   isVerifiedRecipient: boolean;
-  isSignedIn: boolean;
 }
 
 export function CredentialActions({
@@ -51,9 +54,28 @@ export function CredentialActions({
   evidenceUrl,
   linkedInUrl,
   isVerifiedRecipient,
-  isSignedIn,
 }: CredentialActionsProps) {
   const [copied, setCopied] = useState(false);
+  const [isVerifying, setIsVerifying] = useState(false);
+
+  useEffect(() => {
+    function handleVerificationStateChange(event: Event) {
+      const detail = (event as CustomEvent<{ state?: string }>).detail;
+      setIsVerifying(detail?.state === "verifying");
+    }
+
+    window.addEventListener(
+      VERIFICATION_REQUEST_STATE_EVENT,
+      handleVerificationStateChange as EventListener,
+    );
+
+    return () => {
+      window.removeEventListener(
+        VERIFICATION_REQUEST_STATE_EVENT,
+        handleVerificationStateChange as EventListener,
+      );
+    };
+  }, []);
 
   async function handleCopyLink() {
     await navigator.clipboard.writeText(canonicalUrl);
@@ -62,21 +84,40 @@ export function CredentialActions({
   }
 
   function handleVerify() {
-    document.getElementById("credential-verification")?.scrollIntoView({
-      behavior: "smooth",
-      block: "start",
-    });
+    openVerificationDetails();
   }
 
   return (
     <div className="credential-card rounded-[22px] bg-[#FCFBF8] p-6 shadow-[0_12px_32px_rgba(13,43,69,0.06)] credential-enter [animation-delay:300ms]">
-      <div className="mb-4 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#7A8A96]">
-        Share &amp; Save
+      <div className="mb-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#7A8A96]">
+        Share &amp; Verify
+      </div>
+      <div className="mb-4 text-[12px] leading-5 text-[#6B7F8E]">
+        Anyone with this link can independently verify its authenticity.
       </div>
 
       <div className="flex flex-col gap-3">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+          <ActionButton
+            type="button"
+            onClick={handleCopyLink}
+            className="bg-[#377F7F] text-white shadow-[0_8px_18px_rgba(61,143,143,0.14)] hover:bg-[#316F6F]"
+          >
+            {copied ? "Copied" : "Copy credential link"}
+          </ActionButton>
+
+          <ActionButton
+            type="button"
+            onClick={handleVerify}
+            disabled={isVerifying}
+            className="bg-[#F6FBFB] text-[#265F5F] shadow-[inset_0_0_0_1px_rgba(61,143,143,0.18)] hover:bg-[#EEF7F7]"
+          >
+            {isVerifying ? "Verifying..." : "Verify this credential"}
+          </ActionButton>
+        </div>
+
         {isVerifiedRecipient && (
-          <>
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
             <ActionLink
               href={linkedInUrl}
               target="_blank"
@@ -91,43 +132,17 @@ export function CredentialActions({
               target="_blank"
               rel="noreferrer"
               download
-              className="bg-[#3D8F8F] text-white shadow-[0_10px_24px_rgba(61,143,143,0.18)] hover:bg-[#357C7C]"
+              className="bg-white text-[#3D5166] shadow-[inset_0_0_0_1px_rgba(13,43,69,0.06)] hover:bg-[#F8FBFB]"
             >
-              Download Badge PNG
+              Download badge PNG
             </ActionLink>
 
             <ActionLink
               href={evidenceUrl}
               className="bg-[#F4EEE0] text-[#8D6A22] shadow-[0_8px_20px_rgba(184,147,58,0.08)] hover:bg-[#F0E7D3]"
             >
-              View Evidence Report
+              View evidence report
             </ActionLink>
-          </>
-        )}
-
-        <div className="grid grid-cols-2 gap-3">
-          <ActionButton
-            type="button"
-            onClick={handleCopyLink}
-            className="bg-white text-[#3D5166] shadow-[inset_0_0_0_1px_rgba(13,43,69,0.06)] hover:bg-[#F8FBFB]"
-          >
-            {copied ? "Copied" : "Copy Link"}
-          </ActionButton>
-
-          <ActionButton
-            type="button"
-            onClick={handleVerify}
-            className="bg-white text-[#3D5166] shadow-[inset_0_0_0_1px_rgba(13,43,69,0.06)] hover:bg-[#F8FBFB]"
-          >
-            Verify
-          </ActionButton>
-        </div>
-
-        {!isVerifiedRecipient && (
-          <div className="rounded-[14px] bg-white px-4 py-3 text-[12px] text-[#6B7F8E] shadow-[inset_0_0_0_1px_rgba(13,43,69,0.05)]">
-            {isSignedIn
-              ? "You're signed in, but recipient-only features are only available to the email this credential was issued to."
-              : "LinkedIn, Download and Evidence are only visible to the verified recipient."}
           </div>
         )}
       </div>
