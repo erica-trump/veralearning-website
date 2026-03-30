@@ -139,6 +139,7 @@ function ReadyCredentialPage({ data }: { data: ReadyCredentialPageData }) {
               evidenceUrl={data.evidenceUrl}
               linkedInUrl={data.linkedInUrl}
               learnerEmail={data.recipientEmail}
+              credentialRecipientEmail={data.credentialRecipientEmail}
               score={data.score}
               summary={data.assessmentSummary}
               authEnabled={authEnabled}

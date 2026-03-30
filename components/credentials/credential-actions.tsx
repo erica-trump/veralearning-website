@@ -88,61 +88,67 @@ export function CredentialActions({
   }
 
   return (
-    <div className="credential-card rounded-[22px] bg-[#FCFBF8] p-6 shadow-[0_12px_32px_rgba(13,43,69,0.06)] credential-enter [animation-delay:300ms]">
-      <div className="mb-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#7A8A96]">
+    <div className="credential-card rounded-[22px] bg-[#FEFDFC] px-6 py-5 shadow-[0_12px_32px_rgba(13,43,69,0.055)] credential-enter [animation-delay:300ms]">
+      <div className="mb-0.5 text-[10px] font-medium uppercase tracking-[0.11em] text-[#8A98A3]">
         Share &amp; Verify
       </div>
-      <div className="mb-4 text-[12px] leading-5 text-[#6B7F8E]">
+      <div className="mb-3 text-[12px] leading-5 text-[#6B7F8E]">
         Anyone with this link can independently verify its authenticity.
       </div>
 
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-2.5">
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-          <ActionButton
-            type="button"
-            onClick={handleCopyLink}
-            className="bg-[#377F7F] text-white shadow-[0_8px_18px_rgba(61,143,143,0.14)] hover:bg-[#316F6F]"
-          >
-            {copied ? "Copied" : "Copy credential link"}
-          </ActionButton>
-
           <ActionButton
             type="button"
             onClick={handleVerify}
             disabled={isVerifying}
-            className="bg-[#F6FBFB] text-[#265F5F] shadow-[inset_0_0_0_1px_rgba(61,143,143,0.18)] hover:bg-[#EEF7F7]"
+            className="bg-[#377F7F] text-white shadow-[0_8px_18px_rgba(61,143,143,0.14)] hover:bg-[#316F6F]"
           >
             {isVerifying ? "Verifying..." : "Verify this credential"}
+          </ActionButton>
+
+          <ActionButton
+            type="button"
+            onClick={handleCopyLink}
+            className="bg-[#F6FBFB] text-[#265F5F] shadow-[inset_0_0_0_1px_rgba(61,143,143,0.18)] hover:bg-[#EEF7F7]"
+          >
+            {copied ? "Copied" : "Copy credential link"}
           </ActionButton>
         </div>
 
         {isVerifiedRecipient && (
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-            <ActionLink
-              href={linkedInUrl}
-              target="_blank"
-              rel="noreferrer"
-              className="bg-[#0A66C2] text-white shadow-[0_10px_24px_rgba(10,102,194,0.16)] hover:bg-[#0958a8] focus-visible:shadow-[0_0_0_3px_rgba(10,102,194,0.18),0_12px_28px_rgba(10,102,194,0.2)]"
-            >
-              Add to LinkedIn
-            </ActionLink>
+          <div className="pt-1">
+            <div className="mb-2 text-[10px] font-medium uppercase tracking-[0.11em] text-[#8A98A3]">
+              Use this credential
+            </div>
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              <ActionLink
+                href={linkedInUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="bg-[#F6FBFB] text-[#265F5F] shadow-[inset_0_0_0_1px_rgba(61,143,143,0.18)] hover:bg-[#EEF7F7]"
+              >
+                Add to LinkedIn
+              </ActionLink>
 
-            <ActionLink
-              href={badgeUrl}
-              target="_blank"
-              rel="noreferrer"
-              download
-              className="bg-white text-[#3D5166] shadow-[inset_0_0_0_1px_rgba(13,43,69,0.06)] hover:bg-[#F8FBFB]"
-            >
-              Download badge PNG
-            </ActionLink>
-
-            <ActionLink
-              href={evidenceUrl}
-              className="bg-[#F4EEE0] text-[#8D6A22] shadow-[0_8px_20px_rgba(184,147,58,0.08)] hover:bg-[#F0E7D3]"
-            >
-              View evidence report
-            </ActionLink>
+              <ActionLink
+                href={badgeUrl}
+                target="_blank"
+                rel="noreferrer"
+                download
+                className="bg-white text-[#3D5166] shadow-[inset_0_0_0_1px_rgba(13,43,69,0.06)] hover:bg-[#F8FBFB]"
+              >
+                Download badge
+              </ActionLink>
+            </div>
+            <div className="mt-3">
+              <ActionLink
+                href={evidenceUrl}
+                className="inline-flex min-h-0 items-center gap-1 rounded-none bg-transparent px-0 py-0 text-[13px] font-medium text-[#8D6A22] shadow-none hover:bg-transparent hover:text-[#75571d]"
+              >
+                View detailed evidence report →
+              </ActionLink>
+            </div>
           </div>
         )}
       </div>

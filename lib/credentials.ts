@@ -20,6 +20,7 @@ interface CredentialAchievement {
 
 interface CredentialSubject {
   name?: unknown;
+  email?: unknown;
   achievement?: CredentialAchievement;
 }
 
@@ -60,6 +61,7 @@ export interface ReadyCredentialPageData extends CredentialPageBase {
   title: string;
   issuerName: string;
   recipientEmail: string | null;
+  credentialRecipientEmail: string | null;
   recipientLabel: string;
   recipientInitials: string;
   issueDateLabel: string;
@@ -302,7 +304,8 @@ export async function getCredentialPageData(
   const validUntilLabel = formatDisplayDate(expiresDateSource);
   const issueDateParts = getYearAndMonth(issueDateSource);
   const credentialEvidence = credential.evidence?.[0];
-  const recipientEmail = row?.learner_email ?? null;
+  const credentialRecipientEmail = getString(credential.credentialSubject?.email);
+  const recipientEmail = row?.learner_email ?? credentialRecipientEmail ?? null;
   const recipientName = getString(credential.credentialSubject?.name);
   const recipientInitials = getRecipientInitialsFromIdentity({
     name: recipientName,
@@ -339,6 +342,7 @@ export async function getCredentialPageData(
     title,
     issuerName,
     recipientEmail,
+    credentialRecipientEmail,
     recipientLabel,
     recipientInitials,
     issueDateLabel,
