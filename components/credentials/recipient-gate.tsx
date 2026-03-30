@@ -7,10 +7,13 @@ import { CredentialActions } from "@/components/credentials/credential-actions";
 import { anyEmailMatches } from "@/lib/recipient";
 
 interface RecipientGateProps {
+  title: string;
+  issuerName: string;
+  issueYear: number | null;
+  issueMonth: number | null;
   canonicalUrl: string;
   badgeUrl: string;
   evidenceUrl: string;
-  linkedInUrl: string;
   learnerEmail: string | null;
   credentialRecipientEmail: string | null;
   score: number;
@@ -19,10 +22,13 @@ interface RecipientGateProps {
 }
 
 interface RecipientGateContentProps {
+  title: string;
+  issuerName: string;
+  issueYear: number | null;
+  issueMonth: number | null;
   canonicalUrl: string;
   badgeUrl: string;
   evidenceUrl: string;
-  linkedInUrl: string;
   score: number;
   summary: string;
   authEnabled: boolean;
@@ -393,10 +399,13 @@ function InlineRecipientSignIn({
 }
 
 function RecipientGateContent({
+  title,
+  issuerName,
+  issueYear,
+  issueMonth,
   canonicalUrl,
   badgeUrl,
   evidenceUrl,
-  linkedInUrl,
   score,
   summary,
   authEnabled,
@@ -427,10 +436,13 @@ function RecipientGateContent({
 
       <div className={isVerifiedRecipient ? "mt-10" : "mt-2"}>
         <CredentialActions
+          title={title}
+          issuerName={issuerName}
+          issueYear={issueYear}
+          issueMonth={issueMonth}
           canonicalUrl={canonicalUrl}
           badgeUrl={badgeUrl}
           evidenceUrl={evidenceUrl}
-          linkedInUrl={linkedInUrl}
           isVerifiedRecipient={isVerifiedRecipient}
         />
       </div>
@@ -463,7 +475,7 @@ function RecipientGateContent({
             Recipient-only features are still locked
           </div>
           <div className="mt-1 text-[13px] leading-5 text-[#7A8A96]">
-            You&apos;re signed in, but recipient-only features are only available to the email this credential was issued to.
+            You&apos;re signed in, but recipient-only features are only available to the email address associated with this credential.
           </div>
         </div>
       )}
@@ -472,10 +484,13 @@ function RecipientGateContent({
 }
 
 function RecipientGateWithClerk({
+  title,
+  issuerName,
+  issueYear,
+  issueMonth,
   canonicalUrl,
   badgeUrl,
   evidenceUrl,
-  linkedInUrl,
   learnerEmail,
   credentialRecipientEmail,
   score,
@@ -490,10 +505,13 @@ function RecipientGateWithClerk({
 
   return (
     <RecipientGateContent
+      title={title}
+      issuerName={issuerName}
+      issueYear={issueYear}
+      issueMonth={issueMonth}
       canonicalUrl={canonicalUrl}
       badgeUrl={badgeUrl}
       evidenceUrl={evidenceUrl}
-      linkedInUrl={linkedInUrl}
       score={score}
       summary={summary}
       authEnabled={true}
@@ -509,10 +527,13 @@ export function RecipientGate(props: RecipientGateProps) {
   if (!props.authEnabled) {
     return (
       <RecipientGateContent
+        title={props.title}
+        issuerName={props.issuerName}
+        issueYear={props.issueYear}
+        issueMonth={props.issueMonth}
         canonicalUrl={props.canonicalUrl}
         badgeUrl={props.badgeUrl}
         evidenceUrl={props.evidenceUrl}
-        linkedInUrl={props.linkedInUrl}
         score={props.score}
         summary={props.summary}
         authEnabled={false}

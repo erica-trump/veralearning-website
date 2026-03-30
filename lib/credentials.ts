@@ -4,6 +4,7 @@ import { getRecipientInitialsFromIdentity } from "@/lib/recipient";
 
 const DEFAULT_ISSUER_NAME = "VeraLearning";
 const DEFAULT_SCORE = 87;
+const DEFAULT_CREDENTIALS_BASE_URL = "https://www.veralearning.com";
 const DEFAULT_SUMMARY =
   "The learner demonstrated consistent application of safety protocols, correct machine setup procedures, and sound judgment across all five critical CNC operation themes. Verified through adaptive AI interview.";
 
@@ -241,8 +242,16 @@ export function isUuid(value: string) {
   );
 }
 
+function getCredentialsBaseUrl() {
+  const configuredBaseUrl =
+    process.env.NEXT_PUBLIC_CREDENTIALS_BASE_URL?.trim() ||
+    DEFAULT_CREDENTIALS_BASE_URL;
+
+  return configuredBaseUrl.replace(/\/+$/, "");
+}
+
 export function buildCanonicalCredentialUrl(id: string) {
-  return `https://www.veralearning.com/credentials/${id}`;
+  return `${getCredentialsBaseUrl()}/credentials/${id}`;
 }
 
 export function buildBadgeUrl(id: string) {
@@ -250,7 +259,7 @@ export function buildBadgeUrl(id: string) {
 }
 
 export function buildEvidenceUrl(id: string) {
-  return `https://www.veralearning.com/credentials/${id}/evidence`;
+  return `${getCredentialsBaseUrl()}/credentials/${id}/evidence`;
 }
 
 export async function getCredentialPageData(

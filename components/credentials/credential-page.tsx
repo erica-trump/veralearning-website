@@ -134,6 +134,10 @@ function ReadyCredentialPage({ data }: { data: ReadyCredentialPageData }) {
 
           <div className={data.skills.length > 0 ? "mt-8" : ""}>
             <RecipientGate
+              title={data.title}
+              issuerName={data.issuerName}
+              issueYear={data.issueYear}
+              issueMonth={data.issueMonth}
               canonicalUrl={data.canonicalUrl}
               badgeUrl={data.badgeUrl}
               evidenceUrl={data.evidenceUrl}
