@@ -141,7 +141,6 @@ function ReadyCredentialPage({ data }: { data: ReadyCredentialPageData }) {
               canonicalUrl={data.canonicalUrl}
               badgeUrl={data.badgeUrl}
               evidenceUrl={data.evidenceUrl}
-              linkedInUrl={data.linkedInUrl}
               learnerEmail={data.recipientEmail}
               credentialRecipientEmail={data.credentialRecipientEmail}
               score={data.score}
