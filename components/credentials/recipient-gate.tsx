@@ -11,6 +11,8 @@ interface RecipientGateProps {
   issuerName: string;
   issueYear: number | null;
   issueMonth: number | null;
+  validUntilYear: number | null;
+  validUntilMonth: number | null;
   canonicalUrl: string;
   badgeUrl: string;
   evidenceUrl: string;
@@ -26,6 +28,8 @@ interface RecipientGateContentProps {
   issuerName: string;
   issueYear: number | null;
   issueMonth: number | null;
+  validUntilYear: number | null;
+  validUntilMonth: number | null;
   canonicalUrl: string;
   badgeUrl: string;
   evidenceUrl: string;
@@ -403,6 +407,8 @@ function RecipientGateContent({
   issuerName,
   issueYear,
   issueMonth,
+  validUntilYear,
+  validUntilMonth,
   canonicalUrl,
   badgeUrl,
   evidenceUrl,
@@ -440,6 +446,8 @@ function RecipientGateContent({
           issuerName={issuerName}
           issueYear={issueYear}
           issueMonth={issueMonth}
+          validUntilYear={validUntilYear}
+          validUntilMonth={validUntilMonth}
           canonicalUrl={canonicalUrl}
           badgeUrl={badgeUrl}
           evidenceUrl={evidenceUrl}
@@ -488,6 +496,8 @@ function RecipientGateWithClerk({
   issuerName,
   issueYear,
   issueMonth,
+  validUntilYear,
+  validUntilMonth,
   canonicalUrl,
   badgeUrl,
   evidenceUrl,
@@ -509,6 +519,8 @@ function RecipientGateWithClerk({
       issuerName={issuerName}
       issueYear={issueYear}
       issueMonth={issueMonth}
+      validUntilYear={validUntilYear}
+      validUntilMonth={validUntilMonth}
       canonicalUrl={canonicalUrl}
       badgeUrl={badgeUrl}
       evidenceUrl={evidenceUrl}
@@ -531,6 +543,8 @@ export function RecipientGate(props: RecipientGateProps) {
         issuerName={props.issuerName}
         issueYear={props.issueYear}
         issueMonth={props.issueMonth}
+        validUntilYear={props.validUntilYear}
+        validUntilMonth={props.validUntilMonth}
         canonicalUrl={props.canonicalUrl}
         badgeUrl={props.badgeUrl}
         evidenceUrl={props.evidenceUrl}

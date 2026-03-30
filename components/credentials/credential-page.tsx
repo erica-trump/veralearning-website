@@ -138,6 +138,8 @@ function ReadyCredentialPage({ data }: { data: ReadyCredentialPageData }) {
               issuerName={data.issuerName}
               issueYear={data.issueYear}
               issueMonth={data.issueMonth}
+              validUntilYear={data.validUntilYear}
+              validUntilMonth={data.validUntilMonth}
               canonicalUrl={data.canonicalUrl}
               badgeUrl={data.badgeUrl}
               evidenceUrl={data.evidenceUrl}

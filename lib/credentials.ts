@@ -69,6 +69,8 @@ export interface ReadyCredentialPageData extends CredentialPageBase {
   validUntilLabel: string | null;
   issueYear: number | null;
   issueMonth: number | null;
+  validUntilYear: number | null;
+  validUntilMonth: number | null;
   proofLabel: string;
   proofTags: string[];
   verificationSummary: string;
@@ -312,6 +314,7 @@ export async function getCredentialPageData(
   const issueDateLabel = formatDisplayDate(issueDateSource) ?? "Unavailable";
   const validUntilLabel = formatDisplayDate(expiresDateSource);
   const issueDateParts = getYearAndMonth(issueDateSource);
+  const validUntilParts = getYearAndMonth(expiresDateSource);
   const credentialEvidence = credential.evidence?.[0];
   const credentialRecipientEmail = getString(credential.credentialSubject?.email);
   const recipientEmail = row?.learner_email ?? credentialRecipientEmail ?? null;
@@ -358,6 +361,8 @@ export async function getCredentialPageData(
     validUntilLabel,
     issueYear: issueDateParts.year,
     issueMonth: issueDateParts.month,
+    validUntilYear: validUntilParts.year,
+    validUntilMonth: validUntilParts.month,
     proofLabel,
     proofTags,
     verificationSummary:
