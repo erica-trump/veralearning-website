@@ -1,4 +1,5 @@
 import jsigs from "jsonld-signatures";
+import { gunzipSync, inflateRawSync } from "node:zlib";
 import { DataIntegrityProof } from "@digitalbazaar/data-integrity";
 import { cryptosuite as eddsaRdfc2022Cryptosuite } from "@digitalbazaar/eddsa-rdfc-2022-cryptosuite";
 import {
@@ -26,10 +27,23 @@ interface CredentialProof {
   proofValue?: unknown;
 }
 
+interface CredentialStatusEntry {
+  type?: unknown;
+  statusPurpose?: unknown;
+  statusListIndex?: unknown;
+  statusListCredential?: unknown;
+}
+
+interface StatusListCredentialSubject {
+  type?: unknown;
+  encodedList?: unknown;
+}
+
 interface CredentialRecord extends ExtractedOpenBadgeCredential {
   id?: unknown;
   issuer?: CredentialIssuer | string;
   proof?: CredentialProof[];
+  credentialStatus?: CredentialStatusEntry | CredentialStatusEntry[];
   validFrom?: unknown;
   validUntil?: unknown;
   type?: unknown;
@@ -54,6 +68,8 @@ export interface VerificationChecks {
   integrityValid: boolean;
   signatureValid: boolean;
   proofFormatSupported: boolean;
+  statusChecked: boolean;
+  statusValid: boolean;
 }
 
 export interface VerificationCredentialSummary {
@@ -84,6 +100,8 @@ interface VerificationDiagnostics {
   proofObject: CredentialProof | null;
   resolvedVerificationMethodId: string | null;
   resolvedControllerId: string | null;
+  statusListCredentialUrl: string | null;
+  statusListIndex: number | null;
   documentResolution: DocumentResolutionDiagnostic[];
   rawVerificationResult: unknown;
   rawVerificationErrors: unknown[];
@@ -196,6 +214,8 @@ function createBaseChecks(): VerificationChecks {
     integrityValid: false,
     signatureValid: false,
     proofFormatSupported: false,
+    statusChecked: false,
+    statusValid: false,
   };
 }
 
@@ -268,6 +288,10 @@ function logVerificationIssue({
     integrityValid: result.checks.integrityValid,
     signatureValid: result.checks.signatureValid,
     proofFormatSupported: result.checks.proofFormatSupported,
+    statusChecked: result.checks.statusChecked,
+    statusValid: result.checks.statusValid,
+    statusListCredentialUrl: diagnostics.statusListCredentialUrl,
+    statusListIndex: diagnostics.statusListIndex,
     documentResolutionFailures: diagnostics.documentResolution
       .filter((entry) => entry.status === "failed")
       .map((entry) => ({
@@ -318,6 +342,119 @@ function getVerificationErrors(rawVerificationResult: unknown) {
   return [];
 }
 
+function isJsonLdSafeModeError(error: unknown): boolean {
+  if (typeof error !== "object" || error === null) {
+    return false;
+  }
+
+  const candidate = error as {
+    name?: unknown;
+    message?: unknown;
+    details?: {
+      event?: {
+        code?: unknown;
+      };
+    };
+  };
+
+  return (
+    (getString(candidate.name) === "jsonld.ValidationError" &&
+      getString(candidate.message) === "Safe mode validation error.") ||
+    getString(candidate.details?.event?.code) === "invalid property"
+  );
+}
+
+function hasJsonLdSafeModeFailure(errors: unknown[]) {
+  return errors.some((error) => isJsonLdSafeModeError(error));
+}
+
+function parseCredentialDate(value: string | null) {
+  if (!value) {
+    return null;
+  }
+
+  const parsed = new Date(value);
+
+  if (Number.isNaN(parsed.getTime())) {
+    return null;
+  }
+
+  return parsed;
+}
+
+function getCredentialStatusEntry(credential: CredentialRecord) {
+  if (Array.isArray(credential.credentialStatus)) {
+    return credential.credentialStatus[0] ?? null;
+  }
+
+  return credential.credentialStatus ?? null;
+}
+
+function parseStatusListIndex(value: unknown) {
+  const stringValue = getString(value);
+
+  if (!stringValue || !/^\d+$/.test(stringValue)) {
+    return null;
+  }
+
+  const index = Number.parseInt(stringValue, 10);
+  return Number.isSafeInteger(index) ? index : null;
+}
+
+function getStatusListEncodedValue(statusListCredential: unknown) {
+  if (typeof statusListCredential !== "object" || statusListCredential === null) {
+    return null;
+  }
+
+  const subjects = Array.isArray(
+    (statusListCredential as { credentialSubject?: unknown }).credentialSubject,
+  )
+    ? ((statusListCredential as { credentialSubject: unknown[] }).credentialSubject as unknown[])
+    : [
+        (statusListCredential as { credentialSubject?: unknown }).credentialSubject,
+      ];
+
+  for (const subject of subjects) {
+    if (typeof subject !== "object" || subject === null) {
+      continue;
+    }
+
+    const typedSubject = subject as StatusListCredentialSubject;
+    const subjectTypes = [
+      ...getCredentialArray(typedSubject.type),
+      ...(typeof typedSubject.type === "string" ? [typedSubject.type] : []),
+    ]
+      .map((value) => getString(value))
+      .filter((value): value is string => Boolean(value));
+
+    if (subjectTypes.includes("StatusList2021")) {
+      return getString(typedSubject.encodedList);
+    }
+  }
+
+  return null;
+}
+
+function isStatusBitSet(encodedList: string, statusListIndex: number) {
+  const compressed = Buffer.from(encodedList, "base64url");
+  let decoded: Buffer;
+
+  try {
+    decoded = gunzipSync(compressed);
+  } catch {
+    decoded = inflateRawSync(compressed);
+  }
+
+  const byteIndex = Math.floor(statusListIndex / 8);
+  const bitIndex = statusListIndex % 8;
+
+  if (byteIndex >= decoded.length) {
+    throw new Error("The credential status index is outside the status list range.");
+  }
+
+  return (decoded[byteIndex] & (1 << bitIndex)) !== 0;
+}
+
 export async function verifyCredential(
   input: VerifyCredentialInput,
 ): Promise<VerificationRunResult> {
@@ -360,6 +497,8 @@ export async function verifyCredential(
         proofObject: null,
         resolvedVerificationMethodId: null,
         resolvedControllerId: null,
+        statusListCredentialUrl: null,
+        statusListIndex: null,
         documentResolution: [],
         rawVerificationResult: null,
         rawVerificationErrors: [],
@@ -377,6 +516,8 @@ export async function verifyCredential(
     proofObject: proof,
     resolvedVerificationMethodId: null,
     resolvedControllerId: null,
+    statusListCredentialUrl: null,
+    statusListIndex: null,
     documentResolution: [],
     rawVerificationResult: null,
     rawVerificationErrors: [],
@@ -403,6 +544,12 @@ export async function verifyCredential(
   const cryptosuite = getString(proof.cryptosuite);
   const verificationMethodId = getString(proof.verificationMethod);
   const issuerId = getIssuerId(credential);
+  const credentialStatus = getCredentialStatusEntry(credential);
+  const statusListCredentialUrl = getString(credentialStatus?.statusListCredential);
+  const statusListIndex = parseStatusListIndex(credentialStatus?.statusListIndex);
+
+  diagnostics.statusListCredentialUrl = statusListCredentialUrl;
+  diagnostics.statusListIndex = statusListIndex;
 
   if (
     proofType !== "DataIntegrityProof" ||
@@ -428,8 +575,45 @@ export async function verifyCredential(
 
   checks.proofFormatSupported = true;
 
+  if (!credentialStatus) {
+    return {
+      result: (() => {
+        const result = createErrorResult({
+          status: "unverifiable",
+          checks,
+          summary,
+          code: "missing_credential_status",
+          message: "This credential does not include issuer status information.",
+        });
+        logVerificationIssue({ result, diagnostics });
+        return result;
+      })(),
+      diagnostics,
+    };
+  }
+
+  if (!statusListCredentialUrl || statusListIndex === null) {
+    return {
+      result: (() => {
+        const result = createErrorResult({
+          status: "unverifiable",
+          checks,
+          summary,
+          code: "invalid_credential_status",
+          message:
+            "This credential's status reference is incomplete and could not be checked.",
+        });
+        logVerificationIssue({ result, diagnostics });
+        return result;
+      })(),
+      diagnostics,
+    };
+  }
+
   const { documentLoader, getDiagnostics } = createVerificationDocumentLoader({
-    additionalAllowedUrls: issuerId ? [issuerId] : [],
+    additionalAllowedUrls: [issuerId, statusListCredentialUrl].filter(
+      (value): value is string => Boolean(value),
+    ),
   });
 
   let verificationMethodDocument: unknown;
@@ -535,6 +719,102 @@ export async function verifyCredential(
     checks.integrityValid = verified;
 
     if (verified) {
+      const validFrom = parseCredentialDate(summary.issued);
+      const validUntil = parseCredentialDate(summary.validUntil);
+      const now = new Date();
+
+      if (validFrom && validFrom.getTime() > now.getTime()) {
+        return {
+          result: (() => {
+            const result = createErrorResult({
+              status: "failed",
+              checks,
+              summary,
+              code: "credential_not_yet_valid",
+              message:
+                "This credential's proof is valid, but the credential has not yet become valid.",
+            });
+            logVerificationIssue({ result, diagnostics });
+            return result;
+          })(),
+          diagnostics,
+        };
+      }
+
+      if (validUntil && validUntil.getTime() <= now.getTime()) {
+        return {
+          result: (() => {
+            const result = createErrorResult({
+              status: "failed",
+              checks,
+              summary,
+              code: "credential_expired",
+              message:
+                "This credential's proof is valid, but the credential has expired.",
+            });
+            logVerificationIssue({ result, diagnostics });
+            return result;
+          })(),
+          diagnostics,
+        };
+      }
+
+      try {
+        const statusListRemote = await documentLoader(statusListCredentialUrl);
+        const encodedList = getStatusListEncodedValue(statusListRemote.document);
+
+        if (!encodedList) {
+          throw new Error("The status list credential does not contain an encoded list.");
+        }
+
+        checks.statusChecked = true;
+        checks.statusValid = !isStatusBitSet(encodedList, statusListIndex);
+        diagnostics.documentResolution = getDiagnostics();
+
+        if (!checks.statusValid) {
+          return {
+            result: (() => {
+              const result = createErrorResult({
+                status: "failed",
+                checks,
+                summary,
+                code: "credential_revoked",
+                message:
+                  "This credential's proof is valid, but the issuer has marked it as revoked.",
+              });
+              logVerificationIssue({ result, diagnostics });
+              return result;
+            })(),
+            diagnostics,
+          };
+        }
+      } catch (error) {
+        diagnostics.documentResolution = getDiagnostics();
+
+        return {
+          result: (() => {
+            const result = createErrorResult({
+              status: "unverifiable",
+              checks,
+              summary,
+              code:
+                error instanceof DocumentLoaderError
+                  ? error.code
+                  : "status_list_check_failed",
+              message:
+                error instanceof DocumentLoaderError
+                  ? "We could not confirm the issuer's status record for this credential."
+                  : error instanceof Error
+                    ? `Status list check failed: ${error.message}`
+                    : "We could not confirm the issuer's status record for this credential.",
+            });
+            logVerificationIssue({ result, diagnostics });
+            return result;
+          })(),
+          diagnostics,
+        };
+      }
+
       return {
         result: {
           verified: true,
@@ -543,6 +823,24 @@ export async function verifyCredential(
           credentialSummary: summary,
           error: null,
         },
+        diagnostics,
+      };
+    }
+
+    if (hasJsonLdSafeModeFailure(verificationErrors)) {
+      return {
+        result: (() => {
+          const result = createErrorResult({
+            status: "failed",
+            checks,
+            summary,
+            code: "unsafe_jsonld_term",
+            message:
+              "This credential includes undefined or unsafe JSON-LD terms and cannot be verified.",
+          });
+          logVerificationIssue({ result, diagnostics });
+          return result;
+        })(),
         diagnostics,
       };
     }
@@ -565,6 +863,24 @@ export async function verifyCredential(
   } catch (error) {
     diagnostics.documentResolution = getDiagnostics();
     diagnostics.rawVerificationErrors = [error];
+
+    if (isJsonLdSafeModeError(error)) {
+      return {
+        result: (() => {
+          const result = createErrorResult({
+            status: "failed",
+            checks,
+            summary,
+            code: "unsafe_jsonld_term",
+            message:
+              "This credential includes undefined or unsafe JSON-LD terms and cannot be verified.",
+          });
+          logVerificationIssue({ result, diagnostics });
+          return result;
+        })(),
+        diagnostics,
+      };
+    }
 
     if (error instanceof DocumentLoaderError) {
       return {

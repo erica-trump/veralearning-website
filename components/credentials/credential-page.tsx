@@ -33,6 +33,20 @@ function ErrorCard({
   );
 }
 
+function formatIssuedPill(dateLabel: string) {
+  const parsed = new Date(dateLabel);
+
+  if (Number.isNaN(parsed.getTime())) {
+    return `Issued ${dateLabel}`;
+  }
+
+  return `Issued ${new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  }).format(parsed)}`;
+}
+
 function ReadyCredentialPage({ data }: { data: ReadyCredentialPageData }) {
   const authEnabled = Boolean(process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY);
 
@@ -60,21 +74,17 @@ function ReadyCredentialPage({ data }: { data: ReadyCredentialPageData }) {
           </h1>
 
           <div className="credential-enter relative mt-5 flex flex-wrap items-center justify-center gap-2.5 [animation-delay:220ms]">
-            <div className="credential-chip inline-flex items-center gap-1.5 rounded-full border border-[#2D7A4F]/20 bg-[#EBF5EF] px-3.5 py-1.5 text-[12px] font-semibold uppercase tracking-[0.04em] text-[#2D7A4F]">
-              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
-                <path d="M20 6L9 17l-5-5" />
-              </svg>
-              Pass
-            </div>
-
             {data.skills.length > 0 && (
-              <div className="credential-chip inline-flex rounded-full border border-[#D7D4CD] bg-white px-3.5 py-1.5 text-[12px] font-semibold uppercase tracking-[0.04em] text-[#31485C]">
-                {data.skills.length}/{data.skills.length} Skills Verified
+              <div className="credential-chip inline-flex items-center gap-1.5 rounded-full border border-[#2D7A4F]/20 bg-[#EBF5EF] px-3.5 py-1.5 text-[12px] font-semibold tracking-[0.02em] text-[#2D7A4F]">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                  <path d="M20 6L9 17l-5-5" />
+                </svg>
+                All {data.skills.length} skills verified
               </div>
             )}
 
             <div className="credential-chip inline-flex rounded-full border border-[#CFE1E1] bg-[#F6FBFB] px-3.5 py-1.5 text-[12px] font-medium tracking-[0.02em] text-[#31485C]">
-              {data.issueDateLabel}
+              {formatIssuedPill(data.issueDateLabel)}
             </div>
           </div>
 
@@ -82,6 +92,12 @@ function ReadyCredentialPage({ data }: { data: ReadyCredentialPageData }) {
             <VerificationDetailsModal
               pageId={data.id}
               credentialId={data.credentialId}
+              credentialTitle={data.title}
+              recipientName={
+                data.recipientLabel === "Public credential"
+                  ? "Verified Recipient"
+                  : data.recipientLabel
+              }
               issuerName={data.issuerName}
               proofLabel={data.proofLabel}
               proofTags={data.proofTags}

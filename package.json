@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "check:jsonld-safe-mode": "node scripts/check-jsonld-safe-mode.mjs"
   },
   "dependencies": {
     "@clerk/nextjs": "^6.34.0",

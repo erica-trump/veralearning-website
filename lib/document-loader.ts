@@ -5,7 +5,7 @@ interface VerificationDocumentLoaderOptions {
 
 export interface DocumentResolutionDiagnostic {
   url: string;
-  category: "context" | "issuer" | "verificationMethod" | "controller" | "other";
+  category: "context" | "issuer" | "verificationMethod" | "controller" | "statusList" | "other";
   status: "resolved" | "failed";
   errorCode?: string;
   errorMessage?: string;
@@ -37,7 +37,7 @@ export class DocumentLoaderError extends Error {
   }
 }
 
-const DEFAULT_TIMEOUT_MS = 10_000;
+const DEFAULT_TIMEOUT_MS = 20_000;
 const STANDARD_CONTEXT_URLS = new Set([
   "https://www.w3.org/ns/credentials/v2",
   "https://www.w3.org/ns/did/v1",
@@ -64,6 +64,10 @@ function getCategory(url: string): DocumentResolutionDiagnostic["category"] {
     return "verificationMethod";
   }
 
+  if (/status[\/_-]?list/i.test(url)) {
+    return "statusList";
+  }
+
   return "other";
 }
 
@@ -80,13 +84,17 @@ function isAllowedUrl(url: string, additionalAllowedUrls: string[]) {
   );
 }
 
-async function fetchRemoteDocument(url: string, timeoutMs: number) {
+function isStatusListUrl(url: string) {
+  return /status[\/_-]?list/i.test(url);
+}
+
+async function fetchRemoteDocumentOnce(url: string, timeoutMs: number) {
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
 
   try {
     const response = await fetch(url, {
-      cache: "force-cache",
+      cache: isStatusListUrl(url) ? "no-store" : "force-cache",
       redirect: "follow",
       signal: controller.signal,
     });
@@ -129,6 +137,21 @@ async function fetchRemoteDocument(url: string, timeoutMs: number) {
   }
 }
 
+async function fetchRemoteDocument(url: string, timeoutMs: number) {
+  try {
+    return await fetchRemoteDocumentOnce(url, timeoutMs);
+  } catch (error) {
+    if (
+      error instanceof DocumentLoaderError &&
+      error.code === "document_fetch_timeout"
+    ) {
+      return fetchRemoteDocumentOnce(url, timeoutMs);
+    }
+
+    throw error;
+  }
+}
+
 export function createVerificationDocumentLoader({
   additionalAllowedUrls = [],
   timeoutMs = DEFAULT_TIMEOUT_MS,
@@ -152,7 +175,7 @@ export function createVerificationDocumentLoader({
       throw blockedError;
     }
 
-    const cached = sharedDocumentCache.get(url);
+    const cached = isStatusListUrl(url) ? null : sharedDocumentCache.get(url);
 
     if (cached) {
       diagnostics.set(url, {
@@ -166,7 +189,9 @@ export function createVerificationDocumentLoader({
 
     try {
       const remoteDocument = await fetchRemoteDocument(url, timeoutMs);
-      sharedDocumentCache.set(url, remoteDocument);
+      if (!isStatusListUrl(url)) {
+        sharedDocumentCache.set(url, remoteDocument);
+      }
       diagnostics.set(url, {
         url,
         category: getCategory(url),
