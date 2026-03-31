@@ -3,6 +3,7 @@
 import dynamic from "next/dynamic";
 import { useState } from "react";
 import { CredentialActions } from "@/components/credentials/credential-actions";
+import { anyEmailMatches } from "@/lib/recipient";
 
 interface RecipientGateProps {
   title: string;
@@ -38,6 +39,7 @@ interface RecipientGateContentProps {
   showSignedOutState: boolean;
   showMismatchState: boolean;
   credentialRecipientEmail: string | null;
+  onSignedInResolved: (emails: string[]) => void;
 }
 
 const RecipientAccessAuthFlow = dynamic(
@@ -58,9 +60,11 @@ const RecipientAccessAuthFlow = dynamic(
 function SignedOutAccess({
   authEnabled,
   credentialRecipientEmail,
+  onSignedInResolved,
 }: {
   authEnabled: boolean;
   credentialRecipientEmail: string | null;
+  onSignedInResolved: (emails: string[]) => void;
 }) {
   const [showAuthFlow, setShowAuthFlow] = useState(false);
 
@@ -103,7 +107,10 @@ function SignedOutAccess({
           </div>
         </div>
       ) : (
-        <RecipientAccessAuthFlow credentialRecipientEmail={credentialRecipientEmail} />
+        <RecipientAccessAuthFlow
+          credentialRecipientEmail={credentialRecipientEmail}
+          onSignedInResolved={onSignedInResolved}
+        />
       )}
     </>
   );
@@ -126,6 +133,7 @@ function RecipientGateContent({
   showSignedOutState,
   showMismatchState,
   credentialRecipientEmail,
+  onSignedInResolved,
 }: RecipientGateContentProps) {
   return (
     <>
@@ -167,6 +175,7 @@ function RecipientGateContent({
           <SignedOutAccess
             authEnabled={authEnabled}
             credentialRecipientEmail={credentialRecipientEmail}
+            onSignedInResolved={onSignedInResolved}
           />
         </div>
       )}
@@ -186,6 +195,12 @@ function RecipientGateContent({
 }
 
 export function RecipientGate(props: RecipientGateProps) {
+  const [resolvedViewerEmails, setResolvedViewerEmails] = useState<string[] | null>(null);
+  const isVerifiedRecipient =
+    resolvedViewerEmails !== null && anyEmailMatches(resolvedViewerEmails, props.learnerEmail);
+  const showSignedOutState = resolvedViewerEmails === null;
+  const showMismatchState = resolvedViewerEmails !== null && !isVerifiedRecipient;
+
   return (
     <RecipientGateContent
       title={props.title}
@@ -200,10 +215,11 @@ export function RecipientGate(props: RecipientGateProps) {
       score={props.score}
       summary={props.summary}
       authEnabled={props.authEnabled}
-      isVerifiedRecipient={false}
-      showSignedOutState
-      showMismatchState={false}
+      isVerifiedRecipient={isVerifiedRecipient}
+      showSignedOutState={showSignedOutState}
+      showMismatchState={showMismatchState}
       credentialRecipientEmail={props.credentialRecipientEmail}
+      onSignedInResolved={setResolvedViewerEmails}
     />
   );
 }

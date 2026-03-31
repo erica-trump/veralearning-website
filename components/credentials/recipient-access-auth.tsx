@@ -1,6 +1,6 @@
 "use client";
 
-import { ClerkProvider, useSignIn, useSignUp } from "@clerk/nextjs";
+import { ClerkProvider, useSignIn, useSignUp, useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState, type FormEvent } from "react";
 
@@ -64,10 +64,13 @@ function isAccountNotFoundError(error: unknown) {
 
 function RecipientAccessAuthFlowInner({
   credentialRecipientEmail,
+  onSignedInResolved,
 }: {
   credentialRecipientEmail: string | null;
+  onSignedInResolved?: (emails: string[]) => void;
 }) {
   const router = useRouter();
+  const { isLoaded: isUserLoaded, isSignedIn, user } = useUser();
   const { isLoaded, signIn, setActive } = useSignIn();
   const { isLoaded: isSignUpLoaded, signUp } = useSignUp();
   const [showEmailInput, setShowEmailInput] = useState(false);
@@ -93,6 +96,18 @@ function RecipientAccessAuthFlowInner({
     () => (credentialRecipientEmail ? normalizeEmail(credentialRecipientEmail) : null),
     [credentialRecipientEmail],
   );
+  const signedInEmails = useMemo(
+    () => user?.emailAddresses.map((email) => email.emailAddress) ?? [],
+    [user],
+  );
+
+  useEffect(() => {
+    if (!isUserLoaded || !isSignedIn) {
+      return;
+    }
+
+    onSignedInResolved?.(signedInEmails);
+  }, [isSignedIn, isUserLoaded, onSignedInResolved, signedInEmails]);
 
   async function sendCode(emailToUse: string) {
     if (!isLoaded || !isSignUpLoaded || !signIn || !signUp || !setActive) {
@@ -211,7 +226,13 @@ function RecipientAccessAuthFlowInner({
 
   return (
     <>
-      {stage === "default" && (
+      {isUserLoaded && isSignedIn ? (
+        <div className="mx-auto max-w-[420px] rounded-[16px] bg-white px-4 py-4 text-[13px] leading-5 text-[#3D5166] shadow-[inset_0_0_0_1px_rgba(13,43,69,0.05)]">
+          You&apos;re already signed in. Checking recipient access...
+        </div>
+      ) : null}
+
+      {!isSignedIn && stage === "default" && (
         <>
           <div className="mx-auto max-w-[420px] rounded-[16px] bg-white px-4 py-4 text-left shadow-[inset_0_0_0_1px_rgba(13,43,69,0.05)]">
             <div className="text-[13px] leading-5 text-[#3D5166]">
@@ -281,7 +302,7 @@ function RecipientAccessAuthFlowInner({
         </>
       )}
 
-      {stage === "code" && (
+      {!isSignedIn && stage === "code" && (
         <>
           <form
             className="mx-auto max-w-[420px] rounded-[16px] bg-white px-4 py-4 text-left shadow-[inset_0_0_0_1px_rgba(13,43,69,0.05)]"
@@ -330,21 +351,23 @@ function RecipientAccessAuthFlowInner({
         </>
       )}
 
-      {stage === "success" && (
+      {!isSignedIn && stage === "success" && (
         <div className="mx-auto max-w-[420px] rounded-[16px] bg-white px-4 py-4 text-[13px] leading-5 text-[#2D7A4F] shadow-[inset_0_0_0_1px_rgba(45,122,79,0.12)]">
           Verification successful. Reloading your credential access...
         </div>
       )}
 
-      <div id="clerk-captcha" className="mx-auto mt-4 flex max-w-[420px] justify-center" />
+      {!isSignedIn && <div id="clerk-captcha" className="mx-auto mt-4 flex max-w-[420px] justify-center" />}
     </>
   );
 }
 
 export function RecipientAccessAuthFlow({
   credentialRecipientEmail,
+  onSignedInResolved,
 }: {
   credentialRecipientEmail: string | null;
+  onSignedInResolved?: (emails: string[]) => void;
 }) {
   const clerkPublishableKey = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
 
@@ -358,7 +381,10 @@ export function RecipientAccessAuthFlow({
 
   return (
     <ClerkProvider publishableKey={clerkPublishableKey}>
-      <RecipientAccessAuthFlowInner credentialRecipientEmail={credentialRecipientEmail} />
+      <RecipientAccessAuthFlowInner
+        credentialRecipientEmail={credentialRecipientEmail}
+        onSignedInResolved={onSignedInResolved}
+      />
     </ClerkProvider>
   );
 }
