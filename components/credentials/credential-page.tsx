@@ -33,97 +33,80 @@ function ErrorCard({
   );
 }
 
-function formatIssuedPill(dateLabel: string) {
-  const parsed = new Date(dateLabel);
-
-  if (Number.isNaN(parsed.getTime())) {
-    return `Issued ${dateLabel}`;
-  }
-
-  return `Issued ${new Intl.DateTimeFormat("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  }).format(parsed)}`;
-}
-
 function ReadyCredentialPage({ data }: { data: ReadyCredentialPageData }) {
   const authEnabled = Boolean(process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY);
+  const issuerLogoSrc = data.issuerName === "VeraLearning" ? "/logo-vera-circle.svg" : null;
 
   return (
     <div className="mx-auto max-w-[720px] px-5 pb-20 pt-8">
       <div className="credential-enter overflow-hidden rounded-[20px] bg-white shadow-[0_2px_8px_rgba(0,0,0,0.08),0_12px_32px_rgba(0,0,0,0.06)]">
-        <div className="border-b border-[#EAE6DE] bg-white px-7 pb-10 pt-9 text-center">
-          <div className="credential-enter relative text-[11px] font-semibold uppercase tracking-[0.14em] text-[#3D8F8F] [animation-delay:40ms]">
-            Independently Verifiable Credential
-          </div>
-
-          <div className="credential-badge-enter relative mt-5 flex justify-center [animation-delay:100ms]">
-            <Image
-              src={data.badgeImageDataUrl}
-              alt={`${data.title} credential badge`}
-              width={197}
-              height={197}
-              unoptimized
-              className="h-[12.25rem] w-[12.25rem] object-contain"
-            />
-          </div>
-
-          <h1 className="credential-enter relative mt-7 font-[family:var(--font-credential-serif)] text-[30px] font-semibold leading-[1.08] tracking-[-0.012em] text-[#0A2339] [animation-delay:160ms] md:text-[36px]">
-            {data.title}
-          </h1>
-
-          <div className="credential-enter relative mt-5 flex flex-wrap items-center justify-center gap-2.5 [animation-delay:220ms]">
-            {data.skills.length > 0 && (
-              <div className="credential-chip inline-flex items-center gap-1.5 rounded-full border border-[#2D7A4F]/20 bg-[#EBF5EF] px-3.5 py-1.5 text-[12px] font-semibold tracking-[0.02em] text-[#2D7A4F]">
-                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
-                  <path d="M20 6L9 17l-5-5" />
-                </svg>
-                All {data.skills.length} skills verified
+        <div className="bg-white pb-12 pt-9 text-center">
+          <div className="mx-7 px-6 pb-8 pt-4">
+            <div className="credential-enter relative text-center [animation-delay:40ms]">
+              <div className="text-[12px] font-medium uppercase tracking-[0.08em] text-[#7B8C97]">
+                Issued to
               </div>
-            )}
-
-            <div className="credential-chip inline-flex rounded-full border border-[#CFE1E1] bg-[#F6FBFB] px-3.5 py-1.5 text-[12px] font-medium tracking-[0.02em] text-[#31485C]">
-              {formatIssuedPill(data.issueDateLabel)}
-            </div>
-          </div>
-
-          <div className="credential-enter relative mt-4 flex items-center justify-center [animation-delay:300ms]">
-            <VerificationDetailsModal
-              pageId={data.id}
-              credentialId={data.credentialId}
-              credentialTitle={data.title}
-              recipientName={
-                data.recipientLabel === "Public credential"
-                  ? "Verified Recipient"
-                  : data.recipientLabel
-              }
-              issuerName={data.issuerName}
-              proofLabel={data.proofLabel}
-              proofTags={data.proofTags}
-              issueDateLabel={data.issueDateLabel}
-              validUntilLabel={data.validUntilLabel}
-            />
-          </div>
-        </div>
-
-        <div className="credential-enter px-7 py-6 [animation-delay:340ms]">
-          <div className="credential-card mb-7 flex items-center gap-3 rounded-[14px] bg-[#FCFBF9] px-5 py-4 shadow-[0_8px_24px_rgba(13,43,69,0.04)]">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 border-[#3D8F8F]/20 bg-[linear-gradient(135deg,#EBF5F5,#D0EBEB)] text-[15px] font-semibold text-[#2E7070]">
-              {data.recipientInitials}
-            </div>
-            <div>
-              <div className="mb-1 text-[10px] font-medium uppercase tracking-[0.1em] text-[#8A98A3]">
-                Awarded to
-              </div>
-              <div className="text-[16px] font-semibold text-[#0D2B45]">
+              <div className="mt-1.5 text-[24px] font-semibold text-[#1F2D3D]">
                 {data.recipientLabel === "Public credential"
                   ? "Verified Recipient (Public)"
                   : data.recipientLabel}
               </div>
+              <div className="mt-2 flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-[14px] text-[#71818C]">
+                <span>{`Issued ${data.issueDateLabel}`}</span>
+                <span aria-hidden="true">·</span>
+                <span className="inline-flex items-center gap-1.5">
+                  {issuerLogoSrc ? (
+                    <Image
+                      src={issuerLogoSrc}
+                      alt=""
+                      width={16}
+                      height={16}
+                      className="h-4 w-4 self-baseline object-contain"
+                    />
+                  ) : null}
+                  <span>{data.issuerName}</span>
+                </span>
+              </div>
+              <div className="mx-auto mt-5 h-px w-3/5 bg-[#E6ECEF]" />
+            </div>
+
+            <div className="credential-badge-enter relative mt-7 flex justify-center [animation-delay:100ms]">
+              <Image
+                src={data.badgeImageDataUrl}
+                alt={`${data.title} credential badge`}
+                width={200}
+                height={200}
+                unoptimized
+                className="h-[12.5rem] w-[12.5rem] object-contain"
+              />
+            </div>
+
+            <h1 className="credential-enter relative mt-4 font-[family:var(--font-credential-serif)] text-[24px] font-semibold leading-[1.08] tracking-[-0.012em] text-[#0A2339] [animation-delay:160ms] md:text-[24px]">
+              {data.title}
+            </h1>
+
+            <div className="credential-enter relative mt-2 flex items-center justify-center [animation-delay:300ms]">
+              <VerificationDetailsModal
+                pageId={data.id}
+                credentialId={data.credentialId}
+                credentialTitle={data.title}
+                recipientName={
+                  data.recipientLabel === "Public credential"
+                    ? "Verified Recipient"
+                    : data.recipientLabel
+                }
+                issuerName={data.issuerName}
+                proofLabel={data.proofLabel}
+                proofTags={data.proofTags}
+                issueDateLabel={data.issueDateLabel}
+                validUntilLabel={data.validUntilLabel}
+              />
             </div>
           </div>
 
+        </div>
+
+        <div className="credential-enter px-7 py-6 [animation-delay:340ms]">
           {data.skills.length > 0 && (
             <>
               <div className="mb-3 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#7A8A96]">
