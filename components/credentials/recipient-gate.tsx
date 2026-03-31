@@ -3,7 +3,6 @@
 import dynamic from "next/dynamic";
 import { useState } from "react";
 import { CredentialActions } from "@/components/credentials/credential-actions";
-import { anyEmailMatches } from "@/lib/recipient";
 
 interface RecipientGateProps {
   title: string;
@@ -20,8 +19,6 @@ interface RecipientGateProps {
   score: number;
   summary: string;
   authEnabled: boolean;
-  initialSignedIn: boolean;
-  initialViewerEmails: string[];
 }
 
 interface RecipientGateContentProps {
@@ -189,11 +186,6 @@ function RecipientGateContent({
 }
 
 export function RecipientGate(props: RecipientGateProps) {
-  const isVerifiedRecipient =
-    props.initialSignedIn && anyEmailMatches(props.initialViewerEmails, props.learnerEmail);
-  const showSignedOutState = !props.initialSignedIn;
-  const showMismatchState = props.initialSignedIn && !isVerifiedRecipient;
-
   return (
     <RecipientGateContent
       title={props.title}
@@ -208,9 +200,9 @@ export function RecipientGate(props: RecipientGateProps) {
       score={props.score}
       summary={props.summary}
       authEnabled={props.authEnabled}
-      isVerifiedRecipient={isVerifiedRecipient}
-      showSignedOutState={showSignedOutState}
-      showMismatchState={showMismatchState}
+      isVerifiedRecipient={false}
+      showSignedOutState
+      showMismatchState={false}
       credentialRecipientEmail={props.credentialRecipientEmail}
     />
   );

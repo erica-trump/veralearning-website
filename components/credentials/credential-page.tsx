@@ -47,15 +47,7 @@ function formatIssuedPill(dateLabel: string) {
   }).format(parsed)}`;
 }
 
-function ReadyCredentialPage({
-  data,
-  initialSignedIn,
-  initialViewerEmails,
-}: {
-  data: ReadyCredentialPageData;
-  initialSignedIn: boolean;
-  initialViewerEmails: string[];
-}) {
+function ReadyCredentialPage({ data }: { data: ReadyCredentialPageData }) {
   const authEnabled = Boolean(process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY);
 
   return (
@@ -172,8 +164,6 @@ function ReadyCredentialPage({
               score={data.score}
               summary={data.assessmentSummary}
               authEnabled={authEnabled}
-              initialSignedIn={initialSignedIn}
-              initialViewerEmails={initialViewerEmails}
             />
           </div>
         </div>
@@ -283,12 +273,8 @@ function ReadyCredentialPage({
 
 export function CredentialPage({
   data,
-  initialSignedIn = false,
-  initialViewerEmails = [],
 }: {
   data: CredentialPageData;
-  initialSignedIn?: boolean;
-  initialViewerEmails?: string[];
 }) {
   switch (data.status) {
     case "badge-error":
@@ -308,12 +294,6 @@ export function CredentialPage({
       );
 
     case "ready":
-      return (
-        <ReadyCredentialPage
-          data={data}
-          initialSignedIn={initialSignedIn}
-          initialViewerEmails={initialViewerEmails}
-        />
-      );
+      return <ReadyCredentialPage data={data} />;
   }
 }
