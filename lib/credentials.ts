@@ -5,8 +5,6 @@ import { getRecipientInitialsFromIdentity } from "@/lib/recipient";
 const DEFAULT_ISSUER_NAME = "VeraLearning";
 const DEFAULT_SCORE = 87;
 const DEFAULT_CREDENTIALS_BASE_URL = "https://www.veralearning.com";
-const DEFAULT_SUMMARY =
-  "The learner demonstrated consistent application of safety protocols, correct machine setup procedures, and sound judgment across all five critical CNC operation themes. Verified through adaptive AI interview.";
 
 interface CredentialIssuer {
   name?: unknown;
@@ -17,6 +15,8 @@ interface CredentialAchievement {
   description?: unknown;
   alignment?: unknown;
   extensions?: unknown;
+  creator?: unknown;
+  image?: unknown;
 }
 
 interface CredentialSubject {
@@ -58,9 +58,13 @@ interface CredentialPageBase {
 export interface ReadyCredentialPageData extends CredentialPageBase {
   status: "ready";
   badgeImageDataUrl: string;
+  badgeImageSrc: string;
   credentialId: string;
   title: string;
   issuerName: string;
+  displayIssuerName: string;
+  displayIssuerLogoUrl: string | null;
+  displayIssuerUrl: string | null;
   recipientEmail: string | null;
   credentialRecipientEmail: string | null;
   recipientLabel: string;
@@ -101,6 +105,41 @@ function normalizeIssuerName(value: string | null) {
   }
 
   return value === "Vera Learning" ? "VeraLearning" : value;
+}
+
+function getCreatorRecord(credential: CredentialRecord) {
+  const creator = credential.credentialSubject?.achievement?.creator;
+  return typeof creator === "object" && creator !== null
+    ? (creator as Record<string, unknown>)
+    : null;
+}
+
+function getCreatorName(credential: CredentialRecord) {
+  return getString(getCreatorRecord(credential)?.name);
+}
+
+function getCreatorUrl(credential: CredentialRecord) {
+  return getString(getCreatorRecord(credential)?.url);
+}
+
+function getCreatorLogoUrl(credential: CredentialRecord) {
+  const image = getCreatorRecord(credential)?.image;
+
+  if (typeof image === "object" && image !== null) {
+    return getString((image as Record<string, unknown>).id);
+  }
+
+  return null;
+}
+
+function getAchievementImageUrl(credential: CredentialRecord) {
+  const image = credential.credentialSubject?.achievement?.image;
+
+  if (typeof image === "object" && image !== null) {
+    return getString((image as Record<string, unknown>).id);
+  }
+
+  return null;
 }
 
 function formatDisplayDate(value: string | Date | null | undefined) {
@@ -309,6 +348,11 @@ export async function getCredentialPageData(
     getString(credential.name) ??
     "Credential unavailable";
   const issuerName = normalizeIssuerName(getString(credential.issuer?.name));
+  const creatorName = getCreatorName(credential);
+  const displayIssuerName = normalizeIssuerName(creatorName ?? issuerName);
+  const displayIssuerLogoUrl = getCreatorLogoUrl(credential);
+  const displayIssuerUrl = getCreatorUrl(credential);
+  const badgeImageSrc = getAchievementImageUrl(credential) ?? badgeImageDataUrl;
   const issueDateSource = row?.created_at ?? getString(credential.validFrom);
   const expiresDateSource = row?.expires_at ?? getString(credential.validUntil);
   const issueDateLabel = formatDisplayDate(issueDateSource) ?? "Unavailable";
@@ -334,6 +378,9 @@ export async function getCredentialPageData(
     getString(credentialEvidence?.description) ??
     getString(credentialEvidence?.narrative) ??
     "This credential includes an evidence report describing the assessed performance and verification context.";
+  const credentialOverview =
+    getString(credential.credentialSubject?.achievement?.description) ??
+    null;
   const skills = extractEmbeddedSkills(credential);
   const proofLabel = normalizeProofLabel(row?.proof_type ?? null, credential);
   const proofTags = [
@@ -350,9 +397,13 @@ export async function getCredentialPageData(
     badgeUrl,
     evidenceUrl,
     badgeImageDataUrl,
+    badgeImageSrc,
     credentialId: getString(credential.id) ?? `urn:uuid:${id}`,
     title,
     issuerName,
+    displayIssuerName,
+    displayIssuerLogoUrl,
+    displayIssuerUrl,
     recipientEmail,
     credentialRecipientEmail,
     recipientLabel,
@@ -377,6 +428,6 @@ export async function getCredentialPageData(
     }),
     score: DEFAULT_SCORE,
     skills,
-    assessmentSummary: DEFAULT_SUMMARY,
+    assessmentSummary: credentialOverview ?? "",
   };
 }

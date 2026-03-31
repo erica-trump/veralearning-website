@@ -35,7 +35,9 @@ function ErrorCard({
 
 function ReadyCredentialPage({ data }: { data: ReadyCredentialPageData }) {
   const authEnabled = Boolean(process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY);
-  const issuerLogoSrc = data.issuerName === "VeraLearning" ? "/logo-vera-circle.svg" : null;
+  const issuerLogoSrc =
+    data.displayIssuerLogoUrl ??
+    (data.displayIssuerName === "VeraLearning" ? "/logo-vera-circle.svg" : null);
 
   return (
     <div className="mx-auto max-w-[720px] px-5 pb-20 pt-8">
@@ -56,16 +58,17 @@ function ReadyCredentialPage({ data }: { data: ReadyCredentialPageData }) {
                 <span aria-hidden="true">·</span>
                 <span className="inline-flex items-center gap-1.5">
                   <span>Issued by</span>
-                  {issuerLogoSrc ? (
-                    <Image
-                      src={issuerLogoSrc}
-                      alt=""
-                      width={16}
-                      height={16}
-                      className="h-4 w-4 self-baseline object-contain"
-                    />
-                  ) : null}
-                  <span className="font-medium text-[#5C6F7D]">{data.issuerName}</span>
+                {issuerLogoSrc ? (
+                  <Image
+                    src={issuerLogoSrc}
+                    alt=""
+                    width={16}
+                    height={16}
+                    unoptimized
+                    className="h-4 w-4 self-baseline object-contain"
+                  />
+                ) : null}
+                  <span className="font-medium text-[#5C6F7D]">{data.displayIssuerName}</span>
                 </span>
               </div>
               <div className="mx-auto mt-5 h-px w-3/5 bg-[#E6ECEF]" />
@@ -73,7 +76,7 @@ function ReadyCredentialPage({ data }: { data: ReadyCredentialPageData }) {
 
             <div className="credential-badge-enter relative mt-9 flex justify-center [animation-delay:100ms]">
               <Image
-                src={data.badgeImageDataUrl}
+                src={data.badgeImageSrc}
                 alt={`${data.title} credential badge`}
                 width={200}
                 height={200}
@@ -108,6 +111,17 @@ function ReadyCredentialPage({ data }: { data: ReadyCredentialPageData }) {
         </div>
 
         <div className="credential-enter px-7 py-6 [animation-delay:340ms]">
+          {data.assessmentSummary ? (
+            <div className="mb-8">
+              <div className="mb-3 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#7A8A96]">
+                Credential Overview
+              </div>
+              <div className="text-[15px] leading-7 text-[#4B6072]">
+                {data.assessmentSummary}
+              </div>
+            </div>
+          ) : null}
+
           {data.skills.length > 0 && (
             <>
               <div className="mb-3 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#7A8A96]">
