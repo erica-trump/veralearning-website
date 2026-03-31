@@ -55,7 +55,7 @@ function ReadyCredentialPage({ data }: { data: ReadyCredentialPageData }) {
       <div className="credential-enter overflow-hidden rounded-[20px] bg-white shadow-[0_2px_8px_rgba(0,0,0,0.08),0_12px_32px_rgba(0,0,0,0.06)]">
         <div className="border-b border-[#EAE6DE] bg-white px-7 pb-10 pt-9 text-center">
           <div className="credential-enter relative text-[11px] font-semibold uppercase tracking-[0.14em] text-[#3D8F8F] [animation-delay:40ms]">
-            Verifiable Credential
+            Independently Verifiable Credential
           </div>
 
           <div className="credential-badge-enter relative mt-5 flex justify-center [animation-delay:100ms]">
@@ -69,7 +69,7 @@ function ReadyCredentialPage({ data }: { data: ReadyCredentialPageData }) {
             />
           </div>
 
-          <h1 className="credential-enter relative mt-7 font-[family:var(--font-credential-serif)] text-[30px] leading-[1.08] text-[#0D2B45] [animation-delay:160ms] md:text-[36px]">
+          <h1 className="credential-enter relative mt-7 font-[family:var(--font-credential-serif)] text-[30px] font-semibold leading-[1.08] tracking-[-0.012em] text-[#0A2339] [animation-delay:160ms] md:text-[36px]">
             {data.title}
           </h1>
 
