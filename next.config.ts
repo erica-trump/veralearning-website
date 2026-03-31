@@ -9,7 +9,7 @@ const nextConfig: NextConfig = {
           {
             key: "Content-Security-Policy",
             value:
-              "frame-ancestors 'self' https://linkedin.com https://www.linkedin.com https://*.linkedin.com",
+              "frame-ancestors 'self' https://linkedin.com https://www.linkedin.com https://*.linkedin.com https://licdn.com https://www.licdn.com https://*.licdn.com",
           },
         ],
       },
