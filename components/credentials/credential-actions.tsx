@@ -200,7 +200,7 @@ export function CredentialActions({
               disabled={isVerifying}
               className="bg-[#377F7F] text-white shadow-[0_8px_18px_rgba(61,143,143,0.14)] hover:bg-[#316F6F]"
             >
-              {isVerifying ? "Verifying..." : "Verify this credential"}
+              {isVerifying ? "Verifying..." : "Verify authenticity"}
             </ActionButton>
 
             <ActionButton

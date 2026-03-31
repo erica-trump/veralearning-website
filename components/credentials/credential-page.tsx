@@ -41,12 +41,12 @@ function ReadyCredentialPage({ data }: { data: ReadyCredentialPageData }) {
     <div className="mx-auto max-w-[720px] px-5 pb-20 pt-8">
       <div className="credential-enter overflow-hidden rounded-[20px] bg-white shadow-[0_2px_8px_rgba(0,0,0,0.08),0_12px_32px_rgba(0,0,0,0.06)]">
         <div className="bg-white pb-12 pt-9 text-center">
-          <div className="mx-7 px-6 pb-8 pt-4">
+          <div className="mx-7 rounded-[16px] bg-[#F3F6F7] px-6 pb-8 pt-4">
             <div className="credential-enter relative text-center [animation-delay:40ms]">
               <div className="text-[12px] font-medium uppercase tracking-[0.08em] text-[#7B8C97]">
                 Issued to
               </div>
-              <div className="mt-1.5 text-[24px] font-semibold text-[#1F2D3D]">
+              <div className="mt-1.5 font-[family:var(--font-credential-serif)] text-[24px] font-bold text-[#1F2D3D]">
                 {data.recipientLabel === "Public credential"
                   ? "Verified Recipient (Public)"
                   : data.recipientLabel}
@@ -55,6 +55,7 @@ function ReadyCredentialPage({ data }: { data: ReadyCredentialPageData }) {
                 <span>{`Issued ${data.issueDateLabel}`}</span>
                 <span aria-hidden="true">·</span>
                 <span className="inline-flex items-center gap-1.5">
+                  <span>Issued by</span>
                   {issuerLogoSrc ? (
                     <Image
                       src={issuerLogoSrc}
@@ -64,13 +65,13 @@ function ReadyCredentialPage({ data }: { data: ReadyCredentialPageData }) {
                       className="h-4 w-4 self-baseline object-contain"
                     />
                   ) : null}
-                  <span>{data.issuerName}</span>
+                  <span className="font-medium text-[#5C6F7D]">{data.issuerName}</span>
                 </span>
               </div>
               <div className="mx-auto mt-5 h-px w-3/5 bg-[#E6ECEF]" />
             </div>
 
-            <div className="credential-badge-enter relative mt-7 flex justify-center [animation-delay:100ms]">
+            <div className="credential-badge-enter relative mt-9 flex justify-center [animation-delay:100ms]">
               <Image
                 src={data.badgeImageDataUrl}
                 alt={`${data.title} credential badge`}
