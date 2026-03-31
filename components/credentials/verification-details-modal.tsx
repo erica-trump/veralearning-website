@@ -370,7 +370,7 @@ export function VerificationDetailsModal({
   };
   const isVerified = result?.status === "verified";
   const isRevokedState = isRevoked;
-  const hasFailureState = !isVerifying && Boolean(result) && result.status !== "verified";
+  const hasFailureState = !isVerifying && result?.status != null && result.status !== "verified";
   const modalBackgroundClass = isVerifying
     ? "bg-[#F5F5F4]"
     : isVerified
