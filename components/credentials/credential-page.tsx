@@ -209,14 +209,6 @@ function ReadyCredentialPage({ data }: { data: ReadyCredentialPageData }) {
               {data.validUntilLabel ?? "Not specified"}
             </div>
           </div>
-          <div className="flex items-start justify-between gap-3 pt-3.5">
-            <div className="text-[13px] text-[#7A8A96]">Evidence</div>
-            <div className="text-right text-[13px] font-medium text-[#3D5166]">
-              <Link href={data.evidenceUrl} className="credential-link text-[#3D8F8F]">
-                View Report →
-              </Link>
-            </div>
-          </div>
         </div>
       </div>
 
