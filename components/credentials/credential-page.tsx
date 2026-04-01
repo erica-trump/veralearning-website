@@ -236,7 +236,7 @@ function ReadyCredentialPage({ data }: { data: ReadyCredentialPageData }) {
               This credential is{" "}
               <OpenVerificationDetailsButton
                 label="cryptographically signed"
-                className="inline-flex text-[13px] font-medium text-[#2E7070]"
+                className="inline-flex text-[13px] font-semibold text-[#2E7070]"
               />
               {" "}by {data.issuerName} and can be independently verified.
             </div>
