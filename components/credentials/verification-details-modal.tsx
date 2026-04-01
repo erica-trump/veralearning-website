@@ -423,12 +423,20 @@ export function VerificationDetailsModal({
         previousFocusRef.current = document.activeElement as HTMLElement | null;
         setIsOpen(true);
       }}
-      className="credential-button credential-link inline-flex items-center justify-center gap-1.5 text-[15px] font-medium tracking-[0.01em] text-[#2A6F59]"
+      className="credential-button credential-link inline-flex max-w-full items-start justify-center gap-2 text-left text-[15px] font-medium tracking-[0.01em] text-[#2A6F59]"
     >
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <svg
+        width="15"
+        height="15"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        className="mt-[2px] shrink-0"
+      >
         <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
       </svg>
-      Cryptographically signed · Independently verifiable
+      <span>Cryptographically signed · Independently verifiable</span>
     </button>
   );
 
