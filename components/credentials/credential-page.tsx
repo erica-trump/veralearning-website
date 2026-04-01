@@ -233,14 +233,12 @@ function ReadyCredentialPage({ data }: { data: ReadyCredentialPageData }) {
               Signed by {data.issuerName}
             </div>
             <div className="mt-1 text-[13px] leading-5 text-[#6C7E89]">
-              This credential is cryptographically signed by {data.issuerName} and can be independently
-              verified.
-            </div>
-            <div className="mt-3">
+              This credential is{" "}
               <OpenVerificationDetailsButton
-                label="Check verification"
-                className="credential-link text-[12px] font-medium text-[#2E7070]"
+                label="cryptographically signed"
+                className="inline-flex text-[13px] font-medium text-[#2E7070]"
               />
+              {" "}by {data.issuerName} and can be independently verified.
             </div>
             <div className="mt-3 flex flex-wrap gap-1.5">
               {data.proofTags.map((tag) => (
