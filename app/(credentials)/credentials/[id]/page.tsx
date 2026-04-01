@@ -20,8 +20,21 @@ export async function generateMetadata({
     };
   }
 
+  const data = await getCredentialPageData(id);
+
+  if (data.status !== "ready") {
+    return {
+      title: `Credential ${id} | VeraLearning`,
+    };
+  }
+
+  const earnerName =
+    data.recipientLabel === "Public credential"
+      ? "Credential Recipient"
+      : data.recipientLabel;
+
   return {
-    title: `Credential ${id} | VeraLearning`,
+    title: `${data.title} — ${earnerName} | VeraLearning`,
   };
 }
 

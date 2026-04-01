@@ -56,7 +56,7 @@ function ReadyCredentialPage({ data }: { data: ReadyCredentialPageData }) {
               <div className="mt-2 flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-[14px] text-[#71818C]">
                 <span>{`Issued ${data.issueDateLabel}`}</span>
                 <span aria-hidden="true">·</span>
-                <span className="inline-flex items-center gap-1.5">
+                <span className="inline-flex items-center gap-1">
                   <span>Issued by</span>
                 {issuerLogoSrc ? (
                   <Image
@@ -65,7 +65,7 @@ function ReadyCredentialPage({ data }: { data: ReadyCredentialPageData }) {
                     width={16}
                     height={16}
                     unoptimized
-                    className="h-4 w-4 self-baseline object-contain"
+                    className="translate-y-px h-4 w-4 self-center object-contain"
                   />
                 ) : null}
                   <span className="font-medium text-[#5C6F7D]">{data.displayIssuerName}</span>
@@ -224,7 +224,7 @@ function ReadyCredentialPage({ data }: { data: ReadyCredentialPageData }) {
         id="credential-verification"
         className="credential-card credential-enter mt-6 rounded-[22px] bg-[#FCFBF8] p-5 shadow-[0_10px_24px_rgba(13,43,69,0.05)] [animation-delay:460ms]"
       >
-        <div className="mb-4 text-[10px] font-medium uppercase tracking-[0.12em] text-[#90A0AA]">
+        <div className="mb-4 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#7A8A96]">
           Proof of authenticity
         </div>
 
@@ -241,10 +241,8 @@ function ReadyCredentialPage({ data }: { data: ReadyCredentialPageData }) {
               Signed by {data.issuerName}
             </div>
             <div className="mt-1 text-[13px] leading-5 text-[#6C7E89]">
-              This credential is cryptographically signed by {data.issuerName}.
-            </div>
-            <div className="mt-2 text-[12px] leading-5 text-[#8B99A3]">
-              The embedded proof allows anyone to independently verify its authenticity.
+              This credential is cryptographically signed by {data.issuerName} and can be independently
+              verified.
             </div>
             <div className="mt-3">
               <OpenVerificationDetailsButton

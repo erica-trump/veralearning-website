@@ -70,17 +70,27 @@ function SignedOutAccess({
 
   if (!authEnabled) {
     return (
-      <div>
-        <div className="mb-1.5 text-[10px] font-medium uppercase tracking-[0.11em] text-[#8A98A3]">
-          For the credential recipient
+      <div className="credential-card rounded-[12px] bg-[#F8FAFB] px-5 py-4 shadow-[0_12px_32px_rgba(13,43,69,0.055)]">
+        <div className="mb-1.5 flex items-center gap-1.5 text-[13px] font-semibold tracking-[0.02em] text-[#2F4F4F]">
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            className="-translate-y-px text-[#6B8F8F]"
+          >
+            <path d="M20 21a8 8 0 0 0-16 0" />
+            <circle cx="12" cy="8" r="4" />
+          </svg>
+          For the credential holder
         </div>
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <div className="max-w-[460px] text-[13px] leading-5 text-[#6B7F8E]">
-            View your full report, download your badge, and share it on LinkedIn.
-          </div>
-          <div className="credential-button inline-flex items-center justify-center rounded-[12px] bg-[#F6FBFB] px-5 py-2.5 text-[14px] font-semibold text-[#265F5F] shadow-[inset_0_0_0_1px_rgba(61,143,143,0.18)]">
-            Access your credential
-          </div>
+        <div className="mb-3 text-[13px] leading-5 text-[#6B7F8E]">
+          View your full report, download your badge, and share it on LinkedIn.
+        </div>
+        <div className="credential-button inline-flex items-center justify-center rounded-[12px] bg-[#F6FBFB] px-5 py-2.5 text-[14px] font-semibold text-[#265F5F] shadow-[inset_0_0_0_1px_rgba(61,143,143,0.18)]">
+          Access your credential
         </div>
       </div>
     );
@@ -89,22 +99,32 @@ function SignedOutAccess({
   return (
     <>
       {!showAuthFlow ? (
-        <div>
-          <div className="mb-1.5 text-[10px] font-medium uppercase tracking-[0.11em] text-[#8A98A3]">
-            For the credential recipient
-          </div>
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <div className="max-w-[460px] text-[13px] leading-5 text-[#6B7F8E]">
-              View your full report, download your badge, and share it on LinkedIn.
-            </div>
-            <button
-              type="button"
-              onClick={() => setShowAuthFlow(true)}
-              className="credential-button inline-flex items-center justify-center rounded-[12px] bg-[#F6FBFB] px-5 py-2.5 text-[14px] font-semibold text-[#265F5F] shadow-[inset_0_0_0_1px_rgba(61,143,143,0.18)] hover:bg-[#EEF7F7]"
+        <div className="credential-card rounded-[12px] bg-[#F8FAFB] px-5 py-4 shadow-[0_12px_32px_rgba(13,43,69,0.055)]">
+          <div className="mb-1.5 flex items-center gap-1.5 text-[13px] font-semibold tracking-[0.02em] text-[#2F4F4F]">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              className="-translate-y-px text-[#6B8F8F]"
             >
-              Access your credential
-            </button>
+              <path d="M20 21a8 8 0 0 0-16 0" />
+              <circle cx="12" cy="8" r="4" />
+            </svg>
+            For the credential holder
           </div>
+          <div className="mb-3 text-[13px] leading-5 text-[#6B7F8E]">
+            View your full report, download your badge, and share it on LinkedIn.
+          </div>
+          <button
+            type="button"
+            onClick={() => setShowAuthFlow(true)}
+            className="credential-button inline-flex items-center justify-center rounded-[12px] bg-[#F6FBFB] px-5 py-2.5 text-[14px] font-semibold text-[#265F5F] shadow-[inset_0_0_0_1px_rgba(61,143,143,0.18)] hover:bg-[#EEF7F7]"
+          >
+            Access your credential
+          </button>
         </div>
       ) : (
         <RecipientAccessAuthFlow
@@ -171,7 +191,7 @@ function RecipientGateContent({
       </div>
 
       {showSignedOutState && (
-        <div className="credential-enter mt-6 border-t border-[#E2E0DB]/35 pt-4 [animation-delay:380ms]">
+        <div className="credential-enter mt-5 [animation-delay:380ms]">
           <SignedOutAccess
             authEnabled={authEnabled}
             credentialRecipientEmail={credentialRecipientEmail}
