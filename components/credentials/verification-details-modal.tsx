@@ -668,7 +668,7 @@ export function VerificationDetailsModal({
               ["Standard", activeSummary.standard ?? "Open Badges 3.0"],
               ["Proof type", activeSummary.proofType ?? proofLabel],
               ["Signature suite", activeSummary.cryptosuite ?? suiteLabel],
-              ["Verification method", activeSummary.verificationMethod ?? "Unavailable"],
+              ["Verification key (public)", activeSummary.verificationMethod ?? "Unavailable"],
               ["Issued date", activeSummary.issued ?? issueDateLabel],
               ["Valid until", activeSummary.validUntil ?? "Not specified"],
               ["Issuer name", activeSummary.issuerName ?? issuerName],
