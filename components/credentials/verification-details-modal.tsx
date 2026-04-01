@@ -675,10 +675,12 @@ export function VerificationDetailsModal({
             ].map(([label, value]) => (
               <div
                 key={label}
-                className="flex items-start justify-between gap-4 border-b border-[#E2E0DB]/22 py-[1.1rem] last:border-b-0 last:pb-0"
+                className="flex flex-col items-start gap-2 border-b border-[#E2E0DB]/22 py-[1.1rem] last:border-b-0 last:pb-0 sm:flex-row sm:justify-between sm:gap-4"
               >
                 <div className="text-[12px] font-medium text-[#7A8A96]">{label}</div>
-                <div className="max-w-[60%] text-right text-[12px] leading-5 text-[#30475C]">{value}</div>
+                <div className="w-full break-words text-left text-[12px] leading-5 text-[#30475C] sm:max-w-[60%] sm:text-right">
+                  {value}
+                </div>
               </div>
             ))}
           </div>
