@@ -436,7 +436,7 @@ export function VerificationDetailsModal({
       >
         <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
       </svg>
-      <span className="max-w-[240px] text-center leading-[1.45] sm:max-w-none sm:text-left">
+      <span className="max-w-[240px] text-left leading-[1.45] sm:max-w-none">
         Cryptographically signed · Independently verifiable
       </span>
     </button>
