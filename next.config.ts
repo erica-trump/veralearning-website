@@ -8,6 +8,19 @@ const credentialFrameAncestors = [
 ].join(" ");
 
 const nextConfig: NextConfig = {
+  async rewrites() {
+    return [
+      {
+        source: "/story",
+        destination: "https://veralearning-briefing.vercel.app/story",
+      },
+      {
+        source: "/story/:path*",
+        destination:
+          "https://veralearning-briefing.vercel.app/story/:path*",
+      },
+    ];
+  },
   async headers() {
     return [
       {
