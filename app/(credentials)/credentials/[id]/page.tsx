@@ -28,13 +28,8 @@ export async function generateMetadata({
     };
   }
 
-  const earnerName =
-    data.recipientLabel === "Public credential"
-      ? "Credential Recipient"
-      : data.recipientLabel;
-
   return {
-    title: `${data.title} — ${earnerName} | VeraLearning`,
+    title: `${data.title} — ${data.recipientLabel} | VeraLearning`,
   };
 }
 

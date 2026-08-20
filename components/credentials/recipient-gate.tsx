@@ -1,28 +1,18 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { CredentialActions } from "@/components/credentials/credential-actions";
-import { anyEmailMatches } from "@/lib/recipient";
+
+type RecipientAssociationState =
+  | "checking"
+  | "signed-out"
+  | "associated"
+  | "not-associated"
+  | "unavailable";
 
 interface RecipientGateProps {
-  title: string;
-  issuerName: string;
-  issueYear: number | null;
-  issueMonth: number | null;
-  validUntilYear: number | null;
-  validUntilMonth: number | null;
-  canonicalUrl: string;
-  badgeUrl: string;
-  evidenceUrl: string;
-  learnerEmail: string | null;
-  credentialRecipientEmail: string | null;
-  score: number;
-  summary: string;
-  authEnabled: boolean;
-}
-
-interface RecipientGateContentProps {
+  credentialPageId: string;
   title: string;
   issuerName: string;
   issueYear: number | null;
@@ -35,11 +25,6 @@ interface RecipientGateContentProps {
   score: number;
   summary: string;
   authEnabled: boolean;
-  isVerifiedRecipient: boolean;
-  showSignedOutState: boolean;
-  showMismatchState: boolean;
-  credentialRecipientEmail: string | null;
-  onSignedInResolved: (emails: string[]) => void;
 }
 
 const RecipientAccessAuthFlow = dynamic(
@@ -59,12 +44,10 @@ const RecipientAccessAuthFlow = dynamic(
 
 function SignedOutAccess({
   authEnabled,
-  credentialRecipientEmail,
-  onSignedInResolved,
+  onSessionEstablished,
 }: {
   authEnabled: boolean;
-  credentialRecipientEmail: string | null;
-  onSignedInResolved: (emails: string[]) => void;
+  onSessionEstablished: () => void;
 }) {
   const [showAuthFlow, setShowAuthFlow] = useState(false);
 
@@ -84,13 +67,13 @@ function SignedOutAccess({
             <path d="M20 21a8 8 0 0 0-16 0" />
             <circle cx="12" cy="8" r="4" />
           </svg>
-          For the credential holder
+          Recipient-only access
         </div>
         <div className="mb-3 text-[13px] leading-5 text-[#6B7F8E]">
-          View your full report, download your badge, and share it on LinkedIn.
+          Sign in to access recipient-only report, download, and sharing features.
         </div>
         <div className="credential-button inline-flex items-center justify-center rounded-[12px] bg-[#F6FBFB] px-5 py-2.5 text-[14px] font-semibold text-[#265F5F] shadow-[inset_0_0_0_1px_rgba(61,143,143,0.18)]">
-          Access your credential
+          Access recipient features
         </div>
       </div>
     );
@@ -113,30 +96,71 @@ function SignedOutAccess({
               <path d="M20 21a8 8 0 0 0-16 0" />
               <circle cx="12" cy="8" r="4" />
             </svg>
-            For the credential holder
+            Recipient-only access
           </div>
           <div className="mb-3 text-[13px] leading-5 text-[#6B7F8E]">
-            View your full report, download your badge, and share it on LinkedIn.
+            Sign in to access recipient-only report, download, and sharing features.
           </div>
           <button
             type="button"
             onClick={() => setShowAuthFlow(true)}
             className="credential-button inline-flex items-center justify-center rounded-[12px] bg-[#F6FBFB] px-5 py-2.5 text-[14px] font-semibold text-[#265F5F] shadow-[inset_0_0_0_1px_rgba(61,143,143,0.18)] hover:bg-[#EEF7F7]"
           >
-            Access your credential
+            Access recipient features
           </button>
         </div>
       ) : (
         <RecipientAccessAuthFlow
-          credentialRecipientEmail={credentialRecipientEmail}
-          onSignedInResolved={onSignedInResolved}
+          onSessionEstablished={onSessionEstablished}
         />
       )}
     </>
   );
 }
 
-function RecipientGateContent({
+async function fetchRecipientAssociationState(
+  credentialPageId: string,
+  signal?: AbortSignal,
+): Promise<RecipientAssociationState> {
+  try {
+    const response = await fetch(
+      `/api/credentials/${encodeURIComponent(credentialPageId)}/recipient-association`,
+      {
+        cache: "no-store",
+        credentials: "same-origin",
+        signal,
+      },
+    );
+
+    if (response.status === 401) {
+      return "signed-out";
+    }
+
+    if (!response.ok) {
+      return "unavailable";
+    }
+
+    const body: unknown = await response.json();
+    const recipientAssociated =
+      typeof body === "object" &&
+      body !== null &&
+      "recipientAssociated" in body &&
+      typeof body.recipientAssociated === "boolean"
+        ? body.recipientAssociated
+        : null;
+
+    return recipientAssociated === null
+      ? "unavailable"
+      : recipientAssociated
+        ? "associated"
+        : "not-associated";
+  } catch {
+    return "unavailable";
+  }
+}
+
+export function RecipientGate({
+  credentialPageId,
   title,
   issuerName,
   issueYear,
@@ -149,15 +173,46 @@ function RecipientGateContent({
   score,
   summary,
   authEnabled,
-  isVerifiedRecipient,
-  showSignedOutState,
-  showMismatchState,
-  credentialRecipientEmail,
-  onSignedInResolved,
-}: RecipientGateContentProps) {
+}: RecipientGateProps) {
+  const [associationState, setAssociationState] =
+    useState<RecipientAssociationState>(
+      authEnabled ? "checking" : "signed-out",
+    );
+
+  useEffect(() => {
+    if (!authEnabled) {
+      return;
+    }
+
+    const abortController = new AbortController();
+    let isActive = true;
+
+    void fetchRecipientAssociationState(
+      credentialPageId,
+      abortController.signal,
+    ).then((nextState) => {
+      if (isActive) {
+        setAssociationState(nextState);
+      }
+    });
+
+    return () => {
+      isActive = false;
+      abortController.abort();
+    };
+  }, [authEnabled, credentialPageId]);
+
+  const handleSessionEstablished = useCallback(() => {
+    void fetchRecipientAssociationState(credentialPageId).then(
+      setAssociationState,
+    );
+  }, [credentialPageId]);
+
+  const isRecipientAssociated = associationState === "associated";
+
   return (
     <>
-      {isVerifiedRecipient && (
+      {isRecipientAssociated && (
         <div className="credential-card credential-enter relative overflow-hidden rounded-[22px] bg-[#FBF9F4] p-6 shadow-[0_14px_34px_rgba(13,43,69,0.06)] [animation-delay:220ms]">
           <div className="flex items-center justify-between rounded-[16px] bg-white px-5 py-4 shadow-[inset_0_0_0_1px_rgba(13,43,69,0.05)]">
             <div className="text-[11px] font-semibold uppercase tracking-[0.1em] text-[#7A8A96]">
@@ -175,7 +230,7 @@ function RecipientGateContent({
         </div>
       )}
 
-      <div className={isVerifiedRecipient ? "mt-10" : "mt-2"}>
+      <div className={isRecipientAssociated ? "mt-10" : "mt-2"}>
         <CredentialActions
           title={title}
           issuerName={issuerName}
@@ -186,60 +241,46 @@ function RecipientGateContent({
           canonicalUrl={canonicalUrl}
           badgeUrl={badgeUrl}
           evidenceUrl={evidenceUrl}
-          isVerifiedRecipient={isVerifiedRecipient}
+          isRecipientAssociated={isRecipientAssociated}
         />
       </div>
 
-      {showSignedOutState && (
+      {associationState === "checking" && (
+        <div className="credential-card credential-enter mt-5 rounded-[22px] bg-[#F8FAFB] px-6 py-5 text-center text-[13px] text-[#6B7F8E] shadow-[0_10px_24px_rgba(13,43,69,0.045)]">
+          Checking recipient access...
+        </div>
+      )}
+
+      {associationState === "signed-out" && (
         <div className="credential-enter mt-5 [animation-delay:380ms]">
           <SignedOutAccess
             authEnabled={authEnabled}
-            credentialRecipientEmail={credentialRecipientEmail}
-            onSignedInResolved={onSignedInResolved}
+            onSessionEstablished={handleSessionEstablished}
           />
         </div>
       )}
 
-      {showMismatchState && (
+      {associationState === "not-associated" && (
         <div className="credential-card credential-enter mt-9 rounded-[22px] bg-[#F9F7F2] px-6 py-5 text-center shadow-[0_10px_24px_rgba(13,43,69,0.045)] [animation-delay:380ms]">
           <div className="text-[15px] font-semibold text-[#0D2B45]">
             Recipient-only features are still locked
           </div>
           <div className="mt-1 text-[13px] leading-5 text-[#7A8A96]">
-            You&apos;re signed in, but recipient-only features are only available to the email address associated with this credential.
+            You&apos;re signed in, but none of your verified account emails is associated with this credential.
+          </div>
+        </div>
+      )}
+
+      {associationState === "unavailable" && (
+        <div className="credential-card credential-enter mt-9 rounded-[22px] bg-[#F9F7F2] px-6 py-5 text-center shadow-[0_10px_24px_rgba(13,43,69,0.045)] [animation-delay:380ms]">
+          <div className="text-[15px] font-semibold text-[#0D2B45]">
+            Recipient access is unavailable
+          </div>
+          <div className="mt-1 text-[13px] leading-5 text-[#7A8A96]">
+            We couldn&apos;t check recipient association right now. Please try again later.
           </div>
         </div>
       )}
     </>
-  );
-}
-
-export function RecipientGate(props: RecipientGateProps) {
-  const [resolvedViewerEmails, setResolvedViewerEmails] = useState<string[] | null>(null);
-  const isVerifiedRecipient =
-    resolvedViewerEmails !== null && anyEmailMatches(resolvedViewerEmails, props.learnerEmail);
-  const showSignedOutState = resolvedViewerEmails === null;
-  const showMismatchState = resolvedViewerEmails !== null && !isVerifiedRecipient;
-
-  return (
-    <RecipientGateContent
-      title={props.title}
-      issuerName={props.issuerName}
-      issueYear={props.issueYear}
-      issueMonth={props.issueMonth}
-      validUntilYear={props.validUntilYear}
-      validUntilMonth={props.validUntilMonth}
-      canonicalUrl={props.canonicalUrl}
-      badgeUrl={props.badgeUrl}
-      evidenceUrl={props.evidenceUrl}
-      score={props.score}
-      summary={props.summary}
-      authEnabled={props.authEnabled}
-      isVerifiedRecipient={isVerifiedRecipient}
-      showSignedOutState={showSignedOutState}
-      showMismatchState={showMismatchState}
-      credentialRecipientEmail={props.credentialRecipientEmail}
-      onSignedInResolved={setResolvedViewerEmails}
-    />
   );
 }

@@ -65,3 +65,25 @@ export function anyEmailMatches(
 ) {
   return emails.some((email) => emailsMatch(email, target));
 }
+
+export interface ClerkEmailForRecipientAssociation {
+  emailAddress: string;
+  verification: {
+    status: string | null;
+  } | null;
+}
+
+export function getVerifiedClerkEmailAddresses(
+  emailAddresses: readonly ClerkEmailForRecipientAssociation[],
+) {
+  return emailAddresses
+    .filter((email) => email.verification?.status === "verified")
+    .map((email) => email.emailAddress);
+}
+
+export function anyVerifiedClerkEmailMatches(
+  emailAddresses: readonly ClerkEmailForRecipientAssociation[],
+  target: string | null | undefined,
+) {
+  return anyEmailMatches(getVerifiedClerkEmailAddresses(emailAddresses), target);
+}

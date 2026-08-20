@@ -1,5 +1,4 @@
 import Image from "next/image";
-import Link from "next/link";
 import { RecipientGate } from "@/components/credentials/recipient-gate";
 import {
   OpenVerificationDetailsButton,
@@ -49,9 +48,7 @@ function ReadyCredentialPage({ data }: { data: ReadyCredentialPageData }) {
                 Issued to
               </div>
               <div className="mt-1.5 font-[family:var(--font-credential-serif)] text-[24px] font-bold text-[#1F2D3D]">
-                {data.recipientLabel === "Public credential"
-                  ? "Verified Recipient (Public)"
-                  : data.recipientLabel}
+                {data.recipientLabel}
               </div>
               <div className="mt-2 flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-[14px] text-[#71818C]">
                 <span>{`Issued ${data.issueDateLabel}`}</span>
@@ -94,11 +91,7 @@ function ReadyCredentialPage({ data }: { data: ReadyCredentialPageData }) {
                 pageId={data.id}
                 credentialId={data.credentialId}
                 credentialTitle={data.title}
-                recipientName={
-                  data.recipientLabel === "Public credential"
-                    ? "Verified Recipient"
-                    : data.recipientLabel
-                }
+                recipientName={data.recipientLabel}
                 issuerName={data.issuerName}
                 proofLabel={data.proofLabel}
                 proofTags={data.proofTags}
@@ -148,6 +141,7 @@ function ReadyCredentialPage({ data }: { data: ReadyCredentialPageData }) {
 
           <div className={data.skills.length > 0 ? "mt-8" : ""}>
             <RecipientGate
+              credentialPageId={data.id}
               title={data.title}
               issuerName={data.issuerName}
               issueYear={data.issueYear}
@@ -157,8 +151,6 @@ function ReadyCredentialPage({ data }: { data: ReadyCredentialPageData }) {
               canonicalUrl={data.canonicalUrl}
               badgeUrl={data.badgeUrl}
               evidenceUrl={data.evidenceUrl}
-              learnerEmail={data.recipientEmail}
-              credentialRecipientEmail={data.credentialRecipientEmail}
               score={data.score}
               summary={data.assessmentSummary}
               authEnabled={authEnabled}

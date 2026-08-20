@@ -1,11 +1,15 @@
+import "server-only";
+
 import postgres, { type Sql } from "postgres";
 
-export interface IssuedCredentialRow {
-  learner_email: string | null;
-  learner_id: string | null;
+export interface PublicIssuedCredentialRow {
   proof_type: string | null;
   created_at: string | Date | null;
   expires_at: string | Date | null;
+}
+
+interface PrivateIssuedCredentialRecipientRow {
+  learner_email: string | null;
 }
 
 declare global {
@@ -30,7 +34,7 @@ function getSqlClient() {
   return global.__badgesSql;
 }
 
-export async function getIssuedCredentialRow(credentialId: string) {
+export async function getPublicIssuedCredentialRow(credentialId: string) {
   const sql = getSqlClient();
 
   if (!sql) {
@@ -38,14 +42,37 @@ export async function getIssuedCredentialRow(credentialId: string) {
   }
 
   try {
-    const rows = await sql<IssuedCredentialRow[]>`
-      SELECT learner_email, learner_id, proof_type, created_at, expires_at
+    const rows = await sql<PublicIssuedCredentialRow[]>`
+      SELECT proof_type, created_at, expires_at
       FROM issued_credentials
       WHERE credential_id = ${credentialId}
       LIMIT 1
     `;
 
     return rows[0] ?? null;
+  } catch {
+    return null;
+  }
+}
+
+export async function getPrivateIssuedCredentialRecipientEmail(
+  credentialId: string,
+) {
+  const sql = getSqlClient();
+
+  if (!sql) {
+    return null;
+  }
+
+  try {
+    const rows = await sql<PrivateIssuedCredentialRecipientRow[]>`
+      SELECT learner_email
+      FROM issued_credentials
+      WHERE credential_id = ${credentialId}
+      LIMIT 1
+    `;
+
+    return rows[0]?.learner_email ?? null;
   } catch {
     return null;
   }

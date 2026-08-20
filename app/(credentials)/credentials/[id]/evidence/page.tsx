@@ -1,10 +1,10 @@
-import { auth, currentUser } from "@clerk/nextjs/server";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { buildCanonicalCredentialUrl, isUuid } from "@/lib/credentials";
 import { EvidenceAccessState } from "@/components/credentials/evidence-access-state";
-import { getIssuedCredentialRow } from "@/lib/neon";
-import { anyEmailMatches } from "@/lib/recipient";
+import { getCurrentUserRecipientAssociation } from "@/lib/recipient-association";
+
+export const dynamic = "force-dynamic";
 
 interface EvidencePageProps {
   params: Promise<{
@@ -35,10 +35,9 @@ export default async function CredentialEvidencePage({
     );
   }
 
-  const issuedCredential = await getIssuedCredentialRow(`urn:uuid:${id}`);
-  const learnerEmail = issuedCredential?.learner_email ?? null;
+  const association = await getCurrentUserRecipientAssociation(id);
 
-  if (!learnerEmail) {
+  if (association === "recipient_unavailable") {
     return (
       <EvidenceAccessState
         canonicalUrl={credentialUrl}
@@ -50,9 +49,7 @@ export default async function CredentialEvidencePage({
     );
   }
 
-  const { userId } = await auth();
-
-  if (!userId) {
+  if (association === "not_authenticated") {
     return (
       <EvidenceAccessState
         canonicalUrl={credentialUrl}
@@ -63,11 +60,7 @@ export default async function CredentialEvidencePage({
     );
   }
 
-  const user = await currentUser();
-  const signedInEmails = user?.emailAddresses.map((email) => email.emailAddress) ?? [];
-  const isVerifiedRecipient = anyEmailMatches(signedInEmails, learnerEmail);
-
-  if (!isVerifiedRecipient) {
+  if (association === "not_associated") {
     return (
       <div className="mx-auto max-w-[720px] px-5 pb-20 pt-8">
         <div className="rounded-[20px] bg-white p-8 text-center shadow-[0_2px_8px_rgba(0,0,0,0.08),0_12px_32px_rgba(0,0,0,0.06)]">
