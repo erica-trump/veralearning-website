@@ -50,7 +50,7 @@ interface CredentialActionsProps {
   canonicalUrl: string;
   badgeUrl: string;
   evidenceUrl: string;
-  isVerifiedRecipient: boolean;
+  isRecipientAssociated: boolean;
 }
 
 function buildLinkedInOpenUrl({
@@ -122,7 +122,7 @@ export function CredentialActions({
   canonicalUrl,
   badgeUrl,
   evidenceUrl,
-  isVerifiedRecipient,
+  isRecipientAssociated,
 }: CredentialActionsProps) {
   const [copied, setCopied] = useState(false);
   const [isVerifying, setIsVerifying] = useState(false);
@@ -224,7 +224,7 @@ export function CredentialActions({
             </ActionButton>
           </div>
 
-          {isVerifiedRecipient && (
+          {isRecipientAssociated && (
             <div className="pt-1">
               <div className="mb-2 text-[10px] font-medium uppercase tracking-[0.11em] text-[#8A98A3]">
                 Use this credential

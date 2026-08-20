@@ -2,7 +2,7 @@
 
 import { ClerkProvider, useSignIn, useSignUp, useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
-import { useEffect, useMemo, useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 
 type SignInStage = "default" | "code" | "success";
 type AuthFlowMode = "sign-in" | "sign-up";
@@ -21,7 +21,9 @@ function maskEmail(email: string) {
   const firstChar = localPart[0] ?? "";
   const lastChar = localPart.length > 1 ? localPart[localPart.length - 1] : "";
   const maskedLocal =
-    localPart.length <= 2 ? `${firstChar}*` : `${firstChar}${"*".repeat(Math.max(localPart.length - 2, 1))}${lastChar}`;
+    localPart.length <= 2
+      ? `${firstChar}*`
+      : `${firstChar}${"*".repeat(Math.max(localPart.length - 2, 1))}${lastChar}`;
 
   return `${maskedLocal}@${domain}`;
 }
@@ -31,7 +33,11 @@ function getClerkErrorMessage(error: unknown) {
     return "We couldn't complete sign-in. Please try again.";
   }
 
-  const errors = (error as { errors?: Array<{ longMessage?: string; message?: string }> }).errors;
+  const errors = (
+    error as {
+      errors?: Array<{ longMessage?: string; message?: string }>;
+    }
+  ).errors;
   const firstError = errors?.[0];
 
   return (
@@ -46,7 +52,15 @@ function isAccountNotFoundError(error: unknown) {
     return false;
   }
 
-  const errors = (error as { errors?: Array<{ code?: string; message?: string; longMessage?: string }> }).errors ?? [];
+  const errors = (
+    error as {
+      errors?: Array<{
+        code?: string;
+        message?: string;
+        longMessage?: string;
+      }>;
+    }
+  ).errors ?? [];
 
   return errors.some((entry) => {
     const code = entry.code?.toLowerCase() ?? "";
@@ -63,19 +77,16 @@ function isAccountNotFoundError(error: unknown) {
 }
 
 function RecipientAccessAuthFlowInner({
-  credentialRecipientEmail,
-  onSignedInResolved,
+  onSessionEstablished,
 }: {
-  credentialRecipientEmail: string | null;
-  onSignedInResolved?: (emails: string[]) => void;
+  onSessionEstablished?: () => void;
 }) {
   const router = useRouter();
-  const { isLoaded: isUserLoaded, isSignedIn, user } = useUser();
+  const { isLoaded: isUserLoaded, isSignedIn } = useUser();
   const { isLoaded, signIn, setActive } = useSignIn();
   const { isLoaded: isSignUpLoaded, signUp } = useSignUp();
-  const [showEmailInput, setShowEmailInput] = useState(false);
-  const [emailInput, setEmailInput] = useState(credentialRecipientEmail ?? "");
-  const [activeEmail, setActiveEmail] = useState(credentialRecipientEmail ?? "");
+  const [emailInput, setEmailInput] = useState("");
+  const [activeEmail, setActiveEmail] = useState("");
   const [otpCode, setOtpCode] = useState("");
   const [stage, setStage] = useState<SignInStage>("default");
   const [flowMode, setFlowMode] = useState<AuthFlowMode>("sign-in");
@@ -84,30 +95,10 @@ function RecipientAccessAuthFlowInner({
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!credentialRecipientEmail) {
-      return;
+    if (isUserLoaded && isSignedIn) {
+      onSessionEstablished?.();
     }
-
-    setEmailInput((current) => (current ? current : credentialRecipientEmail));
-    setActiveEmail((current) => (current ? current : credentialRecipientEmail));
-  }, [credentialRecipientEmail]);
-
-  const normalizedRecipientEmail = useMemo(
-    () => (credentialRecipientEmail ? normalizeEmail(credentialRecipientEmail) : null),
-    [credentialRecipientEmail],
-  );
-  const signedInEmails = useMemo(
-    () => user?.emailAddresses.map((email) => email.emailAddress) ?? [],
-    [user],
-  );
-
-  useEffect(() => {
-    if (!isUserLoaded || !isSignedIn) {
-      return;
-    }
-
-    onSignedInResolved?.(signedInEmails);
-  }, [isSignedIn, isUserLoaded, onSignedInResolved, signedInEmails]);
+  }, [isSignedIn, isUserLoaded, onSessionEstablished]);
 
   async function sendCode(emailToUse: string) {
     if (!isLoaded || !isSignUpLoaded || !signIn || !signUp || !setActive) {
@@ -154,26 +145,17 @@ function RecipientAccessAuthFlowInner({
     }
   }
 
-  async function handleSendCode() {
-    if (!normalizedRecipientEmail) {
-      setErrorMessage("This credential does not include a recipient email.");
-      return;
-    }
-
-    await sendCode(normalizedRecipientEmail);
-  }
-
-  async function handleDifferentEmailSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleEmailSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    const normalizedInput = normalizeEmail(emailInput);
+    const emailToUse = normalizeEmail(emailInput);
 
-    if (!normalizedRecipientEmail || normalizedInput !== normalizedRecipientEmail) {
-      setErrorMessage("This email does not match the credential recipient");
+    if (!emailToUse) {
+      setErrorMessage("Enter your email address to continue.");
       return;
     }
 
-    await sendCode(normalizedInput);
+    await sendCode(emailToUse);
   }
 
   async function handleVerifyCode(event: FormEvent<HTMLFormElement>) {
@@ -222,77 +204,48 @@ function RecipientAccessAuthFlowInner({
     }
   }
 
-  const maskedRecipientEmail = credentialRecipientEmail ? maskEmail(credentialRecipientEmail) : null;
-
   return (
     <>
-      {isUserLoaded && isSignedIn ? (
+      {!isUserLoaded ? (
         <div className="mx-auto max-w-[420px] rounded-[16px] bg-white px-4 py-4 text-[13px] leading-5 text-[#3D5166] shadow-[inset_0_0_0_1px_rgba(13,43,69,0.05)]">
-          You&apos;re already signed in. Checking recipient access...
+          Loading sign-in...
         </div>
       ) : null}
 
-      {!isSignedIn && stage === "default" && (
+      {isUserLoaded && isSignedIn ? (
+        <div className="mx-auto max-w-[420px] rounded-[16px] bg-white px-4 py-4 text-[13px] leading-5 text-[#3D5166] shadow-[inset_0_0_0_1px_rgba(13,43,69,0.05)]">
+          You&apos;re signed in. Checking recipient association...
+        </div>
+      ) : null}
+
+      {isUserLoaded && !isSignedIn && stage === "default" && (
         <>
-          <div className="mx-auto max-w-[420px] rounded-[16px] bg-white px-4 py-4 text-left shadow-[inset_0_0_0_1px_rgba(13,43,69,0.05)]">
+          <form
+            className="mx-auto max-w-[420px] rounded-[16px] bg-white px-4 py-4 text-left shadow-[inset_0_0_0_1px_rgba(13,43,69,0.05)]"
+            onSubmit={handleEmailSubmit}
+          >
             <div className="text-[13px] leading-5 text-[#3D5166]">
-              {maskedRecipientEmail ? (
-                <>
-                  We&apos;ll send a verification code to{" "}
-                  <span className="font-semibold text-[#0D2B45]">{maskedRecipientEmail}</span>.
-                </>
-              ) : (
-                "We need the recipient email embedded in this credential before we can send a verification code."
-              )}
+              Enter your email address. Clerk will send you a one-time sign-in code, then VeraLearning will privately check whether a verified account email is associated with this credential.
             </div>
-
-            {showEmailInput ? (
-              <form className="mt-4 space-y-3" onSubmit={handleDifferentEmailSubmit}>
-                <label className="block text-left text-[12px] font-medium text-[#5D7180]">
-                  Email address
-                </label>
-                <input
-                  type="email"
-                  value={emailInput}
-                  onChange={(event) => setEmailInput(event.target.value)}
-                  className="w-full rounded-[12px] border border-[#D6DFE1] bg-white px-4 py-3 text-[14px] text-[#0D2B45] outline-none transition focus:border-[#3D8F8F] focus:ring-2 focus:ring-[#3D8F8F]/15"
-                  placeholder="name@example.com"
-                  autoComplete="email"
-                />
-                <button
-                  type="submit"
-                  disabled={isSending || !emailInput.trim()}
-                  className="credential-button inline-flex w-full items-center justify-center gap-2 rounded-[12px] bg-[#3D8F8F] px-6 py-3 text-[14px] font-semibold text-white shadow-[0_10px_24px_rgba(61,143,143,0.18)] hover:bg-[#357C7C] disabled:cursor-not-allowed disabled:opacity-70"
-                >
-                  {isSending ? "Sending..." : "Send code"}
-                </button>
-              </form>
-            ) : (
-              <>
-                <button
-                  type="button"
-                  onClick={handleSendCode}
-                  disabled={isSending || !normalizedRecipientEmail}
-                  className="credential-button mt-4 inline-flex w-full items-center justify-center gap-2 rounded-[12px] bg-[#3D8F8F] px-6 py-3 text-[14px] font-semibold text-white shadow-[0_10px_24px_rgba(61,143,143,0.18)] hover:bg-[#357C7C] disabled:cursor-not-allowed disabled:opacity-70"
-                >
-                  {isSending ? "Sending..." : "Send code"}
-                </button>
-
-                {normalizedRecipientEmail && (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setErrorMessage(null);
-                      setShowEmailInput(true);
-                    }}
-                    className="credential-link mt-3 text-[12px] font-medium text-[#2E7070]"
-                  >
-                    Not your email? Enter a different address
-                  </button>
-                )}
-              </>
-            )}
-          </div>
+            <label className="mt-4 block text-left text-[12px] font-medium text-[#5D7180]">
+              Email address
+            </label>
+            <input
+              type="email"
+              value={emailInput}
+              onChange={(event) => setEmailInput(event.target.value)}
+              className="mt-2 w-full rounded-[12px] border border-[#D6DFE1] bg-white px-4 py-3 text-[14px] text-[#0D2B45] outline-none transition focus:border-[#3D8F8F] focus:ring-2 focus:ring-[#3D8F8F]/15"
+              placeholder="name@example.com"
+              autoComplete="email"
+            />
+            <button
+              type="submit"
+              disabled={isSending || !emailInput.trim()}
+              className="credential-button mt-4 inline-flex w-full items-center justify-center gap-2 rounded-[12px] bg-[#3D8F8F] px-6 py-3 text-[14px] font-semibold text-white shadow-[0_10px_24px_rgba(61,143,143,0.18)] hover:bg-[#357C7C] disabled:cursor-not-allowed disabled:opacity-70"
+            >
+              {isSending ? "Sending..." : "Send code"}
+            </button>
+          </form>
 
           {errorMessage && (
             <div className="mx-auto mt-2.5 max-w-[420px] rounded-[12px] bg-[#FFF5F3] px-4 py-3 text-[12px] leading-5 text-[#A15241] shadow-[inset_0_0_0_1px_rgba(177,88,67,0.12)]">
@@ -302,7 +255,7 @@ function RecipientAccessAuthFlowInner({
         </>
       )}
 
-      {!isSignedIn && stage === "code" && (
+      {isUserLoaded && !isSignedIn && stage === "code" && (
         <>
           <form
             className="mx-auto max-w-[420px] rounded-[16px] bg-white px-4 py-4 text-left shadow-[inset_0_0_0_1px_rgba(13,43,69,0.05)]"
@@ -310,7 +263,10 @@ function RecipientAccessAuthFlowInner({
           >
             <div className="text-[13px] leading-5 text-[#3D5166]">
               Enter the 6-digit code sent to{" "}
-              <span className="font-semibold text-[#0D2B45]">{maskEmail(activeEmail)}</span>.
+              <span className="font-semibold text-[#0D2B45]">
+                {maskEmail(activeEmail)}
+              </span>
+              .
             </div>
             <label className="mt-4 block text-left text-[12px] font-medium text-[#5D7180]">
               Verification code
@@ -320,7 +276,9 @@ function RecipientAccessAuthFlowInner({
               inputMode="numeric"
               pattern="[0-9]*"
               value={otpCode}
-              onChange={(event) => setOtpCode(event.target.value.replace(/\D/g, "").slice(0, 6))}
+              onChange={(event) =>
+                setOtpCode(event.target.value.replace(/\D/g, "").slice(0, 6))
+              }
               className="mt-2 w-full rounded-[12px] border border-[#D6DFE1] bg-white px-4 py-3 text-[18px] tracking-[0.3em] text-[#0D2B45] outline-none transition focus:border-[#3D8F8F] focus:ring-2 focus:ring-[#3D8F8F]/15"
               placeholder="123456"
               autoComplete="one-time-code"
@@ -330,7 +288,7 @@ function RecipientAccessAuthFlowInner({
               disabled={isVerifying || otpCode.length !== 6}
               className="credential-button mt-4 inline-flex w-full items-center justify-center gap-2 rounded-[12px] bg-[#3D8F8F] px-6 py-3 text-[14px] font-semibold text-white shadow-[0_10px_24px_rgba(61,143,143,0.18)] hover:bg-[#357C7C] disabled:cursor-not-allowed disabled:opacity-70"
             >
-              {isVerifying ? "Verifying..." : "Verify code"}
+              {isVerifying ? "Checking code..." : "Continue"}
             </button>
 
             <button
@@ -351,23 +309,26 @@ function RecipientAccessAuthFlowInner({
         </>
       )}
 
-      {!isSignedIn && stage === "success" && (
+      {isUserLoaded && !isSignedIn && stage === "success" && (
         <div className="mx-auto max-w-[420px] rounded-[16px] bg-white px-4 py-4 text-[13px] leading-5 text-[#2D7A4F] shadow-[inset_0_0_0_1px_rgba(45,122,79,0.12)]">
-          Verification successful. Reloading your credential access...
+          Email sign-in complete. Checking recipient association...
         </div>
       )}
 
-      {!isSignedIn && <div id="clerk-captcha" className="mx-auto mt-4 flex max-w-[420px] justify-center" />}
+      {isUserLoaded && !isSignedIn && (
+        <div
+          id="clerk-captcha"
+          className="mx-auto mt-4 flex max-w-[420px] justify-center"
+        />
+      )}
     </>
   );
 }
 
 export function RecipientAccessAuthFlow({
-  credentialRecipientEmail,
-  onSignedInResolved,
+  onSessionEstablished,
 }: {
-  credentialRecipientEmail: string | null;
-  onSignedInResolved?: (emails: string[]) => void;
+  onSessionEstablished?: () => void;
 }) {
   const clerkPublishableKey = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
 
@@ -382,8 +343,7 @@ export function RecipientAccessAuthFlow({
   return (
     <ClerkProvider publishableKey={clerkPublishableKey}>
       <RecipientAccessAuthFlowInner
-        credentialRecipientEmail={credentialRecipientEmail}
-        onSignedInResolved={onSignedInResolved}
+        onSessionEstablished={onSessionEstablished}
       />
     </ClerkProvider>
   );

@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "check:jsonld-safe-mode": "node scripts/check-jsonld-safe-mode.mjs"
+    "check:jsonld-safe-mode": "node scripts/check-jsonld-safe-mode.mjs",
+    "check:credential-privacy": "node scripts/check-credential-privacy-boundary.mjs",
+    "test:privacy": "node --test test/privacy/*.test.mjs"
   },
   "dependencies": {
     "@clerk/nextjs": "^6.34.0",

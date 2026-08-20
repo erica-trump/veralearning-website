@@ -1,6 +1,7 @@
+import "server-only";
+
 import { extractCredentialFromPng, type ExtractedOpenBadgeCredential } from "@/lib/extract-credential";
-import { getIssuedCredentialRow } from "@/lib/neon";
-import { getRecipientInitialsFromIdentity } from "@/lib/recipient";
+import { getPublicIssuedCredentialRow } from "@/lib/neon";
 
 const DEFAULT_ISSUER_NAME = "VeraLearning";
 const DEFAULT_SCORE = 87;
@@ -65,10 +66,7 @@ export interface ReadyCredentialPageData extends CredentialPageBase {
   displayIssuerName: string;
   displayIssuerLogoUrl: string | null;
   displayIssuerUrl: string | null;
-  recipientEmail: string | null;
-  credentialRecipientEmail: string | null;
   recipientLabel: string;
-  recipientInitials: string;
   issueDateLabel: string;
   validUntilLabel: string | null;
   issueYear: number | null;
@@ -342,7 +340,7 @@ export async function getCredentialPageData(
     };
   }
 
-  const row = await getIssuedCredentialRow(`urn:uuid:${id}`);
+  const row = await getPublicIssuedCredentialRow(`urn:uuid:${id}`);
   const title =
     getString(credential.credentialSubject?.achievement?.name) ??
     getString(credential.name) ??
@@ -360,20 +358,8 @@ export async function getCredentialPageData(
   const issueDateParts = getYearAndMonth(issueDateSource);
   const validUntilParts = getYearAndMonth(expiresDateSource);
   const credentialEvidence = credential.evidence?.[0];
-  const credentialRecipientEmail = getString(credential.credentialSubject?.email);
-  const recipientEmail = row?.learner_email ?? credentialRecipientEmail ?? null;
   const recipientName = getString(credential.credentialSubject?.name);
-  const recipientInitials = getRecipientInitialsFromIdentity({
-    name: recipientName,
-    email: recipientEmail,
-  });
-  const recipientLabel = recipientName
-    ? recipientName
-    : row?.learner_id
-      ? row.learner_id
-      : recipientEmail
-        ? "Credential recipient"
-        : "Public credential";
+  const recipientLabel = recipientName ?? "Credential recipient";
   const evidenceDescription =
     getString(credentialEvidence?.description) ??
     getString(credentialEvidence?.narrative) ??
@@ -404,10 +390,7 @@ export async function getCredentialPageData(
     displayIssuerName,
     displayIssuerLogoUrl,
     displayIssuerUrl,
-    recipientEmail,
-    credentialRecipientEmail,
     recipientLabel,
-    recipientInitials,
     issueDateLabel,
     validUntilLabel,
     issueYear: issueDateParts.year,
