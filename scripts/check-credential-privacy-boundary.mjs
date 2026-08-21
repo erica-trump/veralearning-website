@@ -21,6 +21,12 @@ const [
   associationRoute,
   databaseModule,
   evidencePage,
+  verifierClient,
+  verifierContract,
+  verifyRoute,
+  verificationModal,
+  verificationStatusCopy,
+  credentialActions,
 ] = await Promise.all([
   read("lib/credentials.ts"),
   read("components/credentials/credential-page.tsx"),
@@ -30,6 +36,12 @@ const [
   read("app/api/credentials/[id]/recipient-association/route.ts"),
   read("lib/neon.ts"),
   read("app/(credentials)/credentials/[id]/evidence/page.tsx"),
+  read("lib/vera-credentials-client.ts"),
+  read("lib/vera-credentials-contract.ts"),
+  read("app/api/credentials/[id]/verify/route.ts"),
+  read("components/credentials/verification-details-modal.tsx"),
+  read("lib/verification-status-copy.ts"),
+  read("components/credentials/credential-actions.tsx"),
 ]);
 
 let assertionCount = 0;
@@ -67,5 +79,25 @@ check(recipientAssociation.includes("getVerifiedClerkEmailAddresses"), "associat
 check(!/currentUser|getIssuedCredentialRow|@\/lib\/neon/.test(evidencePage), "evidence page bypasses the shared server-only association helper");
 check(evidencePage.includes("getCurrentUserRecipientAssociation"), "evidence page does not reuse the private association boundary");
 check(!/verified holder|ownership verified|credential owner verified/i.test(clientBoundary), "client copy introduces a holder-proof claim");
+const verificationBoundary = [
+  verifierClient,
+  verifierContract,
+  verifyRoute,
+  verificationModal,
+  verificationStatusCopy,
+].join("\n");
+check(!/learner_email|learner_id/.test(verificationBoundary), "verification path references private DB recipient fields");
+check(!/Clerk|OTP|recipientAssociation|recipientAssociated|currentUser|auth\(/.test(verifierClient + verifyRoute), "server verification transport references account or recipient state");
+check(verifierClient.startsWith('import "server-only";'), "VeraCredentials client lacks a server-only boundary");
+check(!/NEXT_PUBLIC_VERACREDENTIALS/.test(verificationBoundary), "VeraCredentials configuration is exposed through NEXT_PUBLIC");
+check(verifierClient.includes('JSON.stringify({ credential })'), "VeraCredentials request is not constrained to the credential wrapper");
+check(!/NextResponse\.json\(credential/.test(verifyRoute), "verify route returns the raw credential");
+check(!/from ["']@\/lib\/(?:neon|recipient-association|recipient)["']/.test(verifyRoute), "verify route imports recipient or database helpers");
+check(verificationModal.includes("Holder control was not evaluated"), "verification UI omits holder-neutral wording");
+check(verificationStatusCopy.includes("Pinned historical status snapshot reports this credential active."), "historical active wording is inaccurate");
+check(verificationStatusCopy.includes("Pinned historical status snapshot reports this credential revoked."), "historical revoked wording is inaccurate");
+check(verificationStatusCopy.includes("Current status evidence was authenticated, but an active or revoked status could not be determined."), "authenticated-indeterminate current status wording is inaccurate");
+check(verifierContract.includes('value.holderProven !== null'), "authoritative holderProven null is not enforced");
+check(!/Proof of authenticity|Verify authenticity|cannot be forged|Issuer verified|authentic and currently active/.test(pageComponent + credentialActions), "pre-verification UI overclaims proof or trust");
 
 console.log(`Credential privacy boundary checks passed (${assertionCount} assertions).`);

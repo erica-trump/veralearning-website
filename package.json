@@ -7,18 +7,13 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "check:jsonld-safe-mode": "node scripts/check-jsonld-safe-mode.mjs",
     "check:credential-privacy": "node scripts/check-credential-privacy-boundary.mjs",
-    "test:privacy": "node --test test/privacy/*.test.mjs"
+    "test:privacy": "node --test test/privacy/*.test.mjs",
+    "test:credential-verification": "node --conditions=react-server --test test/credential-verification/*.test.mjs"
   },
   "dependencies": {
     "@clerk/nextjs": "^6.34.0",
-    "@digitalbazaar/data-integrity": "^2.5.0",
-    "@digitalbazaar/ed25519-multikey": "^1.3.1",
-    "@digitalbazaar/eddsa-rdfc-2022-cryptosuite": "^1.3.0",
-    "jsonld-signatures": "^11.6.0",
     "next": "^16.0.10",
-    "png-chunks-extract": "^1.0.0",
     "postgres": "^3.4.8",
     "react": "19.2.0",
     "react-dom": "19.2.0",
