@@ -1,6 +1,12 @@
 import "server-only";
 
-import { extractCredentialFromPng, type ExtractedOpenBadgeCredential } from "@/lib/extract-credential";
+import {
+  buildCredentialBadgeUrl,
+  CredentialArtifactError,
+  getCredentialArtifact,
+  isCredentialUuid,
+} from "@/lib/credential-artifact";
+import type { ExtractedOpenBadgeCredential } from "@/lib/extract-credential";
 import { getPublicIssuedCredentialRow } from "@/lib/neon";
 
 const DEFAULT_ISSUER_NAME = "VeraLearning";
@@ -22,7 +28,6 @@ interface CredentialAchievement {
 
 interface CredentialSubject {
   name?: unknown;
-  email?: unknown;
   achievement?: CredentialAchievement;
 }
 
@@ -58,14 +63,11 @@ interface CredentialPageBase {
 
 export interface ReadyCredentialPageData extends CredentialPageBase {
   status: "ready";
-  badgeImageDataUrl: string;
   badgeImageSrc: string;
   credentialId: string;
   title: string;
   issuerName: string;
   displayIssuerName: string;
-  displayIssuerLogoUrl: string | null;
-  displayIssuerUrl: string | null;
   recipientLabel: string;
   issueDateLabel: string;
   validUntilLabel: string | null;
@@ -75,7 +77,6 @@ export interface ReadyCredentialPageData extends CredentialPageBase {
   validUntilMonth: number | null;
   proofLabel: string;
   proofTags: string[];
-  verificationSummary: string;
   evidenceDescription: string;
   linkedInUrl: string;
   score: number;
@@ -114,30 +115,6 @@ function getCreatorRecord(credential: CredentialRecord) {
 
 function getCreatorName(credential: CredentialRecord) {
   return getString(getCreatorRecord(credential)?.name);
-}
-
-function getCreatorUrl(credential: CredentialRecord) {
-  return getString(getCreatorRecord(credential)?.url);
-}
-
-function getCreatorLogoUrl(credential: CredentialRecord) {
-  const image = getCreatorRecord(credential)?.image;
-
-  if (typeof image === "object" && image !== null) {
-    return getString((image as Record<string, unknown>).id);
-  }
-
-  return null;
-}
-
-function getAchievementImageUrl(credential: CredentialRecord) {
-  const image = credential.credentialSubject?.achievement?.image;
-
-  if (typeof image === "object" && image !== null) {
-    return getString((image as Record<string, unknown>).id);
-  }
-
-  return null;
 }
 
 function formatDisplayDate(value: string | Date | null | undefined) {
@@ -276,9 +253,7 @@ function buildLinkedInUrl({
 }
 
 export function isUuid(value: string) {
-  return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
-    value,
-  );
+  return isCredentialUuid(value);
 }
 
 function getCredentialsBaseUrl() {
@@ -294,7 +269,7 @@ export function buildCanonicalCredentialUrl(id: string) {
 }
 
 export function buildBadgeUrl(id: string) {
-  return `https://credentials.veralearning.com/badges/${id}`;
+  return buildCredentialBadgeUrl(id);
 }
 
 export function buildEvidenceUrl(id: string) {
@@ -308,31 +283,17 @@ export async function getCredentialPageData(
   const badgeUrl = buildBadgeUrl(id);
   const evidenceUrl = buildEvidenceUrl(id);
 
-  const badgeResponse = await fetch(badgeUrl, { cache: "no-store" }).catch(
-    () => null,
-  );
-
-  if (!badgeResponse?.ok) {
-    return {
-      status: "badge-error",
-      id,
-      canonicalUrl,
-      badgeUrl,
-      evidenceUrl,
-    };
-  }
-
-  const badgeArrayBuffer = await badgeResponse.arrayBuffer();
-  const badgeBuffer = Buffer.from(badgeArrayBuffer);
-  const badgeImageDataUrl = `data:image/png;base64,${badgeBuffer.toString("base64")}`;
-
   let credential: CredentialRecord;
 
   try {
-    credential = extractCredentialFromPng(badgeBuffer) as CredentialRecord;
-  } catch {
+    const artifact = await getCredentialArtifact(id);
+    credential = artifact.credential as CredentialRecord;
+  } catch (error) {
     return {
-      status: "credential-unavailable",
+      status:
+        error instanceof CredentialArtifactError && error.category === "unavailable"
+          ? "badge-error"
+          : "credential-unavailable",
       id,
       canonicalUrl,
       badgeUrl,
@@ -348,9 +309,7 @@ export async function getCredentialPageData(
   const issuerName = normalizeIssuerName(getString(credential.issuer?.name));
   const creatorName = getCreatorName(credential);
   const displayIssuerName = normalizeIssuerName(creatorName ?? issuerName);
-  const displayIssuerLogoUrl = getCreatorLogoUrl(credential);
-  const displayIssuerUrl = getCreatorUrl(credential);
-  const badgeImageSrc = getAchievementImageUrl(credential) ?? badgeImageDataUrl;
+  const badgeImageSrc = badgeUrl;
   const issueDateSource = row?.created_at ?? getString(credential.validFrom);
   const expiresDateSource = row?.expires_at ?? getString(credential.validUntil);
   const issueDateLabel = formatDisplayDate(issueDateSource) ?? "Unavailable";
@@ -373,7 +332,6 @@ export async function getCredentialPageData(
     "Open Badges 3.0",
     "W3C VC 2.0",
     proofLabel.toLowerCase().includes("eddsa") ? "eddsa-rdfc-2022" : proofLabel,
-    "Tamper-evident",
   ];
 
   return {
@@ -382,14 +340,11 @@ export async function getCredentialPageData(
     canonicalUrl,
     badgeUrl,
     evidenceUrl,
-    badgeImageDataUrl,
     badgeImageSrc,
     credentialId: getString(credential.id) ?? `urn:uuid:${id}`,
     title,
     issuerName,
     displayIssuerName,
-    displayIssuerLogoUrl,
-    displayIssuerUrl,
     recipientLabel,
     issueDateLabel,
     validUntilLabel,
@@ -399,8 +354,6 @@ export async function getCredentialPageData(
     validUntilMonth: validUntilParts.month,
     proofLabel,
     proofTags,
-    verificationSummary:
-      "This credential contains an embedded Ed25519 digital signature. The badge PNG itself carries the full verifiable credential, making authenticity checks tamper-evident.",
     evidenceDescription,
     linkedInUrl: buildLinkedInUrl({
       id,

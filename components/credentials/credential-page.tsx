@@ -35,8 +35,7 @@ function ErrorCard({
 function ReadyCredentialPage({ data }: { data: ReadyCredentialPageData }) {
   const authEnabled = Boolean(process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY);
   const issuerLogoSrc =
-    data.displayIssuerLogoUrl ??
-    (data.displayIssuerName === "VeraLearning" ? "/logo-vera-circle.svg" : null);
+    data.displayIssuerName === "VeraLearning" ? "/logo-vera-circle.svg" : null;
 
   return (
     <div className="mx-auto max-w-[720px] px-5 pb-20 pt-8">
@@ -209,7 +208,7 @@ function ReadyCredentialPage({ data }: { data: ReadyCredentialPageData }) {
         className="credential-card credential-enter mt-6 rounded-[22px] bg-[#FCFBF8] p-5 shadow-[0_10px_24px_rgba(13,43,69,0.05)] [animation-delay:460ms]"
       >
         <div className="mb-4 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#7A8A96]">
-          Proof of authenticity
+          Credential verification
         </div>
 
         <div className="flex items-start gap-3">
@@ -222,15 +221,15 @@ function ReadyCredentialPage({ data }: { data: ReadyCredentialPageData }) {
 
           <div>
             <div className="text-[14px] font-semibold text-[#0D2B45]">
-              Signed by {data.issuerName}
+              Verification available
             </div>
             <div className="mt-1 text-[13px] leading-5 text-[#6C7E89]">
-              This credential is{" "}
+              {"Check this credential's "}
               <OpenVerificationDetailsButton
-                label="cryptographically signed"
+                label="verification result"
                 className="inline-flex text-[13px] font-semibold text-[#2E7070]"
               />
-              {" "}by {data.issuerName} and can be independently verified.
+              {" "}for its proof, issuer trust, validity period, and status.
             </div>
             <div className="mt-3 flex flex-wrap gap-1.5">
               {data.proofTags.map((tag) => (
